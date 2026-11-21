@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Cleartext HTTP is allowed in debug builds only.
+  The emulator connects to the host backend via 10.0.2.2:8080.
+  Release builds will require HTTPS.
+-->
+<network-security-config>
+    <debug-overrides>
+        <trust-anchors>
+            <certificates src="user" />
+            <certificates src="system" />
+        </trust-anchors>
+        <domain-config cleartextTrafficPermitted="true">
+            <domain includeSubdomains="true">10.0.2.2</domain>
+            <domain includeSubdomains="true">localhost</domain>
+        </domain-config>
+    </debug-overrides>
+</network-security-config>
