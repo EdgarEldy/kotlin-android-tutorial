@@ -423,34 +423,90 @@ adb devices
 ### Install the debug APK
 
 ```bash
-./gradlew installDebug
+# Unix / macOS
+./gradlew app:installDebug
+
+# Windows (PowerShell or cmd)
+gradlew app:installDebug
 ```
 
 > Make sure the backend is running and reachable from the device before launching the app. Use `10.0.2.2:8080` for the emulator or the host machine's LAN IP for a physical device.
+
+### ADB — useful commands
+
+```bash
+# List connected devices
+adb devices
+
+# Install the APK manually (alternative to Gradle)
+adb install -r app/build/outputs/apk/debug/app-debug.apk
+
+# Stream all logcat output filtered to the app
+adb logcat --pid=$(adb shell pidof -s com.edgareldy.tutorial)
+
+# Stream logcat filtered by tag
+adb logcat -s TutorialApp
+
+# Clear the logcat buffer
+adb logcat -c
+
+# Save logcat to a file (useful for sharing crash reports)
+adb logcat > logs.txt
+
+# Restart adb server (fixes "device offline" or "unauthorized" errors)
+adb kill-server && adb start-server
+```
 
 ---
 
 ## Build and test
 
-```bash
-# Check the Gradle wrapper version
-./gradlew --version
+Tasks can be run in two ways:
+- **IntelliJ / Android Studio** — open the **Run Anything** dialog (`Ctrl+Alt+R`), type `gradle <task>`
+- **Terminal** — prefix with `./gradlew` on Unix/macOS or `gradlew` on Windows
 
-# Compile the debug APK
-./gradlew assembleDebug
+The table below uses the IntelliJ format; the terminal equivalent is always `./gradlew <task>`.
 
-# Run unit tests (JVM, no device required)
-./gradlew test
+### Build
 
-# Run Android lint
-./gradlew lint
+| Task | Description |
+|---|---|
+| `gradle app:assembleDebug` | Compile the debug APK |
+| `gradle app:assembleRelease` | Compile the release APK (requires signing config) |
+| `gradle app:assembleDebugAndroidTest` | Compile the instrumented test APK |
+| `gradle app:assembleDebugUnitTest` | Compile the debug unit test classes |
+| `gradle app:assemble` | Compile all variants |
+| `gradle app:build` | Compile + run all checks |
+| `gradle app:clean` | Delete build outputs |
 
-# Run instrumented tests (requires a connected device or running emulator)
-./gradlew connectedAndroidTest
+### Install / Uninstall
 
-# Assemble the release APK (requires signing config)
-./gradlew assembleRelease
-```
+| Task | Description |
+|---|---|
+| `gradle app:installDebug` | Compile + install debug APK on connected device |
+| `gradle app:uninstallDebug` | Uninstall the debug variant |
+| `gradle app:uninstallAll` | Uninstall all variants |
+
+### Verification
+
+| Task | Description |
+|---|---|
+| `gradle app:testDebugUnitTest` | JVM unit tests — debug variant (no device required) |
+| `gradle app:testReleaseUnitTest` | JVM unit tests — release variant |
+| `gradle app:connectedDebugAndroidTest` | Instrumented tests — debug variant (device required) |
+| `gradle app:lintDebug` | Lint — debug variant |
+| `gradle app:lintRelease` | Lint — release variant |
+
+### Analysis / Inspection
+
+| Task | Description |
+|---|---|
+| `gradle app:analyzeDebugDependencies` | Analyze debug dependency tree |
+| `gradle app:analyzeReleaseDependencies` | Analyze release dependency tree |
+| `gradle app:analyzeDebugUnitTestDependencies` | Analyze debug unit test dependencies |
+| `gradle app:androidDependencies` | Print Android-specific dependency tree |
+| `gradle app:dependencies` | Print the full dependency tree |
+| `gradle app:tasks` | List all available tasks for `:app` |
 
 ### Build variants
 

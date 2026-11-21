@@ -5,14 +5,14 @@
   Release builds will require HTTPS.
 -->
 <network-security-config>
+    <!-- User certs trusted in debug for Charles/Proxyman MITM proxies -->
     <debug-overrides>
         <trust-anchors>
             <certificates src="user" />
             <certificates src="system" />
         </trust-anchors>
-        <domain-config cleartextTrafficPermitted="true">
-            <domain includeSubdomains="true">10.0.2.2</domain>
-            <domain includeSubdomains="true">localhost</domain>
-        </domain-config>
     </debug-overrides>
+    <!-- HTTP allowed for local backend (emulator 10.0.2.2 and physical device via LAN IP).
+         Phase 6 will tighten this to HTTPS only for release builds. -->
+    <base-config cleartextTrafficPermitted="true" />
 </network-security-config>
