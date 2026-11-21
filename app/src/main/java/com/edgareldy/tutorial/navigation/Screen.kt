@@ -2,8 +2,6 @@ package com.edgareldy.tutorial.navigation
 
 import android.net.Uri
 
-import android.net.Uri
-
 /**
  * Sealed class hierarchy defining all navigation destinations.
  * Auth screens live in the "auth" nested graph; app screens in "main".
