@@ -1,4 +1,6 @@
-package com.edgareldy.tutorial.presentation.navigation
+package com.edgareldy.tutorial.navigation
+
+import android.net.Uri
 
 import android.net.Uri
 
