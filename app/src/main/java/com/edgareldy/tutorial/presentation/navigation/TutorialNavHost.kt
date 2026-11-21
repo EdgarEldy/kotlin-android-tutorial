@@ -12,12 +12,19 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
+import com.edgareldy.tutorial.presentation.auth.activate.ActivateAccountScreen
+import com.edgareldy.tutorial.presentation.auth.forgotpassword.ForgotPasswordScreen
+import com.edgareldy.tutorial.presentation.auth.profile.ProfileScreen
+import com.edgareldy.tutorial.presentation.auth.register.RegisterScreen
+import com.edgareldy.tutorial.presentation.auth.resetpassword.ResetPasswordScreen
+import com.edgareldy.tutorial.presentation.auth.signin.SignInScreen
+import com.edgareldy.tutorial.presentation.auth.verifyotp.VerifyOtpScreen
 
 /**
- * Root navigation host that wires every screen placeholder to its route.
- * The auth graph handles unauthenticated flows; the main graph handles the
- * authenticated app experience. Each placeholder will be replaced by its
- * real Composable in subsequent phases.
+ * Root navigation host wiring every screen to its route.
+ * The startDestination is determined by the caller (MainActivity) which checks
+ * IsLoggedInUseCase synchronously before composition, ensuring the NavHost
+ * receives a stable value and avoids recomposition-driven graph restarts.
  *
  * Created edgar.muhamyangabo on 11/21/26
  * Author: edgar.muhamyangabo
@@ -31,30 +38,94 @@ fun TutorialNavHost(
 ) {
     NavHost(navController = navController, startDestination = startDestination) {
         navigation(startDestination = Screen.SignIn.route, route = "auth") {
+
             composable(Screen.SignIn.route) {
-                Box(Modifier.fillMaxSize()) { Text("Sign In - TODO Phase 2") }
+                SignInScreen(
+                    onNavigateToRegister = { navController.navigate(Screen.Register.route) },
+                    onNavigateToForgotPassword = {
+                        navController.navigate(Screen.ForgotPassword.route)
+                    },
+                    onSignInSuccess = {
+                        navController.navigate("main") {
+                            popUpTo("auth") { inclusive = true }
+                        }
+                    }
+                )
             }
+
             composable(Screen.Register.route) {
-                Box(Modifier.fillMaxSize()) { Text("Register - TODO Phase 2") }
+                RegisterScreen(
+                    onNavigateBack = { navController.popBackStack() },
+                    onRegistrationSuccess = { email ->
+                        navController.navigate(Screen.ActivateAccount.createRoute(email))
+                    }
+                )
             }
-            composable(Screen.ActivateAccount.route) {
-                Box(Modifier.fillMaxSize()) { Text("Activate Account - TODO Phase 2") }
+
+            composable(
+                route = Screen.ActivateAccount.route,
+                arguments = listOf(navArgument(Screen.ActivateAccount.ARG_EMAIL) {
+                    type = NavType.StringType
+                })
+            ) { backStackEntry ->
+                val email = backStackEntry.arguments?.getString(Screen.ActivateAccount.ARG_EMAIL)
+                    ?: ""
+                ActivateAccountScreen(
+                    email = email,
+                    onNavigateBack = { navController.popBackStack() },
+                    onActivationSuccess = {
+                        navController.navigate(Screen.SignIn.route) {
+                            popUpTo("auth") { inclusive = false }
+                        }
+                    }
+                )
             }
+
             composable(Screen.ForgotPassword.route) {
-                Box(Modifier.fillMaxSize()) { Text("Forgot Password - TODO Phase 2") }
+                ForgotPasswordScreen(
+                    onNavigateBack = { navController.popBackStack() },
+                    onOtpSent = { email ->
+                        navController.navigate(Screen.VerifyOtp.createRoute(email))
+                    }
+                )
             }
-            composable(Screen.VerifyOtp.route) {
-                Box(Modifier.fillMaxSize()) { Text("Verify OTP - TODO Phase 2") }
+
+            composable(
+                route = Screen.VerifyOtp.route,
+                arguments = listOf(navArgument(Screen.VerifyOtp.ARG_EMAIL) {
+                    type = NavType.StringType
+                })
+            ) { backStackEntry ->
+                val email = backStackEntry.arguments?.getString(Screen.VerifyOtp.ARG_EMAIL) ?: ""
+                VerifyOtpScreen(
+                    email = email,
+                    onNavigateBack = { navController.popBackStack() },
+                    onOtpVerified = { otp ->
+                        navController.navigate(Screen.ResetPassword.createRoute(otp))
+                    }
+                )
             }
+
             composable(
                 route = Screen.ResetPassword.route,
                 arguments = listOf(navArgument(Screen.ResetPassword.ARG_TOKEN) {
                     type = NavType.StringType
                 })
-            ) {
-                Box(Modifier.fillMaxSize()) { Text("Reset Password - TODO Phase 2") }
+            ) { backStackEntry ->
+                val token = backStackEntry.arguments?.getString(Screen.ResetPassword.ARG_TOKEN)
+                    ?: ""
+                ResetPasswordScreen(
+                    otp = token,
+                    onNavigateBack = { navController.popBackStack() },
+                    onResetSuccess = {
+                        navController.navigate(Screen.SignIn.route) {
+                            popUpTo("auth") { inclusive = false }
+                        }
+                    }
+                )
             }
         }
+
         navigation(startDestination = Screen.ProductList.route, route = "main") {
             composable(Screen.ProductList.route) {
                 Box(Modifier.fillMaxSize()) { Text("Product List - TODO Phase 3") }
@@ -82,7 +153,13 @@ fun TutorialNavHost(
                 Box(Modifier.fillMaxSize()) { Text("Order Detail - TODO Phase 5") }
             }
             composable(Screen.Profile.route) {
-                Box(Modifier.fillMaxSize()) { Text("Profile - TODO Phase 2") }
+                ProfileScreen(
+                    onLogout = {
+                        navController.navigate("auth") {
+                            popUpTo("main") { inclusive = true }
+                        }
+                    }
+                )
             }
         }
     }
