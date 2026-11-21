@@ -608,27 +608,27 @@ All authentication screens, session management and the mobile OTP password reset
 
 ### Tasks
 
-- [ ] Domain: `User` model
-- [ ] Domain: `AuthRepository` interface (login, register, activate, logout, refresh, me)
-- [ ] Domain: `PasswordResetRepository` interface (requestOtp, verifyOtp, confirmReset)
-- [ ] Domain: `SignInUseCase`, `RegisterUseCase`, `ActivateAccountUseCase`, `LogoutUseCase`
-- [ ] Domain: `RequestPasswordResetOtpUseCase`, `VerifyPasswordResetOtpUseCase`, `ResetPasswordUseCase`
-- [ ] Domain: `GetProfileUseCase`
-- [ ] Data: `AuthRepositoryImpl` using the generated API client
-- [ ] Data: `PasswordResetRepositoryImpl`
-- [ ] Data: `SecureTokenStorage`: read/write/clear `access_token` and `refresh_token`
-- [ ] `SignInScreen` + `SignInViewModel` + `SignInUiState`
-- [ ] `RegisterScreen` + `RegisterViewModel` + `RegisterUiState`
-- [ ] `ActivateAccountScreen` + `ActivateAccountViewModel`
-- [ ] `ForgotPasswordScreen` + `ForgotPasswordViewModel`
-- [ ] `VerifyOtpScreen` + `VerifyOtpViewModel`
-- [ ] `ResetPasswordScreen` + `ResetPasswordViewModel`
-- [ ] `ProfileScreen` + `ProfileViewModel`
-- [ ] Session restoration on app launch: check stored token, navigate to main or auth graph
-- [ ] `TokenAuthenticator` wired to `AuthRepository.refresh()`; prevent retry loops on refresh failure
-- [ ] Clear all credentials on logout
-- [ ] Never log or persist OTP values
-- [ ] Never call web password reset endpoints (`/api/v1/auth/forgot-password`)
+- [x] Domain: `User` model
+- [x] Domain: `AuthRepository` interface (login, register, activate, logout, refresh, me)
+- [x] Domain: `PasswordResetRepository` interface (requestOtp, verifyOtp, confirmReset)
+- [x] Domain: `SignInUseCase`, `RegisterUseCase`, `ActivateAccountUseCase`, `LogoutUseCase`
+- [x] Domain: `RequestPasswordResetOtpUseCase`, `VerifyPasswordResetOtpUseCase`, `ResetPasswordUseCase`
+- [x] Domain: `GetProfileUseCase`
+- [x] Data: `AuthRepositoryImpl` using the generated API client
+- [x] Data: `PasswordResetRepositoryImpl`
+- [x] Data: `SecureTokenStorage`: read/write/clear `access_token` and `refresh_token`
+- [x] `SignInScreen` + `SignInViewModel` + `SignInUiState`
+- [x] `RegisterScreen` + `RegisterViewModel` + `RegisterUiState`
+- [x] `ActivateAccountScreen` + `ActivateAccountViewModel`
+- [x] `ForgotPasswordScreen` + `ForgotPasswordViewModel`
+- [x] `VerifyOtpScreen` + `VerifyOtpViewModel`
+- [x] `ResetPasswordScreen` + `ResetPasswordViewModel`
+- [x] `ProfileScreen` + `ProfileViewModel`
+- [x] Session restoration on app launch: check stored token, navigate to main or auth graph
+- [x] `TokenAuthenticator` wired to `AuthRepository.refresh()`; prevent retry loops on refresh failure
+- [x] Clear all credentials on logout
+- [x] Never log or persist OTP values
+- [x] Never call web password reset endpoints (`/api/v1/auth/forgot-password`)
 - [ ] Tests: `SignInViewModelTest`, `AuthRepositoryImplTest`, `SignInUseCaseTest`
 - [ ] Tests: `PasswordResetRepositoryImplTest`, `VerifyOtpViewModelTest`
 
@@ -790,8 +790,8 @@ Cross-cutting quality work: test coverage, consistent UI states, accessibility a
 | Phase | Branch | Status |
 |---|---|---|
 | 0 | Backend reconnaissance, OpenAPI spec snapshot | ✅ Complete |
-| 1 | `feature/core-architecture` | 🔲 Next |
-| 2 | `feature/auth` | 🔲 Pending |
+| 1 | `feature/core-architecture` | ✅ Complete |
+| 2 | `feature/auth` | ✅ Complete |
 | 3 | `feature/product-catalog` | 🔲 Pending |
 | 4 | `feature/shopping-cart` | 🔲 Pending |
 | 5 | `feature/orders` | 🔲 Pending |
