@@ -1,4 +1,4 @@
-package com.edgareldy.tutorial.presentation.theme
+package com.edgareldy.tutorial.core.ui
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
