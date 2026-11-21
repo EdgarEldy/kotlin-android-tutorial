@@ -33,7 +33,7 @@ class SignInUseCaseTest {
     }
 
     @Test
-    fun `returns failure when email is blank`() = runTest {
+    fun _01_ShouldReturnFailure_WhenEmailIsBlank() = runTest {
         val result = loginUseCase("", "password123")
 
         assertTrue(result.isFailure)
@@ -42,7 +42,7 @@ class SignInUseCaseTest {
     }
 
     @Test
-    fun `returns failure when password is blank`() = runTest {
+    fun _02_ShouldReturnFailure_WhenPasswordIsBlank() = runTest {
         val result = loginUseCase("user@example.com", "")
 
         assertTrue(result.isFailure)
@@ -51,7 +51,7 @@ class SignInUseCaseTest {
     }
 
     @Test
-    fun `delegates to repository and returns success on valid credentials`() = runTest {
+    fun _03_ShouldDelegateToRepositoryAndReturnSuccess_WhenCredentialsAreValid() = runTest {
         val fakeTokens = AuthTokens("access_token", "refresh_token", 3600L)
         coEvery { authRepository.login("user@example.com", "password123") } returns
             Result.success(fakeTokens)
@@ -64,7 +64,7 @@ class SignInUseCaseTest {
     }
 
     @Test
-    fun `trims email whitespace before delegating to repository`() = runTest {
+    fun _04_ShouldTrimEmailWhitespace_WhenDelegatingToRepository() = runTest {
         val fakeTokens = AuthTokens("access_token", "refresh_token", 3600L)
         coEvery { authRepository.login("user@example.com", "password123") } returns
             Result.success(fakeTokens)
@@ -76,7 +76,7 @@ class SignInUseCaseTest {
     }
 
     @Test
-    fun `propagates repository failure when network error occurs`() = runTest {
+    fun _05_ShouldPropagateFailure_WhenNetworkErrorOccurs() = runTest {
         val networkError = RuntimeException("Network unavailable")
         coEvery { authRepository.login(any(), any()) } returns Result.failure(networkError)
 
