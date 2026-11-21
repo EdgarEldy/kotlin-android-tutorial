@@ -199,14 +199,14 @@ com.edgareldy.tutorial/
 │
 ├── core/
 │   ├── network/             ← OkHttp, Retrofit, auth interceptor, token refresh
-│   ├── security/            ← Android Keystore-backed credential storage
-│   ├── datastore/           ← DataStore preferences (non-sensitive)
-│   └── ui/                  ← Shared composables, Material 3 theme, type scale
+│   ├── storage/             ← Android Keystore-backed credential storage
+│   ├── di/                  ← Hilt modules
+│   └── ui/                  ← Material 3 theme (Color, Type, Theme)
 │
 ├── data/
 │   ├── remote/              ← Generated API client + hand-written adapters
 │   ├── local/               ← Room database, DAOs, local entities
-│   ├── mapper/              ← DTO/entity ↔ domain model mapping
+│   ├── mapper/              ← DTO/entity to domain model mapping
 │   └── repository/          ← Repository implementations (remote + local)
 │
 ├── domain/
@@ -214,18 +214,34 @@ com.edgareldy.tutorial/
 │   ├── repository/          ← Repository interfaces
 │   └── usecase/             ← One class per meaningful operation
 │
-└── feature/
-    ├── auth/                ← Sign in, register, activate, OTP reset
+└── features/
+    ├── auth/
+    │   ├── screens/         ← Composables
+    │   ├── viewmodel/       ← ViewModels + UiState
+    │   └── components/      ← Reusable composables specific to auth
     ├── home/
-    ├── category/
+    │   ├── screens/
+    │   ├── viewmodel/
+    │   └── components/
     ├── product/
+    │   ├── screens/
+    │   ├── viewmodel/
+    │   └── components/
     ├── cart/
-    ├── checkout/
+    │   ├── screens/
+    │   ├── viewmodel/
+    │   └── components/
     ├── order/
+    │   ├── screens/
+    │   ├── viewmodel/
+    │   └── components/
     └── account/
+        ├── screens/
+        ├── viewmodel/
+        └── components/
 ```
 
-Each feature package contains its own `screens/`, `components/`, `viewmodel/` and `model/` sub-packages.
+Each feature package contains its own `screens/`, `viewmodel/`, and `components/` sub-packages.
 
 ---
 
