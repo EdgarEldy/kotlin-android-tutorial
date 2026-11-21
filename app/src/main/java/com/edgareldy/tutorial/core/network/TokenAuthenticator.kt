@@ -26,8 +26,8 @@ class TokenAuthenticator @Inject constructor(
 ) : Authenticator {
 
     override fun authenticate(route: Route?, response: Response): Request? {
-        // Prevent infinite retry loops: if already retried once, give up
-        if (response.request.header("Authorization") == null) return null
+        // Prevent infinite retry loops: if the previous response was also a 401, give up
+        if (response.priorResponse?.code == 401) return null
 
         val refreshToken = tokenStorage.getRefreshToken() ?: run {
             tokenStorage.clearTokens()
