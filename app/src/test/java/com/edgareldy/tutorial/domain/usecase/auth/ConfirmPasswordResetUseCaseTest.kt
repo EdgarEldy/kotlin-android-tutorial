@@ -32,7 +32,7 @@ class ConfirmPasswordResetUseCaseTest {
     }
 
     @Test
-    fun `returns failure and skips network call when new password is blank`() = runTest {
+    fun _01_ShouldReturnFailureAndSkipNetworkCall_WhenNewPasswordIsBlank() = runTest {
         val result = confirmPasswordResetUseCase(
             otp = "123456",
             newPassword = "",
@@ -45,7 +45,7 @@ class ConfirmPasswordResetUseCaseTest {
     }
 
     @Test
-    fun `returns failure and skips network call when passwords do not match`() = runTest {
+    fun _02_ShouldReturnFailureAndSkipNetworkCall_WhenPasswordsDoNotMatch() = runTest {
         val result = confirmPasswordResetUseCase(
             otp = "123456",
             newPassword = "newPassword1",
@@ -58,7 +58,7 @@ class ConfirmPasswordResetUseCaseTest {
     }
 
     @Test
-    fun `delegates to repository and returns success when otp and matching passwords are valid`() = runTest {
+    fun _03_ShouldDelegateToRepositoryAndReturnSuccess_WhenOtpAndMatchingPasswordsAreValid() = runTest {
         coEvery {
             passwordResetRepository.confirmReset("123456", "newPassword1", "newPassword1")
         } returns Result.success(Unit)
@@ -76,7 +76,7 @@ class ConfirmPasswordResetUseCaseTest {
     }
 
     @Test
-    fun `propagates repository failure when OTP is expired on backend`() = runTest {
+    fun _04_ShouldPropagateFailure_WhenOtpIsExpiredOnBackend() = runTest {
         val backendError = RuntimeException("Token expired")
         coEvery {
             passwordResetRepository.confirmReset(any(), any(), any())
