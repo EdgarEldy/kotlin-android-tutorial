@@ -1,4 +1,4 @@
-package com.edgareldy.tutorial.presentation.theme
+package com.edgareldy.tutorial.core.ui
 
 import androidx.compose.ui.graphics.Color
 
