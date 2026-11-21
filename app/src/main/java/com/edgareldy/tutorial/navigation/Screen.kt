@@ -1,9 +1,12 @@
-package com.edgareldy.tutorial.presentation.navigation
+package com.edgareldy.tutorial.navigation
+
+import android.net.Uri
 
 /**
  * Sealed class hierarchy defining all navigation destinations.
  * Auth screens live in the "auth" nested graph; app screens in "main".
  * Destinations with arguments expose a createRoute() helper and an ARG_ constant.
+ * Email arguments are URL-encoded via Uri.encode to handle the @ character safely.
  *
  * Created edgar.muhamyangabo on 11/21/26
  * Author: edgar.muhamyangabo
@@ -13,11 +16,17 @@ package com.edgareldy.tutorial.presentation.navigation
 sealed class Screen(val route: String) {
     object SignIn : Screen("sign_in")
     object Register : Screen("register")
-    object ActivateAccount : Screen("activate_account")
+    object ActivateAccount : Screen("activate_account/{email}") {
+        fun createRoute(email: String) = "activate_account/${Uri.encode(email)}"
+        const val ARG_EMAIL = "email"
+    }
     object ForgotPassword : Screen("forgot_password")
-    object VerifyOtp : Screen("verify_otp")
+    object VerifyOtp : Screen("verify_otp/{email}") {
+        fun createRoute(email: String) = "verify_otp/${Uri.encode(email)}"
+        const val ARG_EMAIL = "email"
+    }
     object ResetPassword : Screen("reset_password/{token}") {
-        fun createRoute(token: String) = "reset_password/$token"
+        fun createRoute(token: String) = "reset_password/${Uri.encode(token)}"
         const val ARG_TOKEN = "token"
     }
     object ProductList : Screen("product_list")
