@@ -33,7 +33,7 @@ class RegisterUseCaseTest {
     }
 
     @Test
-    fun `returns failure and skips network call when passwords do not match`() = runTest {
+    fun _01_ShouldReturnFailureAndSkipNetworkCall_WhenPasswordsDoNotMatch() = runTest {
         val result = registerUseCase(
             firstName = "John",
             lastName = "Doe",
@@ -49,7 +49,7 @@ class RegisterUseCaseTest {
     }
 
     @Test
-    fun `returns failure and skips network call when first name is blank`() = runTest {
+    fun _02_ShouldReturnFailureAndSkipNetworkCall_WhenFirstNameIsBlank() = runTest {
         val result = registerUseCase(
             firstName = "",
             lastName = "Doe",
@@ -65,7 +65,7 @@ class RegisterUseCaseTest {
     }
 
     @Test
-    fun `returns failure and skips network call when password is blank`() = runTest {
+    fun _03_ShouldReturnFailureAndSkipNetworkCall_WhenPasswordIsBlank() = runTest {
         val result = registerUseCase(
             firstName = "John",
             lastName = "Doe",
@@ -81,7 +81,7 @@ class RegisterUseCaseTest {
     }
 
     @Test
-    fun `delegates to repository and returns success when all fields are valid`() = runTest {
+    fun _04_ShouldDelegateToRepositoryAndReturnSuccess_WhenAllFieldsAreValid() = runTest {
         val fakeUser = User(1L, "John", "Doe", "johndoe", "john@example.com", false)
         coEvery {
             authRepository.register("John", "Doe", "johndoe", "john@example.com", "password123", "password123")
@@ -104,7 +104,7 @@ class RegisterUseCaseTest {
     }
 
     @Test
-    fun `propagates repository failure when backend rejects registration`() = runTest {
+    fun _05_ShouldPropagateFailure_WhenBackendRejectsRegistration() = runTest {
         val backendError = RuntimeException("Email already in use")
         coEvery {
             authRepository.register(any(), any(), any(), any(), any(), any())
