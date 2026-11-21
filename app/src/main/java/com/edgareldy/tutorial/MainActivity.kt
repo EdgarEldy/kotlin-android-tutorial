@@ -1,11 +1,11 @@
-package com.edgareldy.tutorial.presentation
+package com.edgareldy.tutorial
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import com.edgareldy.tutorial.core.ui.TutorialTheme
 import com.edgareldy.tutorial.domain.usecase.auth.IsLoggedInUseCase
-import com.edgareldy.tutorial.presentation.navigation.TutorialNavHost
-import com.edgareldy.tutorial.presentation.theme.TutorialTheme
+import com.edgareldy.tutorial.navigation.TutorialNavHost
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
