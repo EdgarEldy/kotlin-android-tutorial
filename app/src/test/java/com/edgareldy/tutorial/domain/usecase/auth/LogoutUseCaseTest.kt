@@ -33,7 +33,7 @@ class LogoutUseCaseTest {
     }
 
     @Test
-    fun `delegates to authRepository and returns success when logout succeeds`() = runTest {
+    fun _01_ShouldDelegateToRepositoryAndReturnSuccess_WhenLogoutSucceeds() = runTest {
         coEvery { authRepository.logout() } returns Result.success(Unit)
 
         val result = logoutUseCase()
@@ -43,7 +43,7 @@ class LogoutUseCaseTest {
     }
 
     @Test
-    fun `delegates to authRepository and propagates failure when logout fails`() = runTest {
+    fun _02_ShouldDelegateToRepositoryAndPropagateFailure_WhenLogoutFails() = runTest {
         val networkError = RuntimeException("Network unavailable")
         coEvery { authRepository.logout() } returns Result.failure(networkError)
 
@@ -54,7 +54,7 @@ class LogoutUseCaseTest {
     }
 
     @Test
-    fun `always calls authRepository so that tokens are cleared regardless of network`() = runTest {
+    fun _03_ShouldAlwaysCallRepository_SoThatTokensAreClearedRegardlessOfNetwork() = runTest {
         // AuthRepositoryImpl.logout() always clears tokens even when the network call fails.
         // This test ensures the use case always delegates, triggering that cleanup path.
         coEvery { authRepository.logout() } returns Result.success(Unit)
