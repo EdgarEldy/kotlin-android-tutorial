@@ -1,4 +1,4 @@
-package com.edgareldy.tutorial.presentation.auth.forgotpassword
+package com.edgareldy.tutorial.features.auth.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

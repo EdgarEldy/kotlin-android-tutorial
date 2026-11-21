@@ -1,4 +1,4 @@
-package com.edgareldy.tutorial.presentation.auth.signin
+package com.edgareldy.tutorial.features.auth.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
