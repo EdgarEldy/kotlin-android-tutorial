@@ -1,28 +1,21 @@
 package com.edgareldy.tutorial.features.auth.screens
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -32,24 +25,29 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.edgareldy.tutorial.features.auth.components.AuthScaffold
+import com.edgareldy.tutorial.features.auth.components.OtpInputRow
 import com.edgareldy.tutorial.features.auth.viewmodel.ActivateAccountUiState
 import com.edgareldy.tutorial.features.auth.viewmodel.ActivateAccountViewModel
 
 /**
  * Account activation screen where the user enters the 6-digit OTP sent by email.
  * The email is received as a navigation argument and pre-filled (read-only).
+ * Restyled to match the mockup hero + card overlap layout.
  *
  * Created edgar.muhamyangabo on 11/21/26
  * Author: edgar.muhamyangabo
  * Date: 11/21/26
  * Project: kotlin-android-tutorial
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ActivateAccountScreen(
     email: String,
@@ -76,70 +74,90 @@ fun ActivateAccountScreen(
         }
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Activer le compte") },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Retour"
-                        )
-                    }
-                }
-            )
-        },
-        snackbarHost = { SnackbarHost(snackbarHostState) }
-    ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .padding(horizontal = 24.dp)
-                .imePadding(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = "Un code d'activation a ete envoye a :",
-                style = MaterialTheme.typography.bodyLarge
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = email,
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.primary
-            )
-            Spacer(modifier = Modifier.height(32.dp))
-
-            OutlinedTextField(
-                value = activationCode,
-                onValueChange = { if (it.length <= 6) activationCode = it },
-                label = { Text("Code d'activation (6 chiffres)") },
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Number,
-                    imeAction = ImeAction.Done
-                ),
-                modifier = Modifier.fillMaxWidth()
-            )
-            Spacer(modifier = Modifier.height(24.dp))
-
-            Button(
-                onClick = { viewModel.activate(email, activationCode) },
-                enabled = uiState !is ActivateAccountUiState.Loading,
-                modifier = Modifier.fillMaxWidth()
+    AuthScaffold(
+        heroHeight = 200.dp,
+        snackbarHostState = snackbarHostState,
+        heroContent = {
+            IconButton(
+                onClick = onNavigateBack,
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .padding(top = 8.dp, start = 4.dp)
+                    .size(40.dp)
             ) {
-                if (uiState is ActivateAccountUiState.Loading) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.height(20.dp),
-                        strokeWidth = 2.dp
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "Retour",
+                    tint = Color.White
+                )
+            }
+            Icon(
+                imageVector = Icons.Outlined.Email,
+                contentDescription = null,
+                tint = Color.White,
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .size(48.dp)
+            )
+        }
+    ) {
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Text(
+            text = "Verifiez votre email",
+            style = MaterialTheme.typography.headlineSmall,
+            color = Color(0xFF1C1B1F)
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text(
+            text = buildAnnotatedString {
+                append("Un code a 6 chiffres a ete envoye a ")
+                withStyle(
+                    SpanStyle(
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF6750A4)
                     )
-                } else {
-                    Text("Activer")
+                ) {
+                    append(email)
                 }
+            },
+            style = MaterialTheme.typography.bodyMedium,
+            color = Color(0xFF1C1B1F)
+        )
+        Spacer(modifier = Modifier.height(28.dp))
+
+        OtpInputRow(
+            otp = activationCode,
+            onOtpChange = { activationCode = it }
+        )
+        Spacer(modifier = Modifier.height(12.dp))
+
+        Text(
+            text = "Expire dans 4:32",
+            style = MaterialTheme.typography.bodySmall,
+            color = Color(0xFF79747E),
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        )
+        Spacer(modifier = Modifier.height(28.dp))
+
+        Button(
+            onClick = { viewModel.activate(email, activationCode) },
+            enabled = activationCode.length == 6 && uiState !is ActivateAccountUiState.Loading,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(52.dp),
+            shape = RoundedCornerShape(12.dp)
+        ) {
+            if (uiState is ActivateAccountUiState.Loading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.height(20.dp),
+                    strokeWidth = 2.dp
+                )
+            } else {
+                Text("Activer")
             }
         }
+        Spacer(modifier = Modifier.height(24.dp))
     }
 }
