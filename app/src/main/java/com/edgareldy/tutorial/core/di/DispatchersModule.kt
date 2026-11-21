@@ -8,8 +8,34 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Qualifier
 
+/**
+ * Qualifier to inject Dispatchers.IO for I/O-bound coroutines (network, disk).
+ *
+ * Created edgar.muhamyangabo on 11/21/26
+ * Author: edgar.muhamyangabo
+ * Date: 11/21/26
+ * Project: kotlin-android-tutorial
+ */
 @Qualifier @Retention(AnnotationRetention.BINARY) annotation class IoDispatcher
+
+/**
+ * Qualifier to inject Dispatchers.Main for UI-bound coroutines.
+ *
+ * Created edgar.muhamyangabo on 11/21/26
+ * Author: edgar.muhamyangabo
+ * Date: 11/21/26
+ * Project: kotlin-android-tutorial
+ */
 @Qualifier @Retention(AnnotationRetention.BINARY) annotation class MainDispatcher
+
+/**
+ * Qualifier to inject Dispatchers.Default for CPU-bound coroutines.
+ *
+ * Created edgar.muhamyangabo on 11/21/26
+ * Author: edgar.muhamyangabo
+ * Date: 11/21/26
+ * Project: kotlin-android-tutorial
+ */
 @Qualifier @Retention(AnnotationRetention.BINARY) annotation class DefaultDispatcher
 
 /**
