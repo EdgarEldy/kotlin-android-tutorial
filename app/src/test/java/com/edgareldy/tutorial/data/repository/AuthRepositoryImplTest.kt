@@ -62,10 +62,8 @@ class AuthRepositoryImplTest {
         mockWebServer.shutdown()
     }
 
-    // --- login ---
-
     @Test
-    fun `login with 200 response saves tokens and returns AuthTokens`() = runTest {
+    fun _01_ShouldSaveTokensAndReturnAuthTokens_WhenLoginResponseIs200() = runTest {
         mockWebServer.enqueue(
             MockResponse()
                 .setResponseCode(200)
@@ -98,7 +96,7 @@ class AuthRepositoryImplTest {
     }
 
     @Test
-    fun `login with 401 response returns failure without saving tokens`() = runTest {
+    fun _02_ShouldReturnFailureWithoutSavingTokens_WhenLoginResponseIs401() = runTest {
         mockWebServer.enqueue(MockResponse().setResponseCode(401))
 
         val result = repository.login("user@example.com", "wrong_password")
@@ -108,7 +106,7 @@ class AuthRepositoryImplTest {
     }
 
     @Test
-    fun `login with 500 response returns failure without saving tokens`() = runTest {
+    fun _03_ShouldReturnFailureWithoutSavingTokens_WhenLoginResponseIs500() = runTest {
         mockWebServer.enqueue(MockResponse().setResponseCode(500))
 
         val result = repository.login("user@example.com", "password123")
@@ -117,10 +115,8 @@ class AuthRepositoryImplTest {
         verify(exactly = 0) { tokenStorage.saveTokens(any(), any()) }
     }
 
-    // --- getMe ---
-
     @Test
-    fun `getMe with 200 response returns correctly mapped User domain model`() = runTest {
+    fun _04_ShouldReturnMappedUserDomainModel_WhenGetMeResponseIs200() = runTest {
         every { tokenStorage.getAccessToken() } returns "valid_access_token"
 
         mockWebServer.enqueue(
@@ -160,7 +156,7 @@ class AuthRepositoryImplTest {
     }
 
     @Test
-    fun `getMe returns failure when no access token is stored`() = runTest {
+    fun _05_ShouldReturnFailure_WhenNoAccessTokenIsStored() = runTest {
         every { tokenStorage.getAccessToken() } returns null
 
         val result = repository.getMe()
@@ -169,18 +165,14 @@ class AuthRepositoryImplTest {
         assertEquals("Not authenticated", result.exceptionOrNull()?.message)
     }
 
-    // --- logout ---
-
     @Test
-    fun `logout clears tokens and returns success when network call succeeds`() = runTest {
+    fun _06_ShouldClearTokensAndReturnSuccess_WhenLogoutNetworkCallSucceeds() = runTest {
         every { tokenStorage.getAccessToken() } returns "valid_access_token"
         mockWebServer.enqueue(
             MockResponse()
                 .setResponseCode(200)
                 .addHeader("Content-Type", "application/json")
-                .setBody(
-                    """{"success":true,"message":"Logged out","data":null,"timestamp":"2026-11-21T10:00:00"}"""
-                )
+                .setBody("""{"success":true,"message":"Logged out","data":null,"timestamp":"2026-11-21T10:00:00"}""")
         )
 
         val result = repository.logout()
@@ -190,7 +182,7 @@ class AuthRepositoryImplTest {
     }
 
     @Test
-    fun `logout clears tokens even when network call returns a server error`() = runTest {
+    fun _07_ShouldClearTokens_EvenWhenLogoutNetworkCallReturnsServerError() = runTest {
         every { tokenStorage.getAccessToken() } returns "valid_access_token"
         // A 503 causes HttpException inside the inner runCatching, which is silently swallowed.
         // clearTokens() is still called.
@@ -203,14 +195,13 @@ class AuthRepositoryImplTest {
     }
 
     @Test
-    fun `logout clears tokens and skips network call when no access token is stored`() = runTest {
+    fun _08_ShouldClearTokensAndSkipNetworkCall_WhenNoAccessTokenIsStored() = runTest {
         every { tokenStorage.getAccessToken() } returns null
 
         val result = repository.logout()
 
         assertTrue(result.isSuccess)
         verify(exactly = 1) { tokenStorage.clearTokens() }
-        // No request should have been dispatched to the server.
         assertEquals(0, mockWebServer.requestCount)
     }
 }
