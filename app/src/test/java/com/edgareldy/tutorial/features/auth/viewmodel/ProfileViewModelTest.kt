@@ -1,4 +1,4 @@
-package com.edgareldy.tutorial.presentation.auth.profile
+package com.edgareldy.tutorial.features.auth.viewmodel
 
 import com.edgareldy.tutorial.domain.model.User
 import com.edgareldy.tutorial.domain.usecase.auth.GetCurrentUserUseCase

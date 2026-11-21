@@ -1,4 +1,4 @@
-package com.edgareldy.tutorial.presentation.auth.signin
+package com.edgareldy.tutorial.features.auth.viewmodel
 
 import com.edgareldy.tutorial.domain.model.AuthTokens
 import com.edgareldy.tutorial.domain.usecase.auth.LoginUseCase
