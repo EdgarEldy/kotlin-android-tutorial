@@ -47,7 +47,7 @@ class SignInViewModelTest {
     }
 
     @Test
-    fun `initial state is Idle before any sign-in attempt`() = runTest(testDispatcher) {
+    fun _01_ShouldBeIdle_WhenNoSignInAttemptHasBeenMade() = runTest(testDispatcher) {
         val loginUseCase = mockk<LoginUseCase>()
         val viewModel = SignInViewModel(loginUseCase)
 
@@ -55,7 +55,7 @@ class SignInViewModelTest {
     }
 
     @Test
-    fun `signIn sets state to Loading while use case executes`() = runTest(testDispatcher) {
+    fun _02_ShouldSetStateToLoading_WhileUseCaseExecutes() = runTest(testDispatcher) {
         val loginUseCase = mockk<LoginUseCase>()
         val viewModel = SignInViewModel(loginUseCase)
 
@@ -74,7 +74,7 @@ class SignInViewModelTest {
     }
 
     @Test
-    fun `signIn updates state to Success when login use case returns success`() = runTest(testDispatcher) {
+    fun _03_ShouldUpdateStateToSuccess_WhenLoginUseCaseReturnsSuccess() = runTest(testDispatcher) {
         val loginUseCase = mockk<LoginUseCase>()
         val viewModel = SignInViewModel(loginUseCase)
         val fakeTokens = AuthTokens("access_token", "refresh_token", 3600L)
@@ -87,7 +87,7 @@ class SignInViewModelTest {
     }
 
     @Test
-    fun `signIn updates state to Error when login use case returns failure`() = runTest(testDispatcher) {
+    fun _04_ShouldUpdateStateToError_WhenLoginUseCaseReturnsFailure() = runTest(testDispatcher) {
         val loginUseCase = mockk<LoginUseCase>()
         val viewModel = SignInViewModel(loginUseCase)
         coEvery { loginUseCase(any(), any()) } returns
@@ -102,7 +102,7 @@ class SignInViewModelTest {
     }
 
     @Test
-    fun `signIn propagates validation error message from LoginUseCase`() = runTest(testDispatcher) {
+    fun _05_ShouldPropagateValidationErrorMessage_WhenLoginUseCaseReturnsValidationError() = runTest(testDispatcher) {
         val loginUseCase = mockk<LoginUseCase>()
         val viewModel = SignInViewModel(loginUseCase)
         coEvery { loginUseCase("", any()) } returns
@@ -117,7 +117,7 @@ class SignInViewModelTest {
     }
 
     @Test
-    fun `resetState returns state to Idle after a previous sign-in result`() = runTest(testDispatcher) {
+    fun _06_ShouldReturnStateToIdle_WhenResetStateIsCalled() = runTest(testDispatcher) {
         val loginUseCase = mockk<LoginUseCase>()
         val viewModel = SignInViewModel(loginUseCase)
         coEvery { loginUseCase(any(), any()) } returns
