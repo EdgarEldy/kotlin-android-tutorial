@@ -34,7 +34,7 @@ class ActivateAccountUseCaseTest {
     }
 
     @Test
-    fun `returns failure when activation code contains non-numeric characters`() = runTest {
+    fun _01_ShouldReturnFailure_WhenActivationCodeContainsNonNumericCharacters() = runTest {
         val result = activateAccountUseCase("user@example.com", "abcdef")
 
         assertTrue(result.isFailure)
@@ -43,7 +43,7 @@ class ActivateAccountUseCaseTest {
     }
 
     @Test
-    fun `returns failure when activation code has fewer than 6 digits`() = runTest {
+    fun _02_ShouldReturnFailure_WhenActivationCodeHasFewerThanSixDigits() = runTest {
         val result = activateAccountUseCase("user@example.com", "12345")
 
         assertTrue(result.isFailure)
@@ -52,7 +52,7 @@ class ActivateAccountUseCaseTest {
     }
 
     @Test
-    fun `returns failure when activation code has more than 6 digits`() = runTest {
+    fun _03_ShouldReturnFailure_WhenActivationCodeHasMoreThanSixDigits() = runTest {
         val result = activateAccountUseCase("user@example.com", "1234567")
 
         assertTrue(result.isFailure)
@@ -61,7 +61,7 @@ class ActivateAccountUseCaseTest {
     }
 
     @Test
-    fun `returns failure when activation code is empty`() = runTest {
+    fun _04_ShouldReturnFailure_WhenActivationCodeIsEmpty() = runTest {
         val result = activateAccountUseCase("user@example.com", "")
 
         assertTrue(result.isFailure)
@@ -70,7 +70,7 @@ class ActivateAccountUseCaseTest {
     }
 
     @Test
-    fun `returns failure when email is blank`() = runTest {
+    fun _05_ShouldReturnFailure_WhenEmailIsBlank() = runTest {
         val result = activateAccountUseCase("", "123456")
 
         assertTrue(result.isFailure)
@@ -79,7 +79,7 @@ class ActivateAccountUseCaseTest {
     }
 
     @Test
-    fun `delegates to repository and returns success when email and 6-digit code are valid`() = runTest {
+    fun _06_ShouldDelegateToRepositoryAndReturnSuccess_WhenEmailAndSixDigitCodeAreValid() = runTest {
         val fakeUser = User(1L, "John", "Doe", "johndoe", "user@example.com", true)
         coEvery { authRepository.activateAccount("user@example.com", "123456") } returns
             Result.success(fakeUser)
@@ -92,7 +92,7 @@ class ActivateAccountUseCaseTest {
     }
 
     @Test
-    fun `propagates repository failure when activation code is invalid on backend`() = runTest {
+    fun _07_ShouldPropagateFailure_WhenActivationCodeIsInvalidOnBackend() = runTest {
         val backendError = RuntimeException("Activation code expired")
         coEvery { authRepository.activateAccount(any(), any()) } returns Result.failure(backendError)
 
