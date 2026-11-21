@@ -1,4 +1,4 @@
-package com.edgareldy.tutorial.presentation.auth.signin
+package com.edgareldy.tutorial.features.auth.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -44,6 +44,8 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.edgareldy.tutorial.features.auth.viewmodel.SignInUiState
+import com.edgareldy.tutorial.features.auth.viewmodel.SignInViewModel
 
 /**
  * Sign-in screen: email and password fields with toggle visibility,

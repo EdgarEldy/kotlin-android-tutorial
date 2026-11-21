@@ -1,4 +1,4 @@
-package com.edgareldy.tutorial.presentation.auth.forgotpassword
+package com.edgareldy.tutorial.features.auth.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -37,6 +37,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.edgareldy.tutorial.features.auth.viewmodel.ForgotPasswordUiState
+import com.edgareldy.tutorial.features.auth.viewmodel.ForgotPasswordViewModel
 
 /**
  * Forgot-password screen: collects the user's email to send a reset OTP.

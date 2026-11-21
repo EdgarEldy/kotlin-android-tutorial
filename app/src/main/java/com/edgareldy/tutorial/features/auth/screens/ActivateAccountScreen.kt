@@ -1,4 +1,4 @@
-package com.edgareldy.tutorial.presentation.auth.activate
+package com.edgareldy.tutorial.features.auth.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -37,6 +37,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.edgareldy.tutorial.features.auth.viewmodel.ActivateAccountUiState
+import com.edgareldy.tutorial.features.auth.viewmodel.ActivateAccountViewModel
 
 /**
  * Account activation screen where the user enters the 6-digit OTP sent by email.
