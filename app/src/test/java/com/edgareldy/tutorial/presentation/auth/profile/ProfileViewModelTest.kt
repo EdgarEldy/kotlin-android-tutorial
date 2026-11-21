@@ -62,7 +62,7 @@ class ProfileViewModelTest {
     }
 
     @Test
-    fun `initial state is Loading before profile is fetched`() = runTest(testDispatcher) {
+    fun _01_ShouldBeLoading_WhenProfileIsBeingFetched() = runTest(testDispatcher) {
         // delay forces a real suspension so the Loading state is observable before Success
         coEvery { getCurrentUserUseCase() } coAnswers {
             delay(1_000)
@@ -78,7 +78,7 @@ class ProfileViewModelTest {
     }
 
     @Test
-    fun `loadProfile updates state to Success when user is retrieved`() = runTest(testDispatcher) {
+    fun _02_ShouldUpdateStateToSuccess_WhenUserIsRetrieved() = runTest(testDispatcher) {
         coEvery { getCurrentUserUseCase() } returns Result.success(fakeUser)
 
         val viewModel = ProfileViewModel(getCurrentUserUseCase, logoutUseCase)
@@ -88,7 +88,7 @@ class ProfileViewModelTest {
     }
 
     @Test
-    fun `loadProfile updates state to Error when network request fails`() = runTest(testDispatcher) {
+    fun _03_ShouldUpdateStateToError_WhenNetworkRequestFails() = runTest(testDispatcher) {
         val networkError = RuntimeException("Failed to load profile")
         coEvery { getCurrentUserUseCase() } returns Result.failure(networkError)
 
@@ -101,7 +101,7 @@ class ProfileViewModelTest {
     }
 
     @Test
-    fun `loadProfile uses fallback message when exception has no message`() = runTest(testDispatcher) {
+    fun _04_ShouldUseFallbackMessage_WhenExceptionHasNoMessage() = runTest(testDispatcher) {
         coEvery { getCurrentUserUseCase() } returns Result.failure(RuntimeException())
 
         val viewModel = ProfileViewModel(getCurrentUserUseCase, logoutUseCase)
@@ -113,7 +113,7 @@ class ProfileViewModelTest {
     }
 
     @Test
-    fun `logout updates state to LoggedOut`() = runTest(testDispatcher) {
+    fun _05_ShouldUpdateStateToLoggedOut_WhenLogoutSucceeds() = runTest(testDispatcher) {
         coEvery { getCurrentUserUseCase() } returns Result.success(fakeUser)
         coEvery { logoutUseCase() } returns Result.success(Unit)
 
@@ -127,7 +127,7 @@ class ProfileViewModelTest {
     }
 
     @Test
-    fun `logout updates state to LoggedOut even when server-side logout fails`() = runTest(testDispatcher) {
+    fun _06_ShouldUpdateStateToLoggedOut_EvenWhenServerSideLogoutFails() = runTest(testDispatcher) {
         coEvery { getCurrentUserUseCase() } returns Result.success(fakeUser)
         coEvery { logoutUseCase() } returns Result.failure(RuntimeException("Server error"))
 
