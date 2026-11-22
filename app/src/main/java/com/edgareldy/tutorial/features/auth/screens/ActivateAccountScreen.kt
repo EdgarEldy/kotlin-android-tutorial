@@ -155,7 +155,7 @@ fun ActivateAccountScreen(
                     strokeWidth = 2.dp
                 )
             } else {
-                Text("Activate")
+                Text("Verify")
             }
         }
         Spacer(modifier = Modifier.height(24.dp))
