@@ -91,6 +91,7 @@ dependencies {
     implementation(libs.bundles.lifecycle)
     implementation(libs.coil.compose)
     implementation(libs.security.crypto)
+    implementation(libs.splashscreen)
     debugImplementation(libs.compose.ui.tooling)
 
     testImplementation(libs.bundles.testing.unit)
