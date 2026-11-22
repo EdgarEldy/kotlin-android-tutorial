@@ -84,10 +84,10 @@ fun ResetPasswordScreen(
     val strength = passwordStrength(newPassword)
     val strengthLabel = when {
         newPassword.isEmpty() -> ""
-        strength <= 0.25f -> "Faible"
-        strength <= 0.5f -> "Moyen"
-        strength <= 0.75f -> "Moyen"
-        else -> "Fort"
+        strength <= 0.25f -> "Weak"
+        strength <= 0.5f -> "Fair"
+        strength <= 0.75f -> "Good"
+        else -> "Strong"
     }
     val strengthColor = if (strength > 0.6f) Color(0xFF16A34A) else Color(0xFFF59E0B)
 
@@ -104,12 +104,12 @@ fun ResetPasswordScreen(
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Retour",
+                    contentDescription = "Back",
                     tint = Color.White
                 )
             }
             Text(
-                text = "Nouveau mot de passe",
+                text = "New Password",
                 style = MaterialTheme.typography.titleLarge,
                 color = Color.White,
                 modifier = Modifier.align(Alignment.Center)
@@ -124,7 +124,7 @@ fun ResetPasswordScreen(
         AuthTextField(
             value = newPassword,
             onValueChange = { newPassword = it },
-            label = "Nouveau mot de passe",
+            label = "New password",
             visualTransformation = if (passwordVisible) VisualTransformation.None
                                    else PasswordVisualTransformation(),
             trailingIcon = {
@@ -132,7 +132,7 @@ fun ResetPasswordScreen(
                     Icon(
                         imageVector = if (passwordVisible) Icons.Default.Visibility
                                       else Icons.Default.VisibilityOff,
-                        contentDescription = "Basculer la visibilite"
+                        contentDescription = "Toggle password visibility"
                     )
                 }
             },
@@ -164,7 +164,7 @@ fun ResetPasswordScreen(
         AuthTextField(
             value = confirmPassword,
             onValueChange = { confirmPassword = it },
-            label = "Confirmer le mot de passe",
+            label = "Confirm password",
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Password,
@@ -188,7 +188,7 @@ fun ResetPasswordScreen(
                     strokeWidth = 2.dp
                 )
             } else {
-                Text("Reinitialiser")
+                Text("Reset password")
             }
         }
         Spacer(modifier = Modifier.height(24.dp))
