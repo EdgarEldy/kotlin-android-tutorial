@@ -19,6 +19,8 @@ import com.edgareldy.tutorial.features.auth.screens.RegisterScreen
 import com.edgareldy.tutorial.features.auth.screens.ResetPasswordScreen
 import com.edgareldy.tutorial.features.auth.screens.SignInScreen
 import com.edgareldy.tutorial.features.auth.screens.VerifyOtpScreen
+import com.edgareldy.tutorial.features.product.screens.ProductDetailScreen
+import com.edgareldy.tutorial.features.product.screens.ProductListScreen
 
 /**
  * Root navigation host wiring every screen to its route.
@@ -128,7 +130,11 @@ fun TutorialNavHost(
 
         navigation(startDestination = Screen.ProductList.route, route = "main") {
             composable(Screen.ProductList.route) {
-                Box(Modifier.fillMaxSize()) { Text("Product List - TODO Phase 3") }
+                ProductListScreen(
+                    onProductClick = { productId ->
+                        navController.navigate(Screen.ProductDetail.createRoute(productId))
+                    }
+                )
             }
             composable(
                 route = Screen.ProductDetail.route,
@@ -136,7 +142,9 @@ fun TutorialNavHost(
                     type = NavType.LongType
                 })
             ) {
-                Box(Modifier.fillMaxSize()) { Text("Product Detail - TODO Phase 3") }
+                ProductDetailScreen(
+                    onNavigateBack = { navController.popBackStack() }
+                )
             }
             composable(Screen.Cart.route) {
                 Box(Modifier.fillMaxSize()) { Text("Cart - TODO Phase 4") }
