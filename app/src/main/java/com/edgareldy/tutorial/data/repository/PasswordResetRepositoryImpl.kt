@@ -24,8 +24,10 @@ class PasswordResetRepositoryImpl @Inject constructor(
 ) : PasswordResetRepository {
 
     override suspend fun sendOtp(email: String): Result<Unit> = runCatching {
-        passwordResetApiService.sendOtp(SendOtpRequest(email))
-        Unit
+        val response = passwordResetApiService.sendOtp(SendOtpRequest(email))
+        if (!response.success) {
+            error(response.message ?: "Failed to send OTP")
+        }
     }
 
     override suspend fun verifyOtp(email: String, otp: String): Result<Unit> = runCatching {
