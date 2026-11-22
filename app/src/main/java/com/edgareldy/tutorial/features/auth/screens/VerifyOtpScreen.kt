@@ -141,7 +141,7 @@ fun VerifyOtpScreen(
                     strokeWidth = 2.dp
                 )
             } else {
-                Text("Verify")
+                Text("Verify OTP")
             }
         }
         Spacer(modifier = Modifier.height(24.dp))
