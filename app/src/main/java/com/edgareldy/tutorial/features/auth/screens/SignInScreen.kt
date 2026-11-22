@@ -6,9 +6,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material.icons.outlined.ShoppingBag
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -85,25 +91,49 @@ fun SignInScreen(
         heroHeight = 300.dp,
         snackbarHostState = snackbarHostState,
         heroContent = {
-            Text(
-                text = "Tutorial",
-                style = MaterialTheme.typography.headlineLarge,
-                color = Color.White,
-                fontWeight = FontWeight.Bold,
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.align(Alignment.Center)
-            )
+            ) {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(64.dp)
+                        .background(Color.White.copy(alpha = 0.2f), RoundedCornerShape(16.dp))
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.ShoppingBag,
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier.size(32.dp)
+                    )
+                }
+                Spacer(modifier = Modifier.height(12.dp))
+                Text(
+                    text = "TutorialShop",
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "Your favourite store, always with you",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.White.copy(alpha = 0.8f)
+                )
+            }
         }
     ) {
         Spacer(modifier = Modifier.height(24.dp))
 
         Text(
-            text = "Bienvenue",
+            text = "Sign In",
             style = MaterialTheme.typography.headlineMedium,
             color = Color(0xFF1C1B1F)
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
-            text = "Connectez-vous pour continuer",
+            text = "Sign in to continue",
             style = MaterialTheme.typography.bodyMedium,
             color = Color(0xFF79747E)
         )
@@ -127,7 +157,7 @@ fun SignInScreen(
         AuthTextField(
             value = password,
             onValueChange = { password = it },
-            label = "Mot de passe",
+            label = "Password",
             visualTransformation = if (passwordVisible) VisualTransformation.None
                                    else PasswordVisualTransformation(),
             trailingIcon = {
@@ -135,8 +165,8 @@ fun SignInScreen(
                     Icon(
                         imageVector = if (passwordVisible) Icons.Default.Visibility
                                       else Icons.Default.VisibilityOff,
-                        contentDescription = if (passwordVisible) "Masquer le mot de passe"
-                                             else "Afficher le mot de passe"
+                        contentDescription = if (passwordVisible) "Hide password"
+                                             else "Show password"
                     )
                 }
             },
@@ -157,7 +187,7 @@ fun SignInScreen(
             onClick = onNavigateToForgotPassword,
             modifier = Modifier.align(Alignment.End)
         ) {
-            Text("Mot de passe oublie ?")
+            Text("Forgot password?")
         }
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -175,7 +205,7 @@ fun SignInScreen(
                     strokeWidth = 2.dp
                 )
             } else {
-                Text("Se connecter")
+                Text("Sign In")
             }
         }
         Spacer(modifier = Modifier.height(16.dp))
@@ -184,7 +214,7 @@ fun SignInScreen(
             onClick = onNavigateToRegister,
             modifier = Modifier.align(Alignment.CenterHorizontally)
         ) {
-            Text("Pas encore de compte ? Creer un compte")
+            Text("Don't have an account? Create account")
         }
         Spacer(modifier = Modifier.height(24.dp))
     }
