@@ -16,6 +16,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -39,8 +40,9 @@ import com.edgareldy.tutorial.features.auth.viewmodel.ForgotPasswordViewModel
 
 /**
  * Forgot-password screen: collects the user's email to send a reset OTP.
- * On success, navigates to the VerifyOtp screen passing the email.
- * Restyled to match the mockup hero + card overlap layout with PasswordResetStepper.
+ * After the request is accepted, shows a neutral inbox confirmation. The user
+ * explicitly continues to OTP entry after checking their email, because the
+ * backend intentionally does not disclose whether the address is registered.
  *
  * Created edgar.muhamyangabo on 11/21/26
  * Author: edgar.muhamyangabo
@@ -60,10 +62,6 @@ fun ForgotPasswordScreen(
 
     LaunchedEffect(uiState) {
         when (val state = uiState) {
-            is ForgotPasswordUiState.Success -> {
-                viewModel.resetState()
-                onOtpSent(state.email)
-            }
             is ForgotPasswordUiState.Error -> {
                 snackbarHostState.showSnackbar(state.message)
                 viewModel.resetState()
@@ -102,49 +100,84 @@ fun ForgotPasswordScreen(
         PasswordResetStepper(currentStep = 1)
         Spacer(modifier = Modifier.height(28.dp))
 
-        Text(
-            text = "Enter your email",
-            style = MaterialTheme.typography.titleMedium,
-            color = Color(0xFF1C1B1F)
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Text(
-            text = "We will send a reset code to your email address.",
-            style = MaterialTheme.typography.bodyMedium,
-            color = Color(0xFF79747E)
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-
-        AuthTextField(
-            value = email,
-            onValueChange = { email = it },
-            label = "Email",
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Email,
-                imeAction = ImeAction.Done
-            ),
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(24.dp))
-
-        Button(
-            onClick = { viewModel.sendOtp(email) },
-            enabled = uiState !is ForgotPasswordUiState.Loading,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(52.dp),
-            shape = RoundedCornerShape(12.dp)
-        ) {
-            if (uiState is ForgotPasswordUiState.Loading) {
-                CircularProgressIndicator(
-                    modifier = Modifier.height(20.dp),
-                    strokeWidth = 2.dp
-                )
-            } else {
-                Text("Send code")
+        val acceptedEmail = (uiState as? ForgotPasswordUiState.RequestAccepted)?.email
+        if (acceptedEmail != null) {
+            Text(
+                text = "Check your inbox",
+                style = MaterialTheme.typography.titleMedium,
+                color = Color(0xFF1C1B1F)
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "If an account is associated with $acceptedEmail, a reset code has been sent. " +
+                    "Check your inbox and spam folder. Continue only after you receive the code.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color(0xFF79747E)
+            )
+            Spacer(modifier = Modifier.height(24.dp))
+            Button(
+                onClick = { onOtpSent(acceptedEmail) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(52.dp),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Text("I received the code")
             }
+            TextButton(
+                onClick = {
+                    viewModel.resetState()
+                    email = ""
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Use a different email")
+            }
+        } else {
+            Text(
+                text = "Enter your email",
+                style = MaterialTheme.typography.titleMedium,
+                color = Color(0xFF1C1B1F)
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = "We will send a reset code to your email address.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color(0xFF79747E)
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+
+            AuthTextField(
+                value = email,
+                onValueChange = { email = it },
+                label = "Email",
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Email,
+                    imeAction = ImeAction.Done
+                ),
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Button(
+                onClick = { viewModel.sendOtp(email) },
+                enabled = uiState !is ForgotPasswordUiState.Loading,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(52.dp),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                if (uiState is ForgotPasswordUiState.Loading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.height(20.dp),
+                        strokeWidth = 2.dp
+                    )
+                } else {
+                    Text("Send code")
+                }
+            }
+            Spacer(modifier = Modifier.height(24.dp))
         }
-        Spacer(modifier = Modifier.height(24.dp))
     }
 }
