@@ -1,5 +1,6 @@
 package com.edgareldy.tutorial.features.auth.viewmodel
 
+import app.cash.turbine.test
 import com.edgareldy.tutorial.domain.usecase.auth.RegisterUseCase
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -7,7 +8,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -19,10 +19,9 @@ import org.junit.Test
 
 /**
  * Unit tests for RegisterViewModel.
- * Verifies UiState transitions (Idle, Loading, Success, Error) driven by
- * RegisterUseCase results, that Success carries the registered email, and
- * that the resetState action restores Idle.
- * Uses UnconfinedTestDispatcher so viewModelScope.launch runs eagerly.
+ * Verifies the complete UiState emission sequence (Idle -> Loading -> Success/Error)
+ * driven by RegisterUseCase results, using Turbine to assert each state transition.
+ * Success state carries the registered email, which is also verified here.
  *
  * Created edgar.muhamyangabo on 11/23/26
  * Author: edgar.muhamyangabo
@@ -58,95 +57,103 @@ class RegisterViewModelTest {
         val useCase = mockk<RegisterUseCase>()
         val viewModel = RegisterViewModel(useCase)
 
-        assertEquals(RegisterUiState.Idle, viewModel.uiState.value)
+        viewModel.uiState.test {
+            assertEquals(RegisterUiState.Idle, awaitItem())
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
     @Test
-    fun _02_ShouldSetStateToLoading_WhileUseCaseExecutes() = runTest(testDispatcher) {
+    fun _02_ShouldEmitLoadingThenSuccess_WhenRegistrationSucceeds() = runTest(testDispatcher) {
         val useCase = mockk<RegisterUseCase>()
         val viewModel = RegisterViewModel(useCase)
 
-        // delay forces a real suspension point so Loading is observable before Success
         coEvery { useCase(any(), any(), any(), any(), any(), any()) } coAnswers {
-            delay(1_000)
+            delay(100)
             Result.success(Unit)
         }
 
-        viewModel.register(*registerArgs())
-
-        assertEquals(RegisterUiState.Loading, viewModel.uiState.value)
-
-        advanceUntilIdle()
-        assertEquals(RegisterUiState.Success("john@example.com"), viewModel.uiState.value)
+        viewModel.uiState.test {
+            assertEquals(RegisterUiState.Idle, awaitItem())
+            viewModel.register(*registerArgs())
+            assertEquals(RegisterUiState.Loading, awaitItem())
+            assertEquals(RegisterUiState.Success("john@example.com"), awaitItem())
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
     @Test
-    fun _03_ShouldUpdateStateToSuccess_WhenRegistrationSucceeds() = runTest(testDispatcher) {
+    fun _03_ShouldExposeRegisteredEmail_InSuccessState() = runTest(testDispatcher) {
         val useCase = mockk<RegisterUseCase>()
         val viewModel = RegisterViewModel(useCase)
+
         coEvery { useCase(any(), any(), any(), any(), any(), any()) } returns Result.success(Unit)
 
-        viewModel.register(*registerArgs())
-        advanceUntilIdle()
-
-        assertEquals(RegisterUiState.Success("john@example.com"), viewModel.uiState.value)
+        viewModel.uiState.test {
+            assertEquals(RegisterUiState.Idle, awaitItem())
+            viewModel.register(*registerArgs(email = "custom@test.org"))
+            assertEquals(RegisterUiState.Loading, awaitItem())
+            val success = awaitItem()
+            assertTrue(success is RegisterUiState.Success)
+            assertEquals("custom@test.org", (success as RegisterUiState.Success).email)
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
     @Test
-    fun _04_ShouldExposeRegisteredEmail_InSuccessState() = runTest(testDispatcher) {
+    fun _04_ShouldEmitLoadingThenError_WhenRegistrationFails() = runTest(testDispatcher) {
         val useCase = mockk<RegisterUseCase>()
         val viewModel = RegisterViewModel(useCase)
-        coEvery { useCase(any(), any(), any(), any(), any(), any()) } returns Result.success(Unit)
 
-        viewModel.register(*registerArgs(email = "custom@test.org"))
-        advanceUntilIdle()
-
-        val state = viewModel.uiState.value
-        assertTrue(state is RegisterUiState.Success)
-        assertEquals("custom@test.org", (state as RegisterUiState.Success).email)
-    }
-
-    @Test
-    fun _05_ShouldUpdateStateToError_WhenRegistrationFails() = runTest(testDispatcher) {
-        val useCase = mockk<RegisterUseCase>()
-        val viewModel = RegisterViewModel(useCase)
         coEvery { useCase(any(), any(), any(), any(), any(), any()) } returns
             Result.failure(RuntimeException("Email already in use"))
 
-        viewModel.register(*registerArgs())
-        advanceUntilIdle()
-
-        val state = viewModel.uiState.value
-        assertTrue(state is RegisterUiState.Error)
-        assertEquals("Email already in use", (state as RegisterUiState.Error).message)
+        viewModel.uiState.test {
+            assertEquals(RegisterUiState.Idle, awaitItem())
+            viewModel.register(*registerArgs())
+            assertEquals(RegisterUiState.Loading, awaitItem())
+            val error = awaitItem()
+            assertTrue(error is RegisterUiState.Error)
+            assertEquals("Email already in use", (error as RegisterUiState.Error).message)
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
     @Test
-    fun _06_ShouldUseFallbackMessage_WhenExceptionHasNoMessage() = runTest(testDispatcher) {
+    fun _05_ShouldUseFallbackMessage_WhenExceptionHasNoMessage() = runTest(testDispatcher) {
         val useCase = mockk<RegisterUseCase>()
         val viewModel = RegisterViewModel(useCase)
+
         coEvery { useCase(any(), any(), any(), any(), any(), any()) } returns
             Result.failure(RuntimeException())
 
-        viewModel.register(*registerArgs())
-        advanceUntilIdle()
-
-        val state = viewModel.uiState.value
-        assertTrue(state is RegisterUiState.Error)
-        assertEquals("Registration failed", (state as RegisterUiState.Error).message)
+        viewModel.uiState.test {
+            assertEquals(RegisterUiState.Idle, awaitItem())
+            viewModel.register(*registerArgs())
+            assertEquals(RegisterUiState.Loading, awaitItem())
+            val error = awaitItem()
+            assertTrue(error is RegisterUiState.Error)
+            assertEquals("Registration failed", (error as RegisterUiState.Error).message)
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
     @Test
-    fun _07_ShouldReturnStateToIdle_WhenResetStateIsCalled() = runTest(testDispatcher) {
+    fun _06_ShouldReturnStateToIdle_WhenResetStateIsCalled() = runTest(testDispatcher) {
         val useCase = mockk<RegisterUseCase>()
         val viewModel = RegisterViewModel(useCase)
+
         coEvery { useCase(any(), any(), any(), any(), any(), any()) } returns
             Result.failure(RuntimeException("Network error"))
-        viewModel.register(*registerArgs())
-        advanceUntilIdle()
 
-        viewModel.resetState()
-
-        assertEquals(RegisterUiState.Idle, viewModel.uiState.value)
+        viewModel.uiState.test {
+            assertEquals(RegisterUiState.Idle, awaitItem())
+            viewModel.register(*registerArgs())
+            assertEquals(RegisterUiState.Loading, awaitItem())
+            assertTrue(awaitItem() is RegisterUiState.Error)
+            viewModel.resetState()
+            assertEquals(RegisterUiState.Idle, awaitItem())
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 }
