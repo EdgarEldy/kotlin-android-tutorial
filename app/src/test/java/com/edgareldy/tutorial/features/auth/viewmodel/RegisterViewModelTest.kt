@@ -43,14 +43,15 @@ class RegisterViewModelTest {
         Dispatchers.resetMain()
     }
 
-    private fun registerArgs(
+    private fun callRegister(
+        viewModel: RegisterViewModel,
         firstName: String = "John",
         lastName: String = "Doe",
         username: String = "johndoe",
         email: String = "john@example.com",
         password: String = "password123",
         confirmPassword: String = "password123"
-    ) = arrayOf(firstName, lastName, username, email, password, confirmPassword)
+    ) = viewModel.register(firstName, lastName, username, email, password, confirmPassword)
 
     @Test
     fun _01_ShouldBeIdle_WhenNoRegistrationAttemptHasBeenMade() = runTest(testDispatcher) {
@@ -75,7 +76,7 @@ class RegisterViewModelTest {
 
         viewModel.uiState.test {
             assertEquals(RegisterUiState.Idle, awaitItem())
-            viewModel.register(*registerArgs())
+            callRegister(viewModel)
             assertEquals(RegisterUiState.Loading, awaitItem())
             assertEquals(RegisterUiState.Success("john@example.com"), awaitItem())
             cancelAndIgnoreRemainingEvents()
@@ -91,7 +92,7 @@ class RegisterViewModelTest {
 
         viewModel.uiState.test {
             assertEquals(RegisterUiState.Idle, awaitItem())
-            viewModel.register(*registerArgs(email = "custom@test.org"))
+            callRegister(viewModel, email = "custom@test.org")
             assertEquals(RegisterUiState.Loading, awaitItem())
             val success = awaitItem()
             assertTrue(success is RegisterUiState.Success)
@@ -110,7 +111,7 @@ class RegisterViewModelTest {
 
         viewModel.uiState.test {
             assertEquals(RegisterUiState.Idle, awaitItem())
-            viewModel.register(*registerArgs())
+            callRegister(viewModel)
             assertEquals(RegisterUiState.Loading, awaitItem())
             val error = awaitItem()
             assertTrue(error is RegisterUiState.Error)
@@ -129,7 +130,7 @@ class RegisterViewModelTest {
 
         viewModel.uiState.test {
             assertEquals(RegisterUiState.Idle, awaitItem())
-            viewModel.register(*registerArgs())
+            callRegister(viewModel)
             assertEquals(RegisterUiState.Loading, awaitItem())
             val error = awaitItem()
             assertTrue(error is RegisterUiState.Error)
@@ -148,7 +149,7 @@ class RegisterViewModelTest {
 
         viewModel.uiState.test {
             assertEquals(RegisterUiState.Idle, awaitItem())
-            viewModel.register(*registerArgs())
+            callRegister(viewModel)
             assertEquals(RegisterUiState.Loading, awaitItem())
             assertTrue(awaitItem() is RegisterUiState.Error)
             viewModel.resetState()
