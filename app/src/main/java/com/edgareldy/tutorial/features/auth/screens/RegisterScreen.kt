@@ -212,7 +212,7 @@ fun RegisterScreen(
                     strokeWidth = 2.dp
                 )
             } else {
-                Text("Sign Up")
+                Text("Register")
             }
         }
         Spacer(modifier = Modifier.height(24.dp))
