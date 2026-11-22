@@ -106,7 +106,7 @@ fun ActivateAccountScreen(
         Text(
             text = "Check your email",
             style = MaterialTheme.typography.headlineSmall,
-            color = Color(0xFF1C1B1F)
+            color = MaterialTheme.colorScheme.onSurface
         )
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -116,14 +116,14 @@ fun ActivateAccountScreen(
                 withStyle(
                     SpanStyle(
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF6750A4)
+                        color = MaterialTheme.colorScheme.primary
                     )
                 ) {
                     append(email)
                 }
             },
             style = MaterialTheme.typography.bodyMedium,
-            color = Color(0xFF1C1B1F)
+            color = MaterialTheme.colorScheme.onSurface
         )
         Spacer(modifier = Modifier.height(28.dp))
 
@@ -136,7 +136,7 @@ fun ActivateAccountScreen(
         Text(
             text = "Expires in 4:32",
             style = MaterialTheme.typography.bodySmall,
-            color = Color(0xFF79747E),
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )
         Spacer(modifier = Modifier.height(28.dp))
