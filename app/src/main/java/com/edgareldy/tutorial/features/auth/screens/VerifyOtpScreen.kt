@@ -18,10 +18,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import kotlinx.coroutines.delay
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -56,6 +58,14 @@ fun VerifyOtpScreen(
     val snackbarHostState = remember { SnackbarHostState() }
 
     var otp by rememberSaveable { mutableStateOf("") }
+    var secondsLeft by remember { mutableIntStateOf(180) }
+
+    LaunchedEffect(Unit) {
+        while (secondsLeft > 0) {
+            delay(1_000)
+            secondsLeft--
+        }
+    }
 
     LaunchedEffect(uiState) {
         when (val state = uiState) {
@@ -119,12 +129,21 @@ fun VerifyOtpScreen(
         )
         Spacer(modifier = Modifier.height(12.dp))
 
-        Text(
-            text = "Expires in 2:18",
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.align(Alignment.CenterHorizontally)
-        )
+        if (secondsLeft > 0) {
+            Text(
+                text = "Expires in %d:%02d".format(secondsLeft / 60, secondsLeft % 60),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
+        } else {
+            Text(
+                text = "OTP expired",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
+        }
         Spacer(modifier = Modifier.height(28.dp))
 
         Button(
