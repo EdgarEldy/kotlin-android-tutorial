@@ -85,12 +85,12 @@ fun ForgotPasswordScreen(
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Retour",
+                    contentDescription = "Back",
                     tint = Color.White
                 )
             }
             Text(
-                text = "Mot de passe oublie",
+                text = "Forgot Password",
                 style = MaterialTheme.typography.titleLarge,
                 color = Color.White,
                 modifier = Modifier.align(Alignment.Center)
@@ -103,14 +103,14 @@ fun ForgotPasswordScreen(
         Spacer(modifier = Modifier.height(28.dp))
 
         Text(
-            text = "Entrez votre email",
+            text = "Enter your email",
             style = MaterialTheme.typography.titleMedium,
             color = Color(0xFF1C1B1F)
         )
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = "Nous vous enverrons un code de reinitialisation a votre adresse email.",
+            text = "We will send a reset code to your email address.",
             style = MaterialTheme.typography.bodyMedium,
             color = Color(0xFF79747E)
         )
@@ -142,7 +142,7 @@ fun ForgotPasswordScreen(
                     strokeWidth = 2.dp
                 )
             } else {
-                Text("Envoyer le code")
+                Text("Send code")
             }
         }
         Spacer(modifier = Modifier.height(24.dp))
