@@ -1,5 +1,6 @@
 package com.edgareldy.tutorial.features.auth.viewmodel
 
+import app.cash.turbine.test
 import com.edgareldy.tutorial.domain.model.AuthTokens
 import com.edgareldy.tutorial.domain.usecase.auth.LoginUseCase
 import io.mockk.coEvery
@@ -8,7 +9,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -20,21 +20,20 @@ import org.junit.Test
 
 /**
  * Unit tests for SignInViewModel.
- * Verifies UiState transitions (Idle, Loading, Success, Error) driven by
- * LoginUseCase results, and the resetState action.
- * Uses UnconfinedTestDispatcher so viewModelScope.launch runs eagerly,
- * and TestCoroutineScheduler (via runTest) to control virtual time for
- * the Loading-state assertion.
+ * Verifies the complete UiState emission sequence (Idle -> Loading -> Success/Error)
+ * driven by LoginUseCase results, using Turbine to assert each state transition in order.
+ * Each test opens a Turbine collector on uiState and captures items with awaitItem().
  *
- * Created edgar.muhamyangabo on 11/21/26
+ * Created edgar.muhamyangabo on 11/23/26
  * Author: edgar.muhamyangabo
- * Date: 11/21/26
+ * Date: 11/23/26
  * Project: kotlin-android-tutorial
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 class SignInViewModelTest {
 
     private val testDispatcher = UnconfinedTestDispatcher()
+    private val fakeTokens = AuthTokens("access_token", "refresh_token", 3600L)
 
     @Before
     fun setUp() {
@@ -51,82 +50,101 @@ class SignInViewModelTest {
         val loginUseCase = mockk<LoginUseCase>()
         val viewModel = SignInViewModel(loginUseCase)
 
-        assertEquals(SignInUiState.Idle, viewModel.uiState.value)
+        viewModel.uiState.test {
+            assertEquals(SignInUiState.Idle, awaitItem())
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
     @Test
-    fun _02_ShouldSetStateToLoading_WhileUseCaseExecutes() = runTest(testDispatcher) {
+    fun _02_ShouldEmitLoadingThenSuccess_WhenCredentialsAreValid() = runTest(testDispatcher) {
         val loginUseCase = mockk<LoginUseCase>()
         val viewModel = SignInViewModel(loginUseCase)
 
-        // delay forces a real suspension point so Loading is observable before Success
         coEvery { loginUseCase(any(), any()) } coAnswers {
-            delay(1_000)
-            Result.success(AuthTokens("access", "refresh", 3600L))
+            delay(100)
+            Result.success(fakeTokens)
         }
 
-        viewModel.signIn("user@example.com", "password123")
-
-        assertEquals(SignInUiState.Loading, viewModel.uiState.value)
-
-        advanceUntilIdle()
-        assertEquals(SignInUiState.Success, viewModel.uiState.value)
+        viewModel.uiState.test {
+            assertEquals(SignInUiState.Idle, awaitItem())
+            viewModel.signIn("user@example.com", "password123")
+            assertEquals(SignInUiState.Loading, awaitItem())
+            assertEquals(SignInUiState.Success, awaitItem())
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
     @Test
-    fun _03_ShouldUpdateStateToSuccess_WhenLoginUseCaseReturnsSuccess() = runTest(testDispatcher) {
+    fun _03_ShouldEmitLoadingThenSuccess_WhenLoginUseCaseReturnsSuccess() = runTest(testDispatcher) {
         val loginUseCase = mockk<LoginUseCase>()
         val viewModel = SignInViewModel(loginUseCase)
-        val fakeTokens = AuthTokens("access_token", "refresh_token", 3600L)
+
         coEvery { loginUseCase(any(), any()) } returns Result.success(fakeTokens)
 
-        viewModel.signIn("user@example.com", "password123")
-        advanceUntilIdle()
-
-        assertEquals(SignInUiState.Success, viewModel.uiState.value)
+        viewModel.uiState.test {
+            assertEquals(SignInUiState.Idle, awaitItem())
+            viewModel.signIn("user@example.com", "password123")
+            assertEquals(SignInUiState.Loading, awaitItem())
+            assertEquals(SignInUiState.Success, awaitItem())
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
     @Test
-    fun _04_ShouldUpdateStateToError_WhenLoginUseCaseReturnsFailure() = runTest(testDispatcher) {
+    fun _04_ShouldEmitLoadingThenError_WhenLoginUseCaseReturnsFailure() = runTest(testDispatcher) {
         val loginUseCase = mockk<LoginUseCase>()
         val viewModel = SignInViewModel(loginUseCase)
+
         coEvery { loginUseCase(any(), any()) } returns
             Result.failure(RuntimeException("Invalid credentials"))
 
-        viewModel.signIn("user@example.com", "wrong_password")
-        advanceUntilIdle()
-
-        val state = viewModel.uiState.value
-        assertTrue(state is SignInUiState.Error)
-        assertEquals("Invalid credentials", (state as SignInUiState.Error).message)
+        viewModel.uiState.test {
+            assertEquals(SignInUiState.Idle, awaitItem())
+            viewModel.signIn("user@example.com", "wrong_password")
+            assertEquals(SignInUiState.Loading, awaitItem())
+            val error = awaitItem()
+            assertTrue(error is SignInUiState.Error)
+            assertEquals("Invalid credentials", (error as SignInUiState.Error).message)
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
     @Test
-    fun _05_ShouldPropagateValidationErrorMessage_WhenLoginUseCaseReturnsValidationError() = runTest(testDispatcher) {
+    fun _05_ShouldPropagateValidationErrorMessage_WhenEmailIsBlank() = runTest(testDispatcher) {
         val loginUseCase = mockk<LoginUseCase>()
         val viewModel = SignInViewModel(loginUseCase)
+
         coEvery { loginUseCase("", any()) } returns
             Result.failure(IllegalArgumentException("Email must not be blank"))
 
-        viewModel.signIn("", "password123")
-        advanceUntilIdle()
-
-        val state = viewModel.uiState.value
-        assertTrue(state is SignInUiState.Error)
-        assertEquals("Email must not be blank", (state as SignInUiState.Error).message)
+        viewModel.uiState.test {
+            assertEquals(SignInUiState.Idle, awaitItem())
+            viewModel.signIn("", "password123")
+            assertEquals(SignInUiState.Loading, awaitItem())
+            val error = awaitItem()
+            assertTrue(error is SignInUiState.Error)
+            assertEquals("Email must not be blank", (error as SignInUiState.Error).message)
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
     @Test
     fun _06_ShouldReturnStateToIdle_WhenResetStateIsCalled() = runTest(testDispatcher) {
         val loginUseCase = mockk<LoginUseCase>()
         val viewModel = SignInViewModel(loginUseCase)
+
         coEvery { loginUseCase(any(), any()) } returns
             Result.failure(RuntimeException("Network error"))
-        viewModel.signIn("user@example.com", "password123")
-        advanceUntilIdle()
 
-        viewModel.resetState()
-
-        assertEquals(SignInUiState.Idle, viewModel.uiState.value)
+        viewModel.uiState.test {
+            assertEquals(SignInUiState.Idle, awaitItem())
+            viewModel.signIn("user@example.com", "password123")
+            assertEquals(SignInUiState.Loading, awaitItem())
+            assertTrue(awaitItem() is SignInUiState.Error)
+            viewModel.resetState()
+            assertEquals(SignInUiState.Idle, awaitItem())
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 }
