@@ -96,12 +96,12 @@ fun RegisterScreen(
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Retour",
+                    contentDescription = "Back",
                     tint = Color.White
                 )
             }
             Text(
-                text = "Creer un compte",
+                text = "Create Account",
                 style = MaterialTheme.typography.titleLarge,
                 color = Color.White,
                 modifier = Modifier.align(Alignment.Center)
@@ -111,7 +111,7 @@ fun RegisterScreen(
         Spacer(modifier = Modifier.height(24.dp))
 
         Text(
-            text = "Informations",
+            text = "Information",
             style = MaterialTheme.typography.titleMedium,
             color = Color(0xFF1C1B1F)
         )
@@ -124,7 +124,7 @@ fun RegisterScreen(
             AuthTextField(
                 value = firstName,
                 onValueChange = { firstName = it },
-                label = "Prenom",
+                label = "First name",
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                 modifier = Modifier.weight(1f)
             )
@@ -132,7 +132,7 @@ fun RegisterScreen(
             AuthTextField(
                 value = lastName,
                 onValueChange = { lastName = it },
-                label = "Nom",
+                label = "Last name",
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                 modifier = Modifier.weight(1f)
             )
@@ -142,7 +142,7 @@ fun RegisterScreen(
         AuthTextField(
             value = username,
             onValueChange = { username = it },
-            label = "Nom d'utilisateur",
+            label = "Username",
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
             modifier = Modifier.fillMaxWidth()
         )
@@ -163,7 +163,7 @@ fun RegisterScreen(
         AuthTextField(
             value = password,
             onValueChange = { password = it },
-            label = "Mot de passe",
+            label = "Password",
             visualTransformation = if (passwordVisible) VisualTransformation.None
                                    else PasswordVisualTransformation(),
             trailingIcon = {
@@ -171,7 +171,7 @@ fun RegisterScreen(
                     Icon(
                         imageVector = if (passwordVisible) Icons.Default.Visibility
                                       else Icons.Default.VisibilityOff,
-                        contentDescription = "Basculer la visibilite du mot de passe"
+                        contentDescription = "Toggle password visibility"
                     )
                 }
             },
@@ -186,7 +186,7 @@ fun RegisterScreen(
         AuthTextField(
             value = confirmPassword,
             onValueChange = { confirmPassword = it },
-            label = "Confirmer le mot de passe",
+            label = "Confirm password",
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Password,
@@ -212,7 +212,7 @@ fun RegisterScreen(
                     strokeWidth = 2.dp
                 )
             } else {
-                Text("S'inscrire")
+                Text("Sign Up")
             }
         }
         Spacer(modifier = Modifier.height(24.dp))
