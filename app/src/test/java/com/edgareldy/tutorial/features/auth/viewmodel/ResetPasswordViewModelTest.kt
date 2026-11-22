@@ -1,5 +1,6 @@
 package com.edgareldy.tutorial.features.auth.viewmodel
 
+import app.cash.turbine.test
 import com.edgareldy.tutorial.domain.usecase.auth.ConfirmPasswordResetUseCase
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -7,7 +8,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -19,10 +19,10 @@ import org.junit.Test
 
 /**
  * Unit tests for ResetPasswordViewModel.
- * Verifies UiState transitions (Idle, Loading, Success, Error) driven by
- * ConfirmPasswordResetUseCase results (step 3 of the mobile password reset flow),
- * and that the resetState action restores Idle.
- * Uses UnconfinedTestDispatcher so viewModelScope.launch runs eagerly.
+ * Verifies the complete UiState emission sequence (Idle -> Loading -> Success/Error)
+ * driven by ConfirmPasswordResetUseCase results (step 3 of the mobile password reset flow),
+ * using Turbine to assert each state transition. Covers token expiry, password mismatch,
+ * fallback message and resetState behaviour.
  *
  * Created edgar.muhamyangabo on 11/23/26
  * Author: edgar.muhamyangabo
@@ -49,95 +49,103 @@ class ResetPasswordViewModelTest {
         val useCase = mockk<ConfirmPasswordResetUseCase>()
         val viewModel = ResetPasswordViewModel(useCase)
 
-        assertEquals(ResetPasswordUiState.Idle, viewModel.uiState.value)
+        viewModel.uiState.test {
+            assertEquals(ResetPasswordUiState.Idle, awaitItem())
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
     @Test
-    fun _02_ShouldSetStateToLoading_WhileUseCaseExecutes() = runTest(testDispatcher) {
+    fun _02_ShouldEmitLoadingThenSuccess_WhenPasswordResetSucceeds() = runTest(testDispatcher) {
         val useCase = mockk<ConfirmPasswordResetUseCase>()
         val viewModel = ResetPasswordViewModel(useCase)
 
-        // delay forces a real suspension point so Loading is observable before Success
         coEvery { useCase(any(), any(), any()) } coAnswers {
-            delay(1_000)
+            delay(100)
             Result.success(Unit)
         }
 
-        viewModel.resetPassword("123456", "newPassword1", "newPassword1")
-
-        assertEquals(ResetPasswordUiState.Loading, viewModel.uiState.value)
-
-        advanceUntilIdle()
-        assertEquals(ResetPasswordUiState.Success, viewModel.uiState.value)
+        viewModel.uiState.test {
+            assertEquals(ResetPasswordUiState.Idle, awaitItem())
+            viewModel.resetPassword("123456", "newPassword1", "newPassword1")
+            assertEquals(ResetPasswordUiState.Loading, awaitItem())
+            assertEquals(ResetPasswordUiState.Success, awaitItem())
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
     @Test
-    fun _03_ShouldUpdateStateToSuccess_WhenPasswordResetSucceeds() = runTest(testDispatcher) {
+    fun _03_ShouldEmitLoadingThenError_WhenPasswordResetFails() = runTest(testDispatcher) {
         val useCase = mockk<ConfirmPasswordResetUseCase>()
         val viewModel = ResetPasswordViewModel(useCase)
-        coEvery { useCase(any(), any(), any()) } returns Result.success(Unit)
 
-        viewModel.resetPassword("123456", "newPassword1", "newPassword1")
-        advanceUntilIdle()
-
-        assertEquals(ResetPasswordUiState.Success, viewModel.uiState.value)
-    }
-
-    @Test
-    fun _04_ShouldUpdateStateToError_WhenPasswordResetFails() = runTest(testDispatcher) {
-        val useCase = mockk<ConfirmPasswordResetUseCase>()
-        val viewModel = ResetPasswordViewModel(useCase)
         coEvery { useCase(any(), any(), any()) } returns
             Result.failure(RuntimeException("Token expired"))
 
-        viewModel.resetPassword("123456", "newPassword1", "newPassword1")
-        advanceUntilIdle()
-
-        val state = viewModel.uiState.value
-        assertTrue(state is ResetPasswordUiState.Error)
-        assertEquals("Token expired", (state as ResetPasswordUiState.Error).message)
+        viewModel.uiState.test {
+            assertEquals(ResetPasswordUiState.Idle, awaitItem())
+            viewModel.resetPassword("123456", "newPassword1", "newPassword1")
+            assertEquals(ResetPasswordUiState.Loading, awaitItem())
+            val error = awaitItem()
+            assertTrue(error is ResetPasswordUiState.Error)
+            assertEquals("Token expired", (error as ResetPasswordUiState.Error).message)
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
     @Test
-    fun _05_ShouldUpdateStateToError_WhenUseCaseValidationFails() = runTest(testDispatcher) {
+    fun _04_ShouldEmitError_WhenPasswordsDoNotMatch() = runTest(testDispatcher) {
         val useCase = mockk<ConfirmPasswordResetUseCase>()
         val viewModel = ResetPasswordViewModel(useCase)
+
         coEvery { useCase(any(), any(), any()) } returns
             Result.failure(IllegalArgumentException("Passwords do not match"))
 
-        viewModel.resetPassword("123456", "newPassword1", "differentPassword")
-        advanceUntilIdle()
-
-        val state = viewModel.uiState.value
-        assertTrue(state is ResetPasswordUiState.Error)
-        assertEquals("Passwords do not match", (state as ResetPasswordUiState.Error).message)
+        viewModel.uiState.test {
+            assertEquals(ResetPasswordUiState.Idle, awaitItem())
+            viewModel.resetPassword("123456", "newPassword1", "differentPassword")
+            assertEquals(ResetPasswordUiState.Loading, awaitItem())
+            val error = awaitItem()
+            assertTrue(error is ResetPasswordUiState.Error)
+            assertEquals("Passwords do not match", (error as ResetPasswordUiState.Error).message)
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
     @Test
-    fun _06_ShouldUseFallbackMessage_WhenExceptionHasNoMessage() = runTest(testDispatcher) {
+    fun _05_ShouldUseFallbackMessage_WhenExceptionHasNoMessage() = runTest(testDispatcher) {
         val useCase = mockk<ConfirmPasswordResetUseCase>()
         val viewModel = ResetPasswordViewModel(useCase)
+
         coEvery { useCase(any(), any(), any()) } returns Result.failure(RuntimeException())
 
-        viewModel.resetPassword("123456", "newPassword1", "newPassword1")
-        advanceUntilIdle()
-
-        val state = viewModel.uiState.value
-        assertTrue(state is ResetPasswordUiState.Error)
-        assertEquals("Password reset failed", (state as ResetPasswordUiState.Error).message)
+        viewModel.uiState.test {
+            assertEquals(ResetPasswordUiState.Idle, awaitItem())
+            viewModel.resetPassword("123456", "newPassword1", "newPassword1")
+            assertEquals(ResetPasswordUiState.Loading, awaitItem())
+            val error = awaitItem()
+            assertTrue(error is ResetPasswordUiState.Error)
+            assertEquals("Password reset failed", (error as ResetPasswordUiState.Error).message)
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
     @Test
-    fun _07_ShouldReturnStateToIdle_WhenResetStateIsCalled() = runTest(testDispatcher) {
+    fun _06_ShouldReturnStateToIdle_WhenResetStateIsCalled() = runTest(testDispatcher) {
         val useCase = mockk<ConfirmPasswordResetUseCase>()
         val viewModel = ResetPasswordViewModel(useCase)
+
         coEvery { useCase(any(), any(), any()) } returns
             Result.failure(RuntimeException("Network error"))
-        viewModel.resetPassword("123456", "newPassword1", "newPassword1")
-        advanceUntilIdle()
 
-        viewModel.resetState()
-
-        assertEquals(ResetPasswordUiState.Idle, viewModel.uiState.value)
+        viewModel.uiState.test {
+            assertEquals(ResetPasswordUiState.Idle, awaitItem())
+            viewModel.resetPassword("123456", "newPassword1", "newPassword1")
+            assertEquals(ResetPasswordUiState.Loading, awaitItem())
+            assertTrue(awaitItem() is ResetPasswordUiState.Error)
+            viewModel.resetState()
+            assertEquals(ResetPasswordUiState.Idle, awaitItem())
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 }
