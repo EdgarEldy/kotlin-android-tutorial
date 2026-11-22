@@ -22,7 +22,7 @@ import javax.inject.Singleton
 /**
  * Hilt module that wires the entire network stack: OkHttp, Retrofit, logging,
  * auth interceptor, and token refresh authenticator.
- * BASE_URL points to 10.0.2.2:8080 (emulator loopback for localhost).
+ * BASE_URL is read from BuildConfig and varies per product flavor (dev/staging/prod).
  * A secondary @AuthOnly OkHttpClient without the TokenAuthenticator is provided
  * for use by TokenAuthenticator itself to avoid a circular dependency.
  *
