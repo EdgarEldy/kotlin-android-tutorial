@@ -87,7 +87,7 @@ fun ActivateAccountScreen(
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Retour",
+                    contentDescription = "Back",
                     tint = Color.White
                 )
             }
@@ -104,7 +104,7 @@ fun ActivateAccountScreen(
         Spacer(modifier = Modifier.height(24.dp))
 
         Text(
-            text = "Verifiez votre email",
+            text = "Check your email",
             style = MaterialTheme.typography.headlineSmall,
             color = Color(0xFF1C1B1F)
         )
@@ -112,7 +112,7 @@ fun ActivateAccountScreen(
 
         Text(
             text = buildAnnotatedString {
-                append("Un code a 6 chiffres a ete envoye a ")
+                append("A 6-digit activation code has been sent to ")
                 withStyle(
                     SpanStyle(
                         fontWeight = FontWeight.Bold,
@@ -134,7 +134,7 @@ fun ActivateAccountScreen(
         Spacer(modifier = Modifier.height(12.dp))
 
         Text(
-            text = "Expire dans 4:32",
+            text = "Expires in 4:32",
             style = MaterialTheme.typography.bodySmall,
             color = Color(0xFF79747E),
             modifier = Modifier.align(Alignment.CenterHorizontally)
@@ -155,7 +155,7 @@ fun ActivateAccountScreen(
                     strokeWidth = 2.dp
                 )
             } else {
-                Text("Activer")
+                Text("Activate")
             }
         }
         Spacer(modifier = Modifier.height(24.dp))
