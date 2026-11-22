@@ -18,7 +18,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -40,7 +39,7 @@ fun OtpInputRow(
     onOtpChange: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val fieldBg = Color(0xFFF4EFF4)
+    val fieldBg = MaterialTheme.colorScheme.surfaceVariant
     val focusRequesters = remember { List(6) { FocusRequester() } }
 
     Row(
@@ -117,7 +116,7 @@ fun OtpInputRow(
                             Text(
                                 text = "-",
                                 style = MaterialTheme.typography.titleMedium,
-                                color = Color(0xFF79747E),
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 textAlign = TextAlign.Center
                             )
                         }
@@ -126,7 +125,7 @@ fun OtpInputRow(
                 },
                 textStyle = MaterialTheme.typography.titleMedium.copy(
                     textAlign = TextAlign.Center,
-                    color = Color(0xFF1C1B1F)
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             )
         }
