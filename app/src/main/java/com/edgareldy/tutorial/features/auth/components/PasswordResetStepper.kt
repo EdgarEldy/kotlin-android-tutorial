@@ -37,8 +37,8 @@ fun PasswordResetStepper(
     currentStep: Int,
     modifier: Modifier = Modifier
 ) {
-    val primary = Color(0xFF6750A4)
-    val grey = Color(0xFFCAC4D0)
+    val primary = MaterialTheme.colorScheme.primary
+    val grey = MaterialTheme.colorScheme.onSurfaceVariant
 
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -81,7 +81,7 @@ private fun StepCircle(
                 Icon(
                     imageVector = Icons.Default.Check,
                     contentDescription = "Etape $step terminee",
-                    tint = Color.White,
+                    tint = MaterialTheme.colorScheme.onPrimary,
                     modifier = Modifier.size(18.dp)
                 )
             }
@@ -97,7 +97,7 @@ private fun StepCircle(
                 Text(
                     text = step.toString(),
                     style = MaterialTheme.typography.labelLarge,
-                    color = Color.White
+                    color = MaterialTheme.colorScheme.onPrimary
                 )
             }
         }
