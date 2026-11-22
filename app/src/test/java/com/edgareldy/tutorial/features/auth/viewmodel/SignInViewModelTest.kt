@@ -80,7 +80,10 @@ class SignInViewModelTest {
         val loginUseCase = mockk<LoginUseCase>()
         val viewModel = SignInViewModel(loginUseCase)
 
-        coEvery { loginUseCase(any(), any()) } returns Result.success(fakeTokens)
+        coEvery { loginUseCase(any(), any()) } coAnswers {
+            delay(1)
+            Result.success(fakeTokens)
+        }
 
         viewModel.uiState.test {
             assertEquals(SignInUiState.Idle, awaitItem())
@@ -96,8 +99,10 @@ class SignInViewModelTest {
         val loginUseCase = mockk<LoginUseCase>()
         val viewModel = SignInViewModel(loginUseCase)
 
-        coEvery { loginUseCase(any(), any()) } returns
+        coEvery { loginUseCase(any(), any()) } coAnswers {
+            delay(1)
             Result.failure(RuntimeException("Invalid credentials"))
+        }
 
         viewModel.uiState.test {
             assertEquals(SignInUiState.Idle, awaitItem())
@@ -115,8 +120,10 @@ class SignInViewModelTest {
         val loginUseCase = mockk<LoginUseCase>()
         val viewModel = SignInViewModel(loginUseCase)
 
-        coEvery { loginUseCase("", any()) } returns
+        coEvery { loginUseCase("", any()) } coAnswers {
+            delay(1)
             Result.failure(IllegalArgumentException("Email must not be blank"))
+        }
 
         viewModel.uiState.test {
             assertEquals(SignInUiState.Idle, awaitItem())
@@ -134,8 +141,10 @@ class SignInViewModelTest {
         val loginUseCase = mockk<LoginUseCase>()
         val viewModel = SignInViewModel(loginUseCase)
 
-        coEvery { loginUseCase(any(), any()) } returns
+        coEvery { loginUseCase(any(), any()) } coAnswers {
+            delay(1)
             Result.failure(RuntimeException("Network error"))
+        }
 
         viewModel.uiState.test {
             assertEquals(SignInUiState.Idle, awaitItem())

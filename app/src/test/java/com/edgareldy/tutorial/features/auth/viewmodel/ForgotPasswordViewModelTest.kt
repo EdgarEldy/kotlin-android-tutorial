@@ -78,7 +78,10 @@ class ForgotPasswordViewModelTest {
         val useCase = mockk<SendPasswordResetOtpUseCase>()
         val viewModel = ForgotPasswordViewModel(useCase)
 
-        coEvery { useCase(any()) } returns Result.success(Unit)
+        coEvery { useCase(any()) } coAnswers {
+            delay(1)
+            Result.success(Unit)
+        }
 
         viewModel.uiState.test {
             assertEquals(ForgotPasswordUiState.Idle, awaitItem())
@@ -96,7 +99,10 @@ class ForgotPasswordViewModelTest {
         val useCase = mockk<SendPasswordResetOtpUseCase>()
         val viewModel = ForgotPasswordViewModel(useCase)
 
-        coEvery { useCase(any()) } returns Result.failure(RuntimeException("Network error"))
+        coEvery { useCase(any()) } coAnswers {
+            delay(1)
+            Result.failure(RuntimeException("Network error"))
+        }
 
         viewModel.uiState.test {
             assertEquals(ForgotPasswordUiState.Idle, awaitItem())
@@ -114,7 +120,10 @@ class ForgotPasswordViewModelTest {
         val useCase = mockk<SendPasswordResetOtpUseCase>()
         val viewModel = ForgotPasswordViewModel(useCase)
 
-        coEvery { useCase(any()) } returns Result.failure(RuntimeException())
+        coEvery { useCase(any()) } coAnswers {
+            delay(1)
+            Result.failure(RuntimeException())
+        }
 
         viewModel.uiState.test {
             assertEquals(ForgotPasswordUiState.Idle, awaitItem())
@@ -132,7 +141,10 @@ class ForgotPasswordViewModelTest {
         val useCase = mockk<SendPasswordResetOtpUseCase>()
         val viewModel = ForgotPasswordViewModel(useCase)
 
-        coEvery { useCase(any()) } returns Result.failure(RuntimeException("Network error"))
+        coEvery { useCase(any()) } coAnswers {
+            delay(1)
+            Result.failure(RuntimeException("Network error"))
+        }
 
         viewModel.uiState.test {
             assertEquals(ForgotPasswordUiState.Idle, awaitItem())
