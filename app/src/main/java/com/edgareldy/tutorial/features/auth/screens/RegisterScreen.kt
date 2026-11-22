@@ -113,7 +113,7 @@ fun RegisterScreen(
         Text(
             text = "Information",
             style = MaterialTheme.typography.titleMedium,
-            color = Color(0xFF1C1B1F)
+            color = MaterialTheme.colorScheme.onSurface
         )
         Spacer(modifier = Modifier.height(16.dp))
 
