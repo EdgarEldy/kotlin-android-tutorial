@@ -105,14 +105,14 @@ fun ForgotPasswordScreen(
             Text(
                 text = "Check your inbox",
                 style = MaterialTheme.typography.titleMedium,
-                color = Color(0xFF1C1B1F)
+                color = MaterialTheme.colorScheme.onSurface
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = "If an account is associated with $acceptedEmail, a reset code has been sent. " +
                     "Check your inbox and spam folder. Continue only after you receive the code.",
                 style = MaterialTheme.typography.bodyMedium,
-                color = Color(0xFF79747E)
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Spacer(modifier = Modifier.height(24.dp))
             Button(
@@ -137,14 +137,14 @@ fun ForgotPasswordScreen(
             Text(
                 text = "Enter your email",
                 style = MaterialTheme.typography.titleMedium,
-                color = Color(0xFF1C1B1F)
+                color = MaterialTheme.colorScheme.onSurface
             )
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
                 text = "We will send a reset code to your email address.",
                 style = MaterialTheme.typography.bodyMedium,
-                color = Color(0xFF79747E)
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Spacer(modifier = Modifier.height(16.dp))
 
