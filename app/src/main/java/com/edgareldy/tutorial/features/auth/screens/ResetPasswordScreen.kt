@@ -149,7 +149,7 @@ fun ResetPasswordScreen(
                 progress = { strength },
                 modifier = Modifier.fillMaxWidth(),
                 color = strengthColor,
-                trackColor = Color(0xFFE8E0F0)
+                trackColor = MaterialTheme.colorScheme.surfaceVariant
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
