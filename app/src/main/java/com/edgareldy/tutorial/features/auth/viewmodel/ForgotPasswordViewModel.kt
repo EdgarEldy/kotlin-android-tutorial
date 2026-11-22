@@ -11,8 +11,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
- * UI state for the forgot-password screen.
- * Success carries the email to pass it to the VerifyOtp route.
+ * UI state for the forgot-password screen. A successful response means the
+ * request was accepted; it does not confirm whether an account exists or an
+ * email was sent.
  *
  * Created edgar.muhamyangabo on 11/21/26
  * Author: edgar.muhamyangabo
@@ -22,7 +23,7 @@ import javax.inject.Inject
 sealed class ForgotPasswordUiState {
     object Idle : ForgotPasswordUiState()
     object Loading : ForgotPasswordUiState()
-    data class Success(val email: String) : ForgotPasswordUiState()
+    data class RequestAccepted(val email: String) : ForgotPasswordUiState()
     data class Error(val message: String) : ForgotPasswordUiState()
 }
 
@@ -47,7 +48,7 @@ class ForgotPasswordViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.value = ForgotPasswordUiState.Loading
             sendPasswordResetOtpUseCase(email)
-                .onSuccess { _uiState.value = ForgotPasswordUiState.Success(email) }
+                .onSuccess { _uiState.value = ForgotPasswordUiState.RequestAccepted(email) }
                 .onFailure {
                     _uiState.value = ForgotPasswordUiState.Error(
                         it.message ?: "Failed to send OTP"
