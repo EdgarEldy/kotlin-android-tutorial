@@ -52,7 +52,7 @@ fun ProfileScreen(
     }
 
     Scaffold(
-        topBar = { TopAppBar(title = { Text("Mon profil") }) }
+        topBar = { TopAppBar(title = { Text("My Profile") }) }
     ) { paddingValues ->
         when (val state = uiState) {
             is ProfileUiState.Loading -> {
@@ -75,13 +75,13 @@ fun ProfileScreen(
                     verticalArrangement = Arrangement.Top
                 ) {
                     Spacer(modifier = Modifier.height(24.dp))
-                    ProfileInfoRow(label = "Prenom", value = state.user.firstName)
-                    ProfileInfoRow(label = "Nom", value = state.user.lastName)
-                    ProfileInfoRow(label = "Nom d'utilisateur", value = state.user.username)
+                    ProfileInfoRow(label = "First Name", value = state.user.firstName)
+                    ProfileInfoRow(label = "Last Name", value = state.user.lastName)
+                    ProfileInfoRow(label = "Username", value = state.user.username)
                     ProfileInfoRow(label = "Email", value = state.user.email)
                     ProfileInfoRow(
-                        label = "Statut",
-                        value = if (state.user.enabled) "Compte actif" else "Compte inactif"
+                        label = "Status",
+                        value = if (state.user.enabled) "Active account" else "Inactive account"
                     )
                     Spacer(modifier = Modifier.height(32.dp))
                     Button(
@@ -91,7 +91,7 @@ fun ProfileScreen(
                         ),
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("Se deconnecter")
+                        Text("Sign Out")
                     }
                 }
             }
@@ -112,7 +112,7 @@ fun ProfileScreen(
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     TextButton(onClick = { viewModel.loadProfile() }) {
-                        Text("Reessayer")
+                        Text("Retry")
                     }
                 }
             }
