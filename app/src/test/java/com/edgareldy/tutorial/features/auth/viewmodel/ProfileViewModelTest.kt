@@ -1,5 +1,6 @@
 package com.edgareldy.tutorial.features.auth.viewmodel
 
+import app.cash.turbine.test
 import com.edgareldy.tutorial.domain.model.User
 import com.edgareldy.tutorial.domain.usecase.auth.GetCurrentUserUseCase
 import com.edgareldy.tutorial.domain.usecase.auth.LogoutUseCase
@@ -9,7 +10,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -21,15 +21,15 @@ import org.junit.Test
 
 /**
  * Unit tests for ProfileViewModel.
- * Verifies that the profile is loaded automatically on construction,
- * that UiState transitions (Loading, Success, Error, LoggedOut) are correct,
- * and that the logout action transitions state to LoggedOut.
- * The ViewModel is created inside each test so that mock answers are set up
- * before the init block triggers loadProfile().
+ * Verifies state transitions (Loading -> Success/Error, Success -> LoggedOut) using
+ * Turbine to assert each emission in order. The ViewModel is instantiated inside each
+ * test so that mocks are configured before the init block triggers loadProfile().
+ * When a delay is added to the mock, the init coroutine suspends at that point,
+ * leaving the state at Loading when Turbine attaches its collector.
  *
- * Created edgar.muhamyangabo on 11/21/26
+ * Created edgar.muhamyangabo on 11/23/26
  * Author: edgar.muhamyangabo
- * Date: 11/21/26
+ * Date: 11/23/26
  * Project: kotlin-android-tutorial
  */
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -62,42 +62,49 @@ class ProfileViewModelTest {
     }
 
     @Test
-    fun _01_ShouldBeLoading_WhenProfileIsBeingFetched() = runTest(testDispatcher) {
-        // delay forces a real suspension so the Loading state is observable before Success
+    fun _01_ShouldEmitLoadingThenSuccess_WhenProfileIsBeingFetched() = runTest(testDispatcher) {
+        // The delay causes the init coroutine to suspend, leaving uiState at Loading
+        // when Turbine attaches. Without a delay, UnconfinedTestDispatcher would run
+        // the coroutine to completion before Turbine collects the first item.
         coEvery { getCurrentUserUseCase() } coAnswers {
-            delay(1_000)
+            delay(100)
             Result.success(fakeUser)
         }
 
         val viewModel = ProfileViewModel(getCurrentUserUseCase, logoutUseCase)
 
-        assertEquals(ProfileUiState.Loading, viewModel.uiState.value)
-
-        advanceUntilIdle()
-        assertEquals(ProfileUiState.Success(fakeUser), viewModel.uiState.value)
+        viewModel.uiState.test {
+            assertEquals(ProfileUiState.Loading, awaitItem())
+            assertEquals(ProfileUiState.Success(fakeUser), awaitItem())
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
     @Test
-    fun _02_ShouldUpdateStateToSuccess_WhenUserIsRetrieved() = runTest(testDispatcher) {
+    fun _02_ShouldEmitSuccess_WhenUserIsRetrieved() = runTest(testDispatcher) {
         coEvery { getCurrentUserUseCase() } returns Result.success(fakeUser)
 
         val viewModel = ProfileViewModel(getCurrentUserUseCase, logoutUseCase)
-        advanceUntilIdle()
 
-        assertEquals(ProfileUiState.Success(fakeUser), viewModel.uiState.value)
+        viewModel.uiState.test {
+            assertEquals(ProfileUiState.Success(fakeUser), awaitItem())
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
     @Test
-    fun _03_ShouldUpdateStateToError_WhenNetworkRequestFails() = runTest(testDispatcher) {
-        val networkError = RuntimeException("Failed to load profile")
-        coEvery { getCurrentUserUseCase() } returns Result.failure(networkError)
+    fun _03_ShouldEmitError_WhenNetworkRequestFails() = runTest(testDispatcher) {
+        coEvery { getCurrentUserUseCase() } returns
+            Result.failure(RuntimeException("Failed to load profile"))
 
         val viewModel = ProfileViewModel(getCurrentUserUseCase, logoutUseCase)
-        advanceUntilIdle()
 
-        val state = viewModel.uiState.value
-        assertTrue(state is ProfileUiState.Error)
-        assertEquals("Failed to load profile", (state as ProfileUiState.Error).message)
+        viewModel.uiState.test {
+            val error = awaitItem()
+            assertTrue(error is ProfileUiState.Error)
+            assertEquals("Failed to load profile", (error as ProfileUiState.Error).message)
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
     @Test
@@ -105,40 +112,63 @@ class ProfileViewModelTest {
         coEvery { getCurrentUserUseCase() } returns Result.failure(RuntimeException())
 
         val viewModel = ProfileViewModel(getCurrentUserUseCase, logoutUseCase)
-        advanceUntilIdle()
 
-        val state = viewModel.uiState.value
-        assertTrue(state is ProfileUiState.Error)
-        assertEquals("Failed to load profile", (state as ProfileUiState.Error).message)
+        viewModel.uiState.test {
+            val error = awaitItem()
+            assertTrue(error is ProfileUiState.Error)
+            assertEquals("Failed to load profile", (error as ProfileUiState.Error).message)
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
     @Test
-    fun _05_ShouldUpdateStateToLoggedOut_WhenLogoutSucceeds() = runTest(testDispatcher) {
+    fun _05_ShouldEmitLoggedOut_WhenLogoutIsCalled() = runTest(testDispatcher) {
         coEvery { getCurrentUserUseCase() } returns Result.success(fakeUser)
         coEvery { logoutUseCase() } returns Result.success(Unit)
 
         val viewModel = ProfileViewModel(getCurrentUserUseCase, logoutUseCase)
-        advanceUntilIdle()
 
-        viewModel.logout()
-        advanceUntilIdle()
-
-        assertEquals(ProfileUiState.LoggedOut, viewModel.uiState.value)
+        viewModel.uiState.test {
+            assertEquals(ProfileUiState.Success(fakeUser), awaitItem())
+            viewModel.logout()
+            assertEquals(ProfileUiState.LoggedOut, awaitItem())
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
     @Test
-    fun _06_ShouldUpdateStateToLoggedOut_EvenWhenServerSideLogoutFails() = runTest(testDispatcher) {
+    fun _06_ShouldEmitLoggedOut_EvenWhenServerSideLogoutFails() = runTest(testDispatcher) {
         coEvery { getCurrentUserUseCase() } returns Result.success(fakeUser)
         coEvery { logoutUseCase() } returns Result.failure(RuntimeException("Server error"))
 
         val viewModel = ProfileViewModel(getCurrentUserUseCase, logoutUseCase)
-        advanceUntilIdle()
 
-        viewModel.logout()
-        advanceUntilIdle()
+        viewModel.uiState.test {
+            assertEquals(ProfileUiState.Success(fakeUser), awaitItem())
+            viewModel.logout()
+            // The ViewModel always sets LoggedOut after calling logoutUseCase,
+            // regardless of whether the use case succeeded or failed.
+            assertEquals(ProfileUiState.LoggedOut, awaitItem())
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
 
-        // The ViewModel always sets LoggedOut after calling logoutUseCase,
-        // regardless of whether the use case succeeded or failed.
-        assertEquals(ProfileUiState.LoggedOut, viewModel.uiState.value)
+    @Test
+    fun _07_ShouldEmitLoadingThenSuccess_WhenProfileIsReloaded() = runTest(testDispatcher) {
+        coEvery { getCurrentUserUseCase() } returns Result.success(fakeUser)
+
+        val viewModel = ProfileViewModel(getCurrentUserUseCase, logoutUseCase)
+
+        viewModel.uiState.test {
+            assertEquals(ProfileUiState.Success(fakeUser), awaitItem()) // initial load
+            coEvery { getCurrentUserUseCase() } coAnswers {
+                delay(100)
+                Result.success(fakeUser)
+            }
+            viewModel.loadProfile()
+            assertEquals(ProfileUiState.Loading, awaitItem())
+            assertEquals(ProfileUiState.Success(fakeUser), awaitItem())
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 }
