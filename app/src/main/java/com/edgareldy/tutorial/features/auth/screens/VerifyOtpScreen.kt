@@ -104,12 +104,12 @@ fun VerifyOtpScreen(
         Text(
             text = "Enter the code",
             style = MaterialTheme.typography.titleMedium,
-            color = Color(0xFF1C1B1F)
+            color = MaterialTheme.colorScheme.onSurface
         )
         Text(
             text = email,
             style = MaterialTheme.typography.bodyMedium,
-            color = Color(0xFF6750A4)
+            color = MaterialTheme.colorScheme.primary
         )
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -122,7 +122,7 @@ fun VerifyOtpScreen(
         Text(
             text = "Expires in 2:18",
             style = MaterialTheme.typography.bodySmall,
-            color = Color(0xFF79747E),
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )
         Spacer(modifier = Modifier.height(28.dp))
