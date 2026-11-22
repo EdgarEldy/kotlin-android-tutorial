@@ -174,7 +174,7 @@ fun ForgotPasswordScreen(
                         strokeWidth = 2.dp
                     )
                 } else {
-                    Text("Send code")
+                    Text("Send OTP")
                 }
             }
             Spacer(modifier = Modifier.height(24.dp))
