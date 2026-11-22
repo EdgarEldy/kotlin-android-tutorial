@@ -1,6 +1,7 @@
 package com.edgareldy.tutorial.features.auth.viewmodel
 
 import app.cash.turbine.test
+import com.edgareldy.tutorial.domain.model.User
 import com.edgareldy.tutorial.domain.usecase.auth.RegisterUseCase
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -43,6 +44,8 @@ class RegisterViewModelTest {
         Dispatchers.resetMain()
     }
 
+    private val mockUser = User(1L, "John", "Doe", "johndoe", "john@example.com", true)
+
     private fun callRegister(
         viewModel: RegisterViewModel,
         firstName: String = "John",
@@ -71,7 +74,7 @@ class RegisterViewModelTest {
 
         coEvery { useCase(any(), any(), any(), any(), any(), any()) } coAnswers {
             delay(100)
-            Result.success(Unit)
+            Result.success(mockUser)
         }
 
         viewModel.uiState.test {
@@ -88,7 +91,7 @@ class RegisterViewModelTest {
         val useCase = mockk<RegisterUseCase>()
         val viewModel = RegisterViewModel(useCase)
 
-        coEvery { useCase(any(), any(), any(), any(), any(), any()) } returns Result.success(Unit)
+        coEvery { useCase(any(), any(), any(), any(), any(), any()) } returns Result.success(mockUser)
 
         viewModel.uiState.test {
             assertEquals(RegisterUiState.Idle, awaitItem())

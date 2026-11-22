@@ -1,6 +1,7 @@
 package com.edgareldy.tutorial.features.auth.viewmodel
 
 import app.cash.turbine.test
+import com.edgareldy.tutorial.domain.model.User
 import com.edgareldy.tutorial.domain.usecase.auth.ActivateAccountUseCase
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -31,6 +32,7 @@ import org.junit.Test
 class ActivateAccountViewModelTest {
 
     private val testDispatcher = UnconfinedTestDispatcher()
+    private val mockUser = User(1L, "Test", "User", "testuser", "user@example.com", true)
 
     @Before
     fun setUp() {
@@ -60,7 +62,7 @@ class ActivateAccountViewModelTest {
 
         coEvery { useCase(any(), any()) } coAnswers {
             delay(100)
-            Result.success(Unit)
+            Result.success(mockUser)
         }
 
         viewModel.uiState.test {
