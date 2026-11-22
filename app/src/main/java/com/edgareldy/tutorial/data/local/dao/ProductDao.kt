@@ -5,6 +5,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Upsert
 import com.edgareldy.tutorial.data.local.entity.ProductEntity
+import com.edgareldy.tutorial.data.local.entity.ProductImageEntity
 import com.edgareldy.tutorial.data.local.entity.ProductWithImages
 import kotlinx.coroutines.flow.Flow
 
@@ -23,6 +24,9 @@ interface ProductDao {
 
     @Upsert
     suspend fun upsertAll(products: List<ProductEntity>)
+
+    @Upsert
+    suspend fun upsertImages(images: List<ProductImageEntity>)
 
     @Transaction
     @Query("SELECT * FROM products ORDER BY productName ASC")
