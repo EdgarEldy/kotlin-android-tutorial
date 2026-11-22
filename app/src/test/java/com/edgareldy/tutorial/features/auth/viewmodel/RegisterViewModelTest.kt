@@ -33,6 +33,7 @@ import org.junit.Test
 class RegisterViewModelTest {
 
     private val testDispatcher = UnconfinedTestDispatcher()
+    private val mockUser = User(1L, "John", "Doe", "johndoe", "john@example.com", true)
 
     @Before
     fun setUp() {
@@ -43,8 +44,6 @@ class RegisterViewModelTest {
     fun tearDown() {
         Dispatchers.resetMain()
     }
-
-    private val mockUser = User(1L, "John", "Doe", "johndoe", "john@example.com", true)
 
     private fun callRegister(
         viewModel: RegisterViewModel,
@@ -91,7 +90,10 @@ class RegisterViewModelTest {
         val useCase = mockk<RegisterUseCase>()
         val viewModel = RegisterViewModel(useCase)
 
-        coEvery { useCase(any(), any(), any(), any(), any(), any()) } returns Result.success(mockUser)
+        coEvery { useCase(any(), any(), any(), any(), any(), any()) } coAnswers {
+            delay(1)
+            Result.success(mockUser)
+        }
 
         viewModel.uiState.test {
             assertEquals(RegisterUiState.Idle, awaitItem())
@@ -109,8 +111,10 @@ class RegisterViewModelTest {
         val useCase = mockk<RegisterUseCase>()
         val viewModel = RegisterViewModel(useCase)
 
-        coEvery { useCase(any(), any(), any(), any(), any(), any()) } returns
+        coEvery { useCase(any(), any(), any(), any(), any(), any()) } coAnswers {
+            delay(1)
             Result.failure(RuntimeException("Email already in use"))
+        }
 
         viewModel.uiState.test {
             assertEquals(RegisterUiState.Idle, awaitItem())
@@ -128,8 +132,10 @@ class RegisterViewModelTest {
         val useCase = mockk<RegisterUseCase>()
         val viewModel = RegisterViewModel(useCase)
 
-        coEvery { useCase(any(), any(), any(), any(), any(), any()) } returns
+        coEvery { useCase(any(), any(), any(), any(), any(), any()) } coAnswers {
+            delay(1)
             Result.failure(RuntimeException())
+        }
 
         viewModel.uiState.test {
             assertEquals(RegisterUiState.Idle, awaitItem())
@@ -147,8 +153,10 @@ class RegisterViewModelTest {
         val useCase = mockk<RegisterUseCase>()
         val viewModel = RegisterViewModel(useCase)
 
-        coEvery { useCase(any(), any(), any(), any(), any(), any()) } returns
+        coEvery { useCase(any(), any(), any(), any(), any(), any()) } coAnswers {
+            delay(1)
             Result.failure(RuntimeException("Network error"))
+        }
 
         viewModel.uiState.test {
             assertEquals(RegisterUiState.Idle, awaitItem())

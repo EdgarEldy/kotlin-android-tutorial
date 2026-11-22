@@ -79,8 +79,10 @@ class ActivateAccountViewModelTest {
         val useCase = mockk<ActivateAccountUseCase>()
         val viewModel = ActivateAccountViewModel(useCase)
 
-        coEvery { useCase(any(), any()) } returns
+        coEvery { useCase(any(), any()) } coAnswers {
+            delay(1)
             Result.failure(RuntimeException("Activation code expired"))
+        }
 
         viewModel.uiState.test {
             assertEquals(ActivateAccountUiState.Idle, awaitItem())
@@ -98,7 +100,10 @@ class ActivateAccountViewModelTest {
         val useCase = mockk<ActivateAccountUseCase>()
         val viewModel = ActivateAccountViewModel(useCase)
 
-        coEvery { useCase(any(), any()) } returns Result.failure(RuntimeException())
+        coEvery { useCase(any(), any()) } coAnswers {
+            delay(1)
+            Result.failure(RuntimeException())
+        }
 
         viewModel.uiState.test {
             assertEquals(ActivateAccountUiState.Idle, awaitItem())
@@ -116,8 +121,10 @@ class ActivateAccountViewModelTest {
         val useCase = mockk<ActivateAccountUseCase>()
         val viewModel = ActivateAccountViewModel(useCase)
 
-        coEvery { useCase(any(), any()) } returns
+        coEvery { useCase(any(), any()) } coAnswers {
+            delay(1)
             Result.failure(RuntimeException("Network error"))
+        }
 
         viewModel.uiState.test {
             assertEquals(ActivateAccountUiState.Idle, awaitItem())
