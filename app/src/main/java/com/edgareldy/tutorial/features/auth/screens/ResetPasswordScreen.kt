@@ -1,5 +1,9 @@
 package com.edgareldy.tutorial.features.auth.screens
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -15,7 +19,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -28,6 +31,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -82,14 +86,19 @@ fun ResetPasswordScreen(
     }
 
     val strength = passwordStrength(newPassword)
+    val strengthScore = (strength * 4).toInt()
     val strengthLabel = when {
         newPassword.isEmpty() -> ""
-        strength <= 0.25f -> "Weak"
-        strength <= 0.5f -> "Fair"
-        strength <= 0.75f -> "Good"
+        strengthScore <= 1 -> "Weak"
+        strengthScore <= 2 -> "Fair"
+        strengthScore <= 3 -> "Good"
         else -> "Strong"
     }
-    val strengthColor = if (strength > 0.6f) Color(0xFF16A34A) else Color(0xFFF59E0B)
+    val strengthColor = when {
+        strengthScore <= 1 -> Color(0xFFEF4444)
+        strengthScore <= 2 -> Color(0xFFCA8A04)
+        else -> Color(0xFF16A34A)
+    }
 
     AuthScaffold(
         heroHeight = 200.dp,
@@ -145,12 +154,26 @@ fun ResetPasswordScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
         if (newPassword.isNotEmpty()) {
-            LinearProgressIndicator(
-                progress = { strength },
-                modifier = Modifier.fillMaxWidth(),
-                color = strengthColor,
-                trackColor = MaterialTheme.colorScheme.surfaceVariant
-            )
+            Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                repeat(4) { index ->
+                    val filled = index < strengthScore
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(6.dp)
+                            .clip(RoundedCornerShape(100.dp))
+                            .background(
+                                when {
+                                    !filled -> MaterialTheme.colorScheme.surfaceVariant
+                                    strengthScore <= 1 -> Color(0xFFEF4444)
+                                    strengthScore <= 2 -> Color(0xFFCA8A04)
+                                    strengthScore <= 3 -> Color(0xFF16A34A)
+                                    else -> Color(0xFF16A34A)
+                                }
+                            )
+                    )
+                }
+            }
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = strengthLabel,
