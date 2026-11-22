@@ -128,13 +128,13 @@ fun SignInScreen(
         Text(
             text = "Sign In",
             style = MaterialTheme.typography.headlineMedium,
-            color = Color(0xFF1C1B1F)
+            color = MaterialTheme.colorScheme.onSurface
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = "Sign in to continue",
             style = MaterialTheme.typography.bodyMedium,
-            color = Color(0xFF79747E)
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         Spacer(modifier = Modifier.height(28.dp))
 
