@@ -84,12 +84,12 @@ fun VerifyOtpScreen(
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Retour",
+                    contentDescription = "Back",
                     tint = Color.White
                 )
             }
             Text(
-                text = "Verification OTP",
+                text = "OTP Verification",
                 style = MaterialTheme.typography.titleLarge,
                 color = Color.White,
                 modifier = Modifier.align(Alignment.Center)
@@ -102,7 +102,7 @@ fun VerifyOtpScreen(
         Spacer(modifier = Modifier.height(28.dp))
 
         Text(
-            text = "Entrez le code",
+            text = "Enter the code",
             style = MaterialTheme.typography.titleMedium,
             color = Color(0xFF1C1B1F)
         )
@@ -120,7 +120,7 @@ fun VerifyOtpScreen(
         Spacer(modifier = Modifier.height(12.dp))
 
         Text(
-            text = "Expire dans 2:18",
+            text = "Expires in 2:18",
             style = MaterialTheme.typography.bodySmall,
             color = Color(0xFF79747E),
             modifier = Modifier.align(Alignment.CenterHorizontally)
@@ -141,7 +141,7 @@ fun VerifyOtpScreen(
                     strokeWidth = 2.dp
                 )
             } else {
-                Text("Verifier")
+                Text("Verify")
             }
         }
         Spacer(modifier = Modifier.height(24.dp))
