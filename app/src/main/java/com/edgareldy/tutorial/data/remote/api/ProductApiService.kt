@@ -19,7 +19,7 @@ import retrofit2.http.Query
  */
 interface ProductApiService {
 
-    @GET("api/v1/products/")
+    @GET("api/v1/products")
     suspend fun getProducts(
         @Query("categoryId") categoryId: Long? = null,
         @Query("productName") productName: String? = null,
