@@ -1,4 +1,4 @@
-package com.edgareldy.tutorial.features.product.viewmodel
+package com.edgareldy.tutorial.features.products.viewmodel
 
 import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
