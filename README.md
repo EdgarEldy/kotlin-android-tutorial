@@ -223,7 +223,7 @@ com.edgareldy.tutorial/
     │   ├── screens/
     │   ├── viewmodel/
     │   └── components/
-    ├── product/
+    ├── products/
     │   ├── screens/
     │   ├── viewmodel/
     │   └── components/
@@ -541,7 +541,7 @@ The table below uses the IntelliJ format; the terminal equivalent is always `./g
 | `develop` | Integration branch for all feature work. |
 | `feature/core-architecture` | Project setup, Gradle Wrapper, Kotlin DSL, version catalog, OpenAPI client generation, Hilt, Retrofit/OkHttp, auth interceptor, secure storage, DataStore, Material 3 theme, Navigation Compose, shared composables. The app must build and show an empty scaffold before this branch closes. |
 | `feature/auth` | Sign in, register, account activation (OTP), session restoration, token refresh, logout, 3-step mobile password reset, account profile display. |
-| `feature/product-catalog` | Home screen, category listing, product listing with search and price filtering, product detail with image gallery and add-to-cart. |
+| `feature/product-catalog` | Home screen, category listing, product listing with search and price filtering, product detail with image gallery and add-to-cart, bottom navigation shell (Home, Cart, Orders, Profile). |
 | `feature/shopping-cart` | Cart read and mutations, server-calculated totals, checkout flow, order confirmation, duplicate-submit protection. |
 | `feature/orders` | Order history and order detail. |
 | `feature/quality` | Unit, Flow, repository and Compose UI test suites; consistent loading/empty/error states; accessibility; release signing config and ProGuard rules. |
@@ -806,9 +806,9 @@ Cross-cutting quality work: test coverage, consistent UI states, accessibility a
 | Phase | Branch | Status |
 |---|---|---|
 | 0 | Backend reconnaissance, OpenAPI spec snapshot | ✅ Complete |
-| 1 | `feature/core-architecture` | 🔲 Next |
-| 2 | `feature/auth` | 🔲 Pending |
-| 3 | `feature/product-catalog` | 🔲 Pending |
+| 1 | `feature/core-architecture` | ✅ Complete |
+| 2 | `feature/auth` | ✅ Complete |
+| 3 | `feature/product-catalog` | ⚠️ In progress (bottom nav missing) |
 | 4 | `feature/shopping-cart` | 🔲 Pending |
 | 5 | `feature/orders` | 🔲 Pending |
 | 6 | `feature/quality` | 🔲 Pending |
