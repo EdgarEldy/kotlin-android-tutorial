@@ -47,6 +47,7 @@ class CategoryRepositoryImpl @Inject constructor(
         val entities = page.content.map { dto ->
             CategoryEntity(id = dto.id, categoryName = dto.categoryName)
         }
+        categoryDao.deleteAll()
         categoryDao.upsertAll(entities)
     }
 
