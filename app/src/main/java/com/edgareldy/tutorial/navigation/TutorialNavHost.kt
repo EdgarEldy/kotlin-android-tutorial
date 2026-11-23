@@ -19,8 +19,8 @@ import com.edgareldy.tutorial.features.auth.screens.RegisterScreen
 import com.edgareldy.tutorial.features.auth.screens.ResetPasswordScreen
 import com.edgareldy.tutorial.features.auth.screens.SignInScreen
 import com.edgareldy.tutorial.features.auth.screens.VerifyOtpScreen
-import com.edgareldy.tutorial.features.product.screens.ProductDetailScreen
-import com.edgareldy.tutorial.features.product.screens.ProductListScreen
+import com.edgareldy.tutorial.features.products.screens.ProductDetailScreen
+import com.edgareldy.tutorial.features.products.screens.ProductListScreen
 
 /**
  * Root navigation host wiring every screen to its route.
