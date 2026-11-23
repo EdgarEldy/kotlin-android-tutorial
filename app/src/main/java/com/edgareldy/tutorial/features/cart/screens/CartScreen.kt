@@ -44,6 +44,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.edgareldy.tutorial.domain.model.Cart
 import com.edgareldy.tutorial.domain.model.CartItem
 import com.edgareldy.tutorial.features.cart.viewmodel.CartUiState
 import com.edgareldy.tutorial.features.cart.viewmodel.CartViewModel
@@ -148,7 +149,7 @@ fun CartScreen(
 
 @Composable
 private fun CartContent(
-    cart: com.edgareldy.tutorial.domain.model.Cart,
+    cart: Cart,
     onIncrease: (Long, Int) -> Unit,
     onDecrease: (Long, Int) -> Unit,
     onRemove: (Long) -> Unit,
