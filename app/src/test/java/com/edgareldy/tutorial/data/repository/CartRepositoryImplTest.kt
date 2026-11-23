@@ -229,4 +229,32 @@ class CartRepositoryImplTest {
         val cart = result.getOrNull()!!
         assertTrue(cart.items.isEmpty())
     }
+
+    @Test
+    fun _09_ShouldReturnSuccessWithIdZero_WhenCartIdIsNull() = runTest {
+        // New accounts receive {"id":null,"items":[],"total":0} before any item is added.
+        mockWebServer.enqueue(
+            MockResponse()
+                .setResponseCode(200)
+                .addHeader("Content-Type", "application/json")
+                .setBody(
+                    """
+                    {
+                        "success": true,
+                        "message": "Cart retrieved successfully",
+                        "data": {"id": null, "items": [], "total": 0},
+                        "timestamp": "2026-11-23T10:00:00"
+                    }
+                    """.trimIndent()
+                )
+        )
+
+        val result = repository.getCart()
+
+        assertTrue(result.isSuccess)
+        val cart = result.getOrNull()!!
+        assertEquals(0L, cart.id)
+        assertTrue(cart.items.isEmpty())
+        assertEquals(0.0, cart.total, 0.001)
+    }
 }

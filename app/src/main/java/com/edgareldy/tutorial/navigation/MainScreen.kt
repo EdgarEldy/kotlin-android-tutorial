@@ -208,6 +208,7 @@ fun MainScreen(onLogout: () -> Unit) {
                 CheckoutConfirmationScreen(
                     onNavigateBack = { navController.popBackStack() },
                     onOrderCreated = { orderId ->
+                        sharedCartViewModel.refreshCount()
                         navController.navigate(Screen.OrderDetail.createRoute(orderId)) {
                             popUpTo(Screen.Cart.route) { inclusive = true }
                         }
