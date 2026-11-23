@@ -18,7 +18,30 @@ android {
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField("String", "BASE_URL", "\"http://10.0.2.2:8080/\"")
+    }
+
+    flavorDimensions += "env"
+
+    productFlavors {
+        create("dev") {
+            dimension = "env"
+            applicationIdSuffix = ".dev"
+            versionNameSuffix = "-dev"
+            resValue("string", "app_name", "TutorialShop Dev")
+            buildConfigField("String", "BASE_URL", "\"http://127.0.0.1:8080/\"")
+        }
+        create("staging") {
+            dimension = "env"
+            applicationIdSuffix = ".staging"
+            versionNameSuffix = "-staging"
+            resValue("string", "app_name", "TutorialShop Staging")
+            buildConfigField("String", "BASE_URL", "\"http://127.0.0.1:8080/\"")
+        }
+        create("prod") {
+            dimension = "env"
+            resValue("string", "app_name", "TutorialShop")
+            buildConfigField("String", "BASE_URL", "\"https://api.example.com/\"")
+        }
     }
 
     buildTypes {
@@ -49,6 +72,10 @@ android {
     }
 }
 
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
+}
+
 dependencies {
     implementation(platform(libs.compose.bom))
     implementation(libs.bundles.compose)
@@ -64,9 +91,11 @@ dependencies {
     implementation(libs.bundles.lifecycle)
     implementation(libs.coil.compose)
     implementation(libs.security.crypto)
+    implementation(libs.splashscreen)
     debugImplementation(libs.compose.ui.tooling)
 
     testImplementation(libs.bundles.testing.unit)
+    testImplementation(libs.mockwebserver)
     androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation(libs.compose.ui.test.junit4)
     androidTestImplementation(libs.mockwebserver)
