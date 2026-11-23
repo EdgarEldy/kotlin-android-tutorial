@@ -209,7 +209,7 @@ private fun OrderItemCard(item: OrderItem, modifier: Modifier = Modifier) {
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = "x${item.quantity} x EUR %.2f".format(item.unitPrice),
+                    text = "${item.quantity} x EUR %.2f".format(item.unitPrice),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
