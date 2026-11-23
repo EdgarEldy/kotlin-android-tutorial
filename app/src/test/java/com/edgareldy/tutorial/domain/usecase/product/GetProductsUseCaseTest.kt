@@ -15,9 +15,9 @@ import org.junit.Test
 
 /**
  * Unit tests for GetProductsUseCase.
- * Verifies that the use case delegates all calls to ProductRepository with the
- * correct parameters, and that it propagates both success and failure results
- * unchanged to the caller.
+ * Verifies that filtering (search, price range) is applied in the use case layer,
+ * not delegated to the repository. The repository contract now has only categoryId,
+ * page and size; all other filters are domain logic owned by this use case.
  *
  * Created edgar.muhamyangabo on 11/23/26
  * Author: edgar.muhamyangabo
@@ -37,7 +37,7 @@ class GetProductsUseCaseTest {
 
     @Test
     fun _01_ShouldReturnSuccessWithEmptyList_WhenRepositoryReturnsEmptyList() = runTest {
-        every { repository.getProducts(any(), any(), any(), any(), any(), any()) } returns
+        every { repository.getProducts(any(), any(), any()) } returns
             flowOf(Result.success(emptyList()))
 
         val result = useCase().first()
@@ -49,7 +49,7 @@ class GetProductsUseCaseTest {
     @Test
     fun _02_ShouldReturnSuccessWithProducts_WhenRepositoryReturnsList() = runTest {
         val products = listOf(fakeProduct(1L, "iPhone"), fakeProduct(2L, "MacBook"))
-        every { repository.getProducts(any(), any(), any(), any(), any(), any()) } returns
+        every { repository.getProducts(any(), any(), any()) } returns
             flowOf(Result.success(products))
 
         val result = useCase().first()
@@ -60,38 +60,50 @@ class GetProductsUseCaseTest {
     }
 
     @Test
-    fun _03_ShouldDelegateCategoryId_WhenCategoryIdIsProvided() = runTest {
-        every { repository.getProducts(any(), any(), any(), any(), any(), any()) } returns
+    fun _03_ShouldPassCategoryIdToRepository_WhenCategoryIdIsProvided() = runTest {
+        every { repository.getProducts(any(), any(), any()) } returns
             flowOf(Result.success(emptyList()))
 
         useCase(categoryId = 5L).first()
 
-        verify(exactly = 1) { repository.getProducts(5L, null, null, null, 0, 20) }
+        verify(exactly = 1) { repository.getProducts(5L, 0, 20) }
     }
 
     @Test
-    fun _04_ShouldDelegateSearchQuery_WhenSearchIsProvided() = runTest {
-        every { repository.getProducts(any(), any(), any(), any(), any(), any()) } returns
-            flowOf(Result.success(emptyList()))
+    fun _04_ShouldFilterProductsByName_WhenSearchQueryIsProvided() = runTest {
+        val products = listOf(fakeProduct(1L, "iPhone 15"), fakeProduct(2L, "MacBook Pro"))
+        every { repository.getProducts(any(), any(), any()) } returns
+            flowOf(Result.success(products))
 
-        useCase(search = "phone").first()
+        val result = useCase(search = "iphone").first()
 
-        verify(exactly = 1) { repository.getProducts(null, "phone", null, null, 0, 20) }
+        assertTrue(result.isSuccess)
+        val filtered = result.getOrNull()!!
+        assertEquals(1, filtered.size)
+        assertEquals("iPhone 15", filtered[0].name)
     }
 
     @Test
-    fun _05_ShouldDelegatePriceRange_WhenMinAndMaxPricesAreProvided() = runTest {
-        every { repository.getProducts(any(), any(), any(), any(), any(), any()) } returns
-            flowOf(Result.success(emptyList()))
+    fun _05_ShouldFilterProductsByPrice_WhenMinAndMaxPricesAreProvided() = runTest {
+        val products = listOf(
+            fakeProduct(1L, "Budget Phone", unitPrice = 50.0),
+            fakeProduct(2L, "Mid Phone", unitPrice = 300.0),
+            fakeProduct(3L, "Premium Phone", unitPrice = 900.0)
+        )
+        every { repository.getProducts(any(), any(), any()) } returns
+            flowOf(Result.success(products))
 
-        useCase(minPrice = 100.0, maxPrice = 500.0).first()
+        val result = useCase(minPrice = 100.0, maxPrice = 500.0).first()
 
-        verify(exactly = 1) { repository.getProducts(null, null, 100.0, 500.0, 0, 20) }
+        assertTrue(result.isSuccess)
+        val filtered = result.getOrNull()!!
+        assertEquals(1, filtered.size)
+        assertEquals("Mid Phone", filtered[0].name)
     }
 
     @Test
     fun _06_ShouldReturnFailure_WhenRepositoryReturnsFailure() = runTest {
-        every { repository.getProducts(any(), any(), any(), any(), any(), any()) } returns
+        every { repository.getProducts(any(), any(), any()) } returns
             flowOf(Result.failure(RuntimeException("Network error")))
 
         val result = useCase().first()
@@ -100,10 +112,10 @@ class GetProductsUseCaseTest {
         assertEquals("Network error", result.exceptionOrNull()?.message)
     }
 
-    private fun fakeProduct(id: Long, name: String) = Product(
+    private fun fakeProduct(id: Long, name: String, unitPrice: Double = 9.99) = Product(
         id = id,
         name = name,
-        unitPrice = 9.99,
+        unitPrice = unitPrice,
         description = null,
         active = true,
         categoryId = null,
