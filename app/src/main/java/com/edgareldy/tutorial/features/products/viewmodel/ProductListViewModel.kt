@@ -36,7 +36,10 @@ sealed class ProductListUiState {
         val selectedCategoryId: Long?
     ) : ProductListUiState()
     data class Error(val message: String) : ProductListUiState()
-    object Empty : ProductListUiState()
+    data class Empty(
+        val categories: List<Category>,
+        val selectedCategoryId: Long?
+    ) : ProductListUiState()
 }
 
 /**
@@ -90,7 +93,10 @@ class ProductListViewModel @Inject constructor(
                                 ProductListUiState.Error(
                                     productsResult.exceptionOrNull()?.message ?: "Failed to load products"
                                 )
-                            products.isEmpty() -> ProductListUiState.Empty
+                            products.isEmpty() -> ProductListUiState.Empty(
+                                categories = categories,
+                                selectedCategoryId = categoryId
+                            )
                             else -> ProductListUiState.Success(
                                 products = products,
                                 categories = categories,
