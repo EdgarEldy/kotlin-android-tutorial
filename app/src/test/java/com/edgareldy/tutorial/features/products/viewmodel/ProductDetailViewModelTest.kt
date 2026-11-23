@@ -3,6 +3,7 @@ package com.edgareldy.tutorial.features.products.viewmodel
 import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
 import com.edgareldy.tutorial.domain.model.Product
+import com.edgareldy.tutorial.domain.usecase.cart.AddCartItemUseCase
 import com.edgareldy.tutorial.domain.usecase.product.GetProductByIdUseCase
 import com.edgareldy.tutorial.navigation.Screen
 import io.mockk.every
@@ -37,12 +38,14 @@ class ProductDetailViewModelTest {
     private val testDispatcher = UnconfinedTestDispatcher()
 
     private lateinit var useCase: GetProductByIdUseCase
+    private lateinit var addCartItemUseCase: AddCartItemUseCase
     private lateinit var savedStateHandle: SavedStateHandle
 
     @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
         useCase = mockk()
+        addCartItemUseCase = mockk()
         savedStateHandle = SavedStateHandle(
             mapOf(Screen.ProductDetail.ARG_PRODUCT_ID to 42L)
         )
@@ -66,7 +69,7 @@ class ProductDetailViewModelTest {
         images = emptyList()
     )
 
-    private fun createViewModel() = ProductDetailViewModel(savedStateHandle, useCase)
+    private fun createViewModel() = ProductDetailViewModel(savedStateHandle, useCase, addCartItemUseCase)
 
     // --- Tests ---
 

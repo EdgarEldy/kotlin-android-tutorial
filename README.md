@@ -721,17 +721,17 @@ Cart management and checkout.
 
 ### Tasks
 
-- [ ] Domain: `Cart`, `CartItem` models
-- [ ] Domain: `CartRepository` interface
-- [ ] Domain: `GetCartUseCase`, `AddToCartUseCase`, `UpdateCartItemUseCase`, `RemoveCartItemUseCase`, `ClearCartUseCase`
+- [x] Domain: `Cart`, `CartItem` models
+- [x] Domain: `CartRepository` interface
+- [x] Domain: `GetCartUseCase`, `AddCartItemUseCase`, `UpdateCartItemUseCase`, `RemoveCartItemUseCase`, `ClearCartUseCase`, `GetCartItemCountUseCase`
 - [ ] Domain: `CheckoutUseCase`
-- [ ] Data: `CartRepositoryImpl`
-- [ ] `CartScreen` + `CartViewModel` + `CartUiState`
+- [x] Data: `CartRepositoryImpl`
+- [x] `CartScreen` + `CartViewModel` + `CartUiState`
 - [ ] `OrderConfirmationScreen`
-- [ ] Add-to-cart action wired from `ProductDetailScreen`
-- [ ] Cart item count badge on the navigation bar
-- [ ] Checkout button disabled while a request is in flight (duplicate-submit protection)
-- [ ] Display server-calculated total; never compute totals on the client
+- [x] Add-to-cart action wired from `ProductDetailScreen`
+- [x] Cart item count badge on the navigation bar
+- [x] Checkout button disabled while a request is in flight (duplicate-submit protection)
+- [x] Display server-calculated total; never compute totals on the client
 - [ ] Tests: `CartRepositoryImplTest`, `CheckoutUseCaseTest`, `CartViewModelTest`
 
 ---
@@ -811,7 +811,7 @@ Cross-cutting quality work: test coverage, consistent UI states, accessibility a
 | 1 | `feature/core-architecture` | ✅ Complete |
 | 2 | `feature/auth` | ✅ Complete |
 | 3 | `feature/product-catalog` | ⚠️ In progress (bottom nav missing) |
-| 4 | `feature/shopping-cart` | 🔲 Pending |
+| 4 | `feature/shopping-cart` | ⚠️ In progress (checkout, order confirmation and tests pending) |
 | 5 | `feature/orders` | 🔲 Pending |
 | 6 | `feature/quality` | 🔲 Pending |
 
