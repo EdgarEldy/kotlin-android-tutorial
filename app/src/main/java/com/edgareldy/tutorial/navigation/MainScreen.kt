@@ -181,8 +181,9 @@ fun MainScreen(onLogout: () -> Unit) {
                         }
                     },
                     onNavigateToCheckout = {
-                        navController.navigate("checkout")
-                    }
+                        navController.navigate(Screen.Checkout.route)
+                    },
+                    onCartChanged = { sharedCartViewModel.refreshCount() }
                 )
             }
             composable(Screen.OrderList.route) {
