@@ -760,12 +760,13 @@ Order history and order detail.
 - [x] Data: `OrderRepositoryImpl`
 - [x] `OrderListScreen` + `OrderListViewModel` + `OrderListUiState`
 - [x] `OrderDetailScreen` + `OrderDetailViewModel`
+- [x] `CheckoutConfirmationScreen` + `CheckoutConfirmationViewModel`
 - [x] `OrderStatusBadge` composable: color-coded chip per status
 - [x] Pull-to-refresh on the order list
 - [x] Room entities: `OrderEntity`, `OrderItemEntity`
 - [x] DAOs: `OrderDao` (upsert, query all, query by id)
 - [x] Repository offline strategy: serve cached orders immediately, refresh on pull-to-refresh
-- [ ] Tests: `OrderRepositoryImplTest`, `GetOrdersUseCaseTest`, `OrderListViewModelTest`
+- [x] Tests: `OrderRepositoryImplTest`, `GetOrdersUseCaseTest`, `OrderListViewModelTest`
 
 ---
 
@@ -778,7 +779,7 @@ Order history and order detail.
 | 2 | `feature/auth` | ✅ Complete |
 | 3 | `feature/product-catalog` | ⚠️ In progress (bottom nav missing) |
 | 4 | `feature/shopping-cart` | ⚠️ In progress (checkout, order confirmation and tests pending) |
-| 5 | `feature/orders` | 🔲 Pending |
+| 5 | `feature/orders` | ✅ Complete |
 
 ### Phase 0 findings
 
