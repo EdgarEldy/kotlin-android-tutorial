@@ -158,6 +158,7 @@ class ProductRepositoryImplTest {
                 success = true,
                 data = PageResponse(content = dtos)
             )
+            coEvery { productDao.deleteAll() } returns Unit
             coEvery { productDao.upsertAll(any()) } returns Unit
 
             repository.refreshProducts(null)
