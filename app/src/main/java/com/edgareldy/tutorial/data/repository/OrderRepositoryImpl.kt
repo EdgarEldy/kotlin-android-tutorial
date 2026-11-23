@@ -41,6 +41,7 @@ class OrderRepositoryImpl @Inject constructor(
 
     override fun getOrders(page: Int, size: Int): Flow<Result<List<Order>>> =
         orderDao.getOrders()
+            // items loaded on demand by getOrderById - not needed for the list screen
             .map { entities -> Result.success(entities.map { it.toDomain(emptyList()) }) }
             .onStart {
                 scope.launch {
@@ -107,6 +108,9 @@ class OrderRepositoryImpl @Inject constructor(
 
     private suspend fun upsertOrderWithItems(dto: OrderResponse) {
         orderDao.upsertAll(listOf(dto.toEntity()))
+        // Delete existing items first to avoid orphaned rows when the server
+        // removes an article from an order between two fetches.
+        orderDao.deleteItemsByOrderId(dto.id)
         if (dto.items.isNotEmpty()) {
             val itemEntities = dto.items.map { item ->
                 OrderItemEntity(
