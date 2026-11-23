@@ -178,6 +178,13 @@ fun ProductListScreen(
                     }
 
                     is ProductListUiState.Empty -> {
+                        CategoryChipRow(
+                            categories = state.categories,
+                            selectedCategoryId = state.selectedCategoryId,
+                            onCategorySelected = { viewModel.selectCategory(it) },
+                            modifier = Modifier.padding(horizontal = 16.dp)
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
                         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                             Text(
                                 text = "No products found",
