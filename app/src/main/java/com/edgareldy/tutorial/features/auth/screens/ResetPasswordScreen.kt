@@ -70,6 +70,7 @@ fun ResetPasswordScreen(
     var newPassword by rememberSaveable { mutableStateOf("") }
     var confirmPassword by rememberSaveable { mutableStateOf("") }
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
+    var confirmPasswordVisible by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(uiState) {
         when (val state = uiState) {
@@ -188,7 +189,17 @@ fun ResetPasswordScreen(
             value = confirmPassword,
             onValueChange = { confirmPassword = it },
             label = "Confirm password",
-            visualTransformation = PasswordVisualTransformation(),
+            visualTransformation = if (confirmPasswordVisible) VisualTransformation.None
+                                   else PasswordVisualTransformation(),
+            trailingIcon = {
+                IconButton(onClick = { confirmPasswordVisible = !confirmPasswordVisible }) {
+                    Icon(
+                        imageVector = if (confirmPasswordVisible) Icons.Default.Visibility
+                                      else Icons.Default.VisibilityOff,
+                        contentDescription = "Toggle confirm password visibility"
+                    )
+                }
+            },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Password,
                 imeAction = ImeAction.Done
