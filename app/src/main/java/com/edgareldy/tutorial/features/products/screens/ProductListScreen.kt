@@ -84,6 +84,8 @@ fun ProductListScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val isRefreshing by viewModel.isRefreshing.collectAsStateWithLifecycle()
+    val categories by viewModel.categories.collectAsStateWithLifecycle()
+    val selectedCategoryId by viewModel.selectedCategoryId.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val focusManager = LocalFocusManager.current
 
@@ -170,6 +172,15 @@ fun ProductListScreen(
                         .padding(horizontal = 16.dp, vertical = 12.dp)
                 )
 
+                // Category chips - always visible regardless of state
+                CategoryChipRow(
+                    categories = categories,
+                    selectedCategoryId = selectedCategoryId,
+                    onCategorySelected = { viewModel.selectCategory(it) },
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+
                 when (val state = uiState) {
                     is ProductListUiState.Loading -> {
                         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -178,13 +189,6 @@ fun ProductListScreen(
                     }
 
                     is ProductListUiState.Empty -> {
-                        CategoryChipRow(
-                            categories = state.categories,
-                            selectedCategoryId = state.selectedCategoryId,
-                            onCategorySelected = { viewModel.selectCategory(it) },
-                            modifier = Modifier.padding(horizontal = 16.dp)
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
                         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                             Text(
                                 text = "No products found",
@@ -205,16 +209,6 @@ fun ProductListScreen(
                     }
 
                     is ProductListUiState.Success -> {
-                        // Category chips
-                        CategoryChipRow(
-                            categories = state.categories,
-                            selectedCategoryId = state.selectedCategoryId,
-                            onCategorySelected = { viewModel.selectCategory(it) },
-                            modifier = Modifier.padding(horizontal = 16.dp)
-                        )
-
-                        Spacer(modifier = Modifier.height(8.dp))
-
                         // Product grid
                         LazyVerticalGrid(
                             columns = GridCells.Fixed(2),
