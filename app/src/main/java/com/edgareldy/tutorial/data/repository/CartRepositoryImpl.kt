@@ -60,7 +60,7 @@ class CartRepositoryImpl @Inject constructor(
     // --- Mappers ---
 
     private fun CartResponse.toDomain() = Cart(
-        id = id,
+        id = id ?: 0L,
         items = items.map { item ->
             CartItem(
                 id = item.id,

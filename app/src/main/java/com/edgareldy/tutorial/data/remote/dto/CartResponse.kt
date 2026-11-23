@@ -14,7 +14,7 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class CartResponse(
-    @SerialName("id") val id: Long,
+    @SerialName("id") val id: Long?,
     @SerialName("items") val items: List<CartItemResponse> = emptyList(),
     @SerialName("total") val total: Double = 0.0
 )
