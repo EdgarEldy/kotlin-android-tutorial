@@ -8,8 +8,11 @@ import com.edgareldy.tutorial.domain.usecase.cart.GetCartUseCase
 import com.edgareldy.tutorial.domain.usecase.cart.RemoveCartItemUseCase
 import com.edgareldy.tutorial.domain.usecase.cart.UpdateCartItemUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -56,6 +59,9 @@ class CartViewModel @Inject constructor(
     private val _snackbarMessage = MutableStateFlow<String?>(null)
     val snackbarMessage: StateFlow<String?> = _snackbarMessage.asStateFlow()
 
+    private val _cartMutationEvent = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
+    val cartMutationEvent: SharedFlow<Unit> = _cartMutationEvent.asSharedFlow()
+
     fun loadCart() {
         viewModelScope.launch {
             _uiState.value = CartUiState.Loading
@@ -79,6 +85,7 @@ class CartViewModel @Inject constructor(
                 onSuccess = { cart ->
                     _uiState.value = if (cart.items.isEmpty()) CartUiState.Empty
                     else CartUiState.Success(cart)
+                    _cartMutationEvent.tryEmit(Unit)
                 },
                 onFailure = { error ->
                     _snackbarMessage.value = error.message ?: "Failed to update quantity"
@@ -94,6 +101,7 @@ class CartViewModel @Inject constructor(
                     onSuccess = { cart ->
                         _uiState.value = if (cart.items.isEmpty()) CartUiState.Empty
                         else CartUiState.Success(cart)
+                        _cartMutationEvent.tryEmit(Unit)
                     },
                     onFailure = { error ->
                         _snackbarMessage.value = error.message ?: "Failed to update quantity"
@@ -111,6 +119,7 @@ class CartViewModel @Inject constructor(
                 onSuccess = { cart ->
                     _uiState.value = if (cart.items.isEmpty()) CartUiState.Empty
                     else CartUiState.Success(cart)
+                    _cartMutationEvent.tryEmit(Unit)
                 },
                 onFailure = { error ->
                     _snackbarMessage.value = error.message ?: "Failed to remove item"
@@ -122,7 +131,10 @@ class CartViewModel @Inject constructor(
     fun clearCart() {
         viewModelScope.launch {
             clearCartUseCase().fold(
-                onSuccess = { _uiState.value = CartUiState.Empty },
+                onSuccess = {
+                    _uiState.value = CartUiState.Empty
+                    _cartMutationEvent.tryEmit(Unit)
+                },
                 onFailure = { error ->
                     _snackbarMessage.value = error.message ?: "Failed to clear cart"
                 }
