@@ -54,6 +54,7 @@ import com.edgareldy.tutorial.domain.model.Product
 import com.edgareldy.tutorial.features.products.viewmodel.ProductDetailUiState
 import com.edgareldy.tutorial.features.products.viewmodel.ProductDetailViewModel
 
+
 /**
  * Product detail screen showing images, description, quantity selector and
  * an Add to Cart button that triggers [ProductDetailViewModel.addToCart].
@@ -74,6 +75,7 @@ fun ProductDetailScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarMessage by viewModel.snackbarMessage.collectAsStateWithLifecycle()
+    val addToCartLoading by viewModel.addToCartLoading.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(snackbarMessage) {
@@ -139,7 +141,7 @@ fun ProductDetailScreen(
                         onAddToCart = { quantity ->
                             viewModel.addToCart(quantity, onSuccess = onCartUpdated)
                         },
-                        viewModel = viewModel,
+                        isAddingToCart = addToCartLoading,
                         modifier = Modifier.fillMaxSize()
                     )
                 }
@@ -152,12 +154,12 @@ fun ProductDetailScreen(
 private fun ProductDetailContent(
     product: Product,
     onAddToCart: (Int) -> Unit,
-    viewModel: ProductDetailViewModel,
+    isAddingToCart: Boolean,
     modifier: Modifier = Modifier
 ) {
     var quantity by rememberSaveable { mutableIntStateOf(1) }
     val scrollState = rememberScrollState()
-    val addToCartLoading by viewModel.addToCartLoading.collectAsStateWithLifecycle()
+    val addToCartLoading = isAddingToCart
 
     val primaryImage = product.images
         .sortedBy { it.displayOrder }
