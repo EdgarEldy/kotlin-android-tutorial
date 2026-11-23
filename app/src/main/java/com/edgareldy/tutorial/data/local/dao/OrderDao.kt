@@ -9,8 +9,8 @@ import kotlinx.coroutines.flow.Flow
 
 /**
  * Room DAO for the orders and order_items tables.
- * Uses @Upsert so that a network refresh idempotently inserts or updates
- * rows without first deleting the whole cache (which would flicker the UI).
+ * Uses @Upsert to insert or update rows idempotently. deleteAll() is called
+ * by the repository before each bulk upsert to avoid orphaned rows.
  *
  * Created edgar.muhamyangabo on 11/23/26
  * Author: edgar.muhamyangabo
@@ -34,6 +34,9 @@ interface OrderDao {
 
     @Query("SELECT * FROM order_items WHERE orderId = :orderId")
     fun getOrderItems(orderId: Long): Flow<List<OrderItemEntity>>
+
+    @Query("DELETE FROM order_items WHERE orderId = :orderId")
+    suspend fun deleteItemsByOrderId(orderId: Long)
 
     @Query("DELETE FROM orders")
     suspend fun deleteAll()
