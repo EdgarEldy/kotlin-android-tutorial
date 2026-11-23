@@ -1,10 +1,6 @@
 package com.edgareldy.tutorial.navigation
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -14,13 +10,10 @@ import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.edgareldy.tutorial.features.auth.screens.ActivateAccountScreen
 import com.edgareldy.tutorial.features.auth.screens.ForgotPasswordScreen
-import com.edgareldy.tutorial.features.auth.screens.ProfileScreen
 import com.edgareldy.tutorial.features.auth.screens.RegisterScreen
 import com.edgareldy.tutorial.features.auth.screens.ResetPasswordScreen
 import com.edgareldy.tutorial.features.auth.screens.SignInScreen
 import com.edgareldy.tutorial.features.auth.screens.VerifyOtpScreen
-import com.edgareldy.tutorial.features.products.screens.ProductDetailScreen
-import com.edgareldy.tutorial.features.products.screens.ProductListScreen
 
 /**
  * Root navigation host wiring every screen to its route.
