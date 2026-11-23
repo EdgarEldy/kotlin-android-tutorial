@@ -645,8 +645,9 @@ All authentication screens, session management and the mobile OTP password reset
 - [x] Clear all credentials on logout
 - [x] Never log or persist OTP values
 - [x] Never call web password reset endpoints (`/api/v1/auth/forgot-password`)
-- [ ] Tests: `SignInViewModelTest`, `AuthRepositoryImplTest`, `SignInUseCaseTest`
-- [ ] Tests: `PasswordResetRepositoryImplTest`, `VerifyOtpViewModelTest`
+- [x] Tests: `SignInViewModelTest`, `AuthRepositoryImplTest`, `SignInUseCaseTest`
+- [x] Tests: `VerifyOtpViewModelTest` (+ all other ViewModel tests migrated to Turbine)
+- [ ] Tests: `PasswordResetRepositoryImplTest`
 
 ---
 
