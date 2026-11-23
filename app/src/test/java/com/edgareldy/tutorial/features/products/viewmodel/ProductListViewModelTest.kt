@@ -128,13 +128,7 @@ class ProductListViewModelTest {
 
         viewModel.uiState.test {
             assertEquals(ProductListUiState.Loading, awaitItem())
-            val state = awaitItem()
-            assertTrue(state is ProductListUiState.Empty)
-            with(state as ProductListUiState.Empty) {
-                assertEquals(1, categories.size)
-                assertEquals("Electronics", categories[0].name)
-                assertEquals(null, selectedCategoryId)
-            }
+            assertEquals(ProductListUiState.Empty, awaitItem())
             cancelAndIgnoreRemainingEvents()
         }
     }
