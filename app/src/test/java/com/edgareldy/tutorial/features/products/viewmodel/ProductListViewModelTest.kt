@@ -1,4 +1,4 @@
-package com.edgareldy.tutorial.features.product.viewmodel
+package com.edgareldy.tutorial.features.products.viewmodel
 
 import app.cash.turbine.test
 import com.edgareldy.tutorial.domain.model.Category
