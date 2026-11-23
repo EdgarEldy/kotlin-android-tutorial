@@ -39,9 +39,6 @@ class ProductRepositoryImpl @Inject constructor(
 
     override fun getProducts(
         categoryId: Long?,
-        search: String?,
-        minPrice: Double?,
-        maxPrice: Double?,
         page: Int,
         size: Int
     ): Flow<Result<List<Product>>> {
@@ -52,21 +49,7 @@ class ProductRepositoryImpl @Inject constructor(
         }
 
         return daoFlow
-            .map { rows ->
-                val products = rows
-                    .map { it.toDomain() }
-                    .let { list ->
-                        if (search.isNullOrBlank()) list
-                        else list.filter { it.name.contains(search, ignoreCase = true) }
-                    }
-                    .let { list ->
-                        if (minPrice != null) list.filter { it.unitPrice >= minPrice } else list
-                    }
-                    .let { list ->
-                        if (maxPrice != null) list.filter { it.unitPrice <= maxPrice } else list
-                    }
-                Result.success(products)
-            }
+            .map { rows -> Result.success(rows.map { pwi: ProductWithImages -> pwi.toDomain() }) }
             .onStart {
                 scope.launch {
                     runCatching {
