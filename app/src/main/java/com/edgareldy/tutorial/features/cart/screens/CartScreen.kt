@@ -64,6 +64,7 @@ import com.edgareldy.tutorial.features.cart.viewmodel.CartViewModel
 fun CartScreen(
     onNavigateToProducts: () -> Unit,
     onNavigateToCheckout: () -> Unit,
+    onCartChanged: () -> Unit = {},
     viewModel: CartViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -72,6 +73,10 @@ fun CartScreen(
 
     LaunchedEffect(Unit) {
         viewModel.loadCart()
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.cartMutationEvent.collect { onCartChanged() }
     }
 
     LaunchedEffect(snackbarMessage) {
