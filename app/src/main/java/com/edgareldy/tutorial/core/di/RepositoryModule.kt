@@ -1,9 +1,13 @@
 package com.edgareldy.tutorial.core.di
 
 import com.edgareldy.tutorial.data.repository.AuthRepositoryImpl
+import com.edgareldy.tutorial.data.repository.CategoryRepositoryImpl
 import com.edgareldy.tutorial.data.repository.PasswordResetRepositoryImpl
+import com.edgareldy.tutorial.data.repository.ProductRepositoryImpl
 import com.edgareldy.tutorial.domain.repository.AuthRepository
+import com.edgareldy.tutorial.domain.repository.CategoryRepository
 import com.edgareldy.tutorial.domain.repository.PasswordResetRepository
+import com.edgareldy.tutorial.domain.repository.ProductRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -31,4 +35,12 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindPasswordResetRepository(impl: PasswordResetRepositoryImpl): PasswordResetRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindProductRepository(impl: ProductRepositoryImpl): ProductRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindCategoryRepository(impl: CategoryRepositoryImpl): CategoryRepository
 }

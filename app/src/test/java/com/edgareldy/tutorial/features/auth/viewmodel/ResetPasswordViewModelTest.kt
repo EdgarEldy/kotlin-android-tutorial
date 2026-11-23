@@ -79,8 +79,10 @@ class ResetPasswordViewModelTest {
         val useCase = mockk<ConfirmPasswordResetUseCase>()
         val viewModel = ResetPasswordViewModel(useCase)
 
-        coEvery { useCase(any(), any(), any()) } returns
+        coEvery { useCase(any(), any(), any()) } coAnswers {
+            delay(1)
             Result.failure(RuntimeException("Token expired"))
+        }
 
         viewModel.uiState.test {
             assertEquals(ResetPasswordUiState.Idle, awaitItem())
@@ -98,8 +100,10 @@ class ResetPasswordViewModelTest {
         val useCase = mockk<ConfirmPasswordResetUseCase>()
         val viewModel = ResetPasswordViewModel(useCase)
 
-        coEvery { useCase(any(), any(), any()) } returns
+        coEvery { useCase(any(), any(), any()) } coAnswers {
+            delay(1)
             Result.failure(IllegalArgumentException("Passwords do not match"))
+        }
 
         viewModel.uiState.test {
             assertEquals(ResetPasswordUiState.Idle, awaitItem())
@@ -117,7 +121,10 @@ class ResetPasswordViewModelTest {
         val useCase = mockk<ConfirmPasswordResetUseCase>()
         val viewModel = ResetPasswordViewModel(useCase)
 
-        coEvery { useCase(any(), any(), any()) } returns Result.failure(RuntimeException())
+        coEvery { useCase(any(), any(), any()) } coAnswers {
+            delay(1)
+            Result.failure(RuntimeException())
+        }
 
         viewModel.uiState.test {
             assertEquals(ResetPasswordUiState.Idle, awaitItem())
@@ -135,8 +142,10 @@ class ResetPasswordViewModelTest {
         val useCase = mockk<ConfirmPasswordResetUseCase>()
         val viewModel = ResetPasswordViewModel(useCase)
 
-        coEvery { useCase(any(), any(), any()) } returns
+        coEvery { useCase(any(), any(), any()) } coAnswers {
+            delay(1)
             Result.failure(RuntimeException("Network error"))
+        }
 
         viewModel.uiState.test {
             assertEquals(ResetPasswordUiState.Idle, awaitItem())

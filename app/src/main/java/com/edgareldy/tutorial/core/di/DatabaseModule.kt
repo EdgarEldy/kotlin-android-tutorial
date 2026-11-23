@@ -3,6 +3,8 @@ package com.edgareldy.tutorial.core.di
 import android.content.Context
 import androidx.room.Room
 import com.edgareldy.tutorial.data.local.TutorialDatabase
+import com.edgareldy.tutorial.data.local.dao.CategoryDao
+import com.edgareldy.tutorial.data.local.dao.ProductDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -12,12 +14,12 @@ import javax.inject.Singleton
 
 /**
  * Hilt module that provides the Room database as a singleton.
- * fallbackToDestructiveMigration is disabled intentionally - explicit
- * migration strategies will be added as the schema evolves.
+ * Each DAO is also provided as a singleton so the dependency graph can inject
+ * them directly into repositories without holding a reference to the database.
  *
  * Created edgar.muhamyangabo on 11/21/26
  * Author: edgar.muhamyangabo
- * Date: 11/21/26
+ * Date: 11/23/26
  * Project: kotlin-android-tutorial
  */
 @Module
@@ -31,5 +33,15 @@ object DatabaseModule {
             context,
             TutorialDatabase::class.java,
             "tutorial_db"
-        ).build()
+        )
+        .fallbackToDestructiveMigration()
+        .build()
+
+    @Provides
+    @Singleton
+    fun provideProductDao(database: TutorialDatabase): ProductDao = database.productDao()
+
+    @Provides
+    @Singleton
+    fun provideCategoryDao(database: TutorialDatabase): CategoryDao = database.categoryDao()
 }

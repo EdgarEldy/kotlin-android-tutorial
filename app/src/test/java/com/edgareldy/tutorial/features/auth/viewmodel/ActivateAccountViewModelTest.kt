@@ -1,6 +1,7 @@
 package com.edgareldy.tutorial.features.auth.viewmodel
 
 import app.cash.turbine.test
+import com.edgareldy.tutorial.domain.model.User
 import com.edgareldy.tutorial.domain.usecase.auth.ActivateAccountUseCase
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -31,6 +32,7 @@ import org.junit.Test
 class ActivateAccountViewModelTest {
 
     private val testDispatcher = UnconfinedTestDispatcher()
+    private val mockUser = User(1L, "Test", "User", "testuser", "user@example.com", true)
 
     @Before
     fun setUp() {
@@ -60,7 +62,7 @@ class ActivateAccountViewModelTest {
 
         coEvery { useCase(any(), any()) } coAnswers {
             delay(100)
-            Result.success(Unit)
+            Result.success(mockUser)
         }
 
         viewModel.uiState.test {
@@ -77,8 +79,10 @@ class ActivateAccountViewModelTest {
         val useCase = mockk<ActivateAccountUseCase>()
         val viewModel = ActivateAccountViewModel(useCase)
 
-        coEvery { useCase(any(), any()) } returns
+        coEvery { useCase(any(), any()) } coAnswers {
+            delay(1)
             Result.failure(RuntimeException("Activation code expired"))
+        }
 
         viewModel.uiState.test {
             assertEquals(ActivateAccountUiState.Idle, awaitItem())
@@ -96,7 +100,10 @@ class ActivateAccountViewModelTest {
         val useCase = mockk<ActivateAccountUseCase>()
         val viewModel = ActivateAccountViewModel(useCase)
 
-        coEvery { useCase(any(), any()) } returns Result.failure(RuntimeException())
+        coEvery { useCase(any(), any()) } coAnswers {
+            delay(1)
+            Result.failure(RuntimeException())
+        }
 
         viewModel.uiState.test {
             assertEquals(ActivateAccountUiState.Idle, awaitItem())
@@ -114,8 +121,10 @@ class ActivateAccountViewModelTest {
         val useCase = mockk<ActivateAccountUseCase>()
         val viewModel = ActivateAccountViewModel(useCase)
 
-        coEvery { useCase(any(), any()) } returns
+        coEvery { useCase(any(), any()) } coAnswers {
+            delay(1)
             Result.failure(RuntimeException("Network error"))
+        }
 
         viewModel.uiState.test {
             assertEquals(ActivateAccountUiState.Idle, awaitItem())
