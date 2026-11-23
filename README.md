@@ -674,23 +674,23 @@ Browsing experience: home screen, category navigation, product listing with sear
 
 ### Tasks
 
-- [ ] Domain: `Product`, `Category`, `ProductImage` models
-- [ ] Domain: `ProductRepository` interface, `CategoryRepository` interface
-- [ ] Domain: `GetProductsUseCase` (with filter params), `GetProductByIdUseCase`
-- [ ] Domain: `GetCategoriesUseCase`, `GetCategoryByIdUseCase`
-- [ ] Data: `ProductRepositoryImpl`, `CategoryRepositoryImpl`
-- [ ] Data: mappers from generated DTOs to domain models
+- [x] Domain: `Product`, `Category`, `ProductImage` models
+- [x] Domain: `ProductRepository` interface, `CategoryRepository` interface
+- [x] Domain: `GetProductsUseCase` (with filter params), `GetProductByIdUseCase`
+- [x] Domain: `GetCategoriesUseCase`, `RefreshProductsUseCase`
+- [x] Data: `ProductRepositoryImpl`, `CategoryRepositoryImpl`
+- [x] Data: mappers from generated DTOs to domain models
 - [ ] `HomeScreen` + `HomeViewModel` + `HomeUiState`
 - [ ] `CategoryListScreen` + `CategoryListViewModel`
-- [ ] `ProductListScreen` + `ProductListViewModel` (search query, category filter, price range, pagination state)
-- [ ] `ProductDetailScreen` + `ProductDetailViewModel`
-- [ ] Coil image loading with placeholder and error fallback
-- [ ] Pull-to-refresh on list screens
-- [ ] Empty state when no products match the active filters
-- [ ] Room entities: `ProductEntity`, `CategoryEntity`, `ProductImageEntity`
-- [ ] DAOs: `ProductDao` (upsert, query by id, query with filters), `CategoryDao`
-- [ ] Repository offline strategy: return cached data immediately, then refresh from network in the background; propagate network errors only when cache is empty
-- [ ] Cache invalidation on pull-to-refresh
+- [x] `ProductListScreen` + `ProductListViewModel` (search query, category filter, pagination state)
+- [x] `ProductDetailScreen` + `ProductDetailViewModel`
+- [x] Coil image loading with placeholder and error fallback
+- [x] Pull-to-refresh on list screens
+- [x] Empty state when no products match the active filters
+- [x] Room entities: `ProductEntity`, `CategoryEntity`, `ProductImageEntity`
+- [x] DAOs: `ProductDao` (upsert, query by id, query with filters), `CategoryDao`
+- [x] Repository offline strategy: return cached data immediately, then refresh from network in the background; propagate network errors only when cache is empty
+- [x] Cache invalidation on pull-to-refresh
 - [ ] Tests: `ProductRepositoryImplTest`, `GetProductsUseCaseTest`, `ProductListViewModelTest`
 
 ---

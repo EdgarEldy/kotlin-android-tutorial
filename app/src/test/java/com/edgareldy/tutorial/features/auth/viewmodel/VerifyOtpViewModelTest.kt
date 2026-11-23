@@ -78,7 +78,10 @@ class VerifyOtpViewModelTest {
         val useCase = mockk<VerifyPasswordResetOtpUseCase>()
         val viewModel = VerifyOtpViewModel(useCase)
 
-        coEvery { useCase(any(), any()) } returns Result.success(Unit)
+        coEvery { useCase(any(), any()) } coAnswers {
+            delay(1)
+            Result.success(Unit)
+        }
 
         viewModel.uiState.test {
             assertEquals(VerifyOtpUiState.Idle, awaitItem())
@@ -96,8 +99,10 @@ class VerifyOtpViewModelTest {
         val useCase = mockk<VerifyPasswordResetOtpUseCase>()
         val viewModel = VerifyOtpViewModel(useCase)
 
-        coEvery { useCase(any(), any()) } returns
+        coEvery { useCase(any(), any()) } coAnswers {
+            delay(1)
             Result.failure(RuntimeException("Invalid or expired OTP"))
+        }
 
         viewModel.uiState.test {
             assertEquals(VerifyOtpUiState.Idle, awaitItem())
@@ -115,7 +120,10 @@ class VerifyOtpViewModelTest {
         val useCase = mockk<VerifyPasswordResetOtpUseCase>()
         val viewModel = VerifyOtpViewModel(useCase)
 
-        coEvery { useCase(any(), any()) } returns Result.failure(RuntimeException())
+        coEvery { useCase(any(), any()) } coAnswers {
+            delay(1)
+            Result.failure(RuntimeException())
+        }
 
         viewModel.uiState.test {
             assertEquals(VerifyOtpUiState.Idle, awaitItem())
@@ -133,8 +141,10 @@ class VerifyOtpViewModelTest {
         val useCase = mockk<VerifyPasswordResetOtpUseCase>()
         val viewModel = VerifyOtpViewModel(useCase)
 
-        coEvery { useCase(any(), any()) } returns
+        coEvery { useCase(any(), any()) } coAnswers {
+            delay(1)
             Result.failure(RuntimeException("Network error"))
+        }
 
         viewModel.uiState.test {
             assertEquals(VerifyOtpUiState.Idle, awaitItem())
