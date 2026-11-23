@@ -56,10 +56,6 @@ class CartViewModel @Inject constructor(
     private val _snackbarMessage = MutableStateFlow<String?>(null)
     val snackbarMessage: StateFlow<String?> = _snackbarMessage.asStateFlow()
 
-    init {
-        loadCart()
-    }
-
     fun loadCart() {
         viewModelScope.launch {
             _uiState.value = CartUiState.Loading
