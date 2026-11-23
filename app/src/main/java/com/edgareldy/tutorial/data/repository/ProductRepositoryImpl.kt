@@ -100,7 +100,6 @@ class ProductRepositoryImpl @Inject constructor(
         )
         val page = response.data ?: return
         val entities = page.content.map { it.toEntity() }
-        productDao.upsertAll(entities)
         val imageEntities = page.content.flatMap { dto ->
             dto.images.map { img ->
                 ProductImageEntity(
@@ -113,6 +112,8 @@ class ProductRepositoryImpl @Inject constructor(
                 )
             }
         }
+        productDao.deleteAll()
+        productDao.upsertAll(entities)
         if (imageEntities.isNotEmpty()) {
             productDao.upsertImages(imageEntities)
         }
