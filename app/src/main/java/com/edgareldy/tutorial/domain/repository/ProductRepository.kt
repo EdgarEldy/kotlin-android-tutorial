@@ -18,9 +18,6 @@ interface ProductRepository {
 
     fun getProducts(
         categoryId: Long? = null,
-        search: String? = null,
-        minPrice: Double? = null,
-        maxPrice: Double? = null,
         page: Int = 0,
         size: Int = 20
     ): Flow<Result<List<Product>>>
