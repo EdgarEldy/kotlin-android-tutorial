@@ -118,7 +118,7 @@ fun ProductListScreen(
                             Brush.linearGradient(
                                 listOf(
                                     Color(0xFF7C3AED),
-                                    Color(0xFF6750A4),
+                                    MaterialTheme.colorScheme.primary,
                                     Color(0xFF4A3580)
                                 )
                             )
