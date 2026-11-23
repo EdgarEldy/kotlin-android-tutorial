@@ -70,6 +70,10 @@ fun CartScreen(
     val snackbarMessage by viewModel.snackbarMessage.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
 
+    LaunchedEffect(Unit) {
+        viewModel.loadCart()
+    }
+
     LaunchedEffect(snackbarMessage) {
         snackbarMessage?.let { message ->
             snackbarHostState.showSnackbar(message)
