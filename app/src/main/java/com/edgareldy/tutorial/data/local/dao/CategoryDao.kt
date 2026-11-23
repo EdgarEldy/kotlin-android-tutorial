@@ -8,9 +8,9 @@ import kotlinx.coroutines.flow.Flow
 
 /**
  * Room DAO for the categories table.
- * Uses @Upsert (INSERT OR REPLACE) so a network refresh can be re-run safely
- * without having to clear the table first, preserving any referential integrity
- * with product rows that hold a categoryId foreign reference.
+ * Uses @Upsert (INSERT OR REPLACE) for per-row updates and @Query DELETE for
+ * full cache invalidation before a network refresh, so categories removed on
+ * the backend do not persist as phantom entries in the local cache.
  *
  * Created edgar.muhamyangabo on 11/23/26
  * Author: edgar.muhamyangabo
