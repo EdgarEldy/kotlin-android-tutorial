@@ -19,7 +19,7 @@ import retrofit2.http.Query
  */
 interface CategoryApiService {
 
-    @GET("api/v1/categories/")
+    @GET("api/v1/categories")
     suspend fun getCategories(
         @Query("page") page: Int = 0,
         @Query("size") size: Int = 50
