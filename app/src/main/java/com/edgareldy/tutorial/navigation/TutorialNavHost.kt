@@ -128,47 +128,14 @@ fun TutorialNavHost(
             }
         }
 
-        navigation(startDestination = Screen.ProductList.route, route = "main") {
-            composable(Screen.ProductList.route) {
-                ProductListScreen(
-                    onProductClick = { productId ->
-                        navController.navigate(Screen.ProductDetail.createRoute(productId))
+        composable("main") {
+            MainScreen(
+                onLogout = {
+                    navController.navigate("auth") {
+                        popUpTo("main") { inclusive = true }
                     }
-                )
-            }
-            composable(
-                route = Screen.ProductDetail.route,
-                arguments = listOf(navArgument(Screen.ProductDetail.ARG_PRODUCT_ID) {
-                    type = NavType.LongType
-                })
-            ) {
-                ProductDetailScreen(
-                    onNavigateBack = { navController.popBackStack() }
-                )
-            }
-            composable(Screen.Cart.route) {
-                Box(Modifier.fillMaxSize()) { Text("Cart - TODO Phase 4") }
-            }
-            composable(Screen.OrderList.route) {
-                Box(Modifier.fillMaxSize()) { Text("Orders - TODO Phase 5") }
-            }
-            composable(
-                route = Screen.OrderDetail.route,
-                arguments = listOf(navArgument(Screen.OrderDetail.ARG_ORDER_ID) {
-                    type = NavType.LongType
-                })
-            ) {
-                Box(Modifier.fillMaxSize()) { Text("Order Detail - TODO Phase 5") }
-            }
-            composable(Screen.Profile.route) {
-                ProfileScreen(
-                    onLogout = {
-                        navController.navigate("auth") {
-                            popUpTo("main") { inclusive = true }
-                        }
-                    }
-                )
-            }
+                }
+            )
         }
     }
 }
