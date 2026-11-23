@@ -91,8 +91,8 @@ class CartViewModelTest {
 
     @Test
     fun _01_ShouldEmitLoadingThenSuccess_WhenGetCartReturnsItems() = runTest(testDispatcher) {
-        // delay(1) makes the init coroutine suspend at the use-case call, leaving Loading
-        // visible to Turbine before the coroutine resolves to Success.
+        // delay(1) makes the loadCart coroutine suspend at the use-case call, leaving
+        // Loading visible to Turbine before the coroutine resolves to Success.
         val cart = fakeCart(fakeItem(1L, 2), fakeItem(2L, 1))
         coEvery { getCartUseCase() } coAnswers {
             delay(1)
@@ -102,7 +102,8 @@ class CartViewModelTest {
         val viewModel = createViewModel()
 
         viewModel.uiState.test {
-            assertEquals(CartUiState.Loading, awaitItem())
+            assertEquals(CartUiState.Loading, awaitItem()) // initial state
+            viewModel.loadCart()
             val state = awaitItem()
             assertTrue(state is CartUiState.Success)
             assertEquals(2, (state as CartUiState.Success).cart.items.size)
@@ -121,7 +122,8 @@ class CartViewModelTest {
         val viewModel = createViewModel()
 
         viewModel.uiState.test {
-            assertEquals(CartUiState.Loading, awaitItem())
+            assertEquals(CartUiState.Loading, awaitItem()) // initial state
+            viewModel.loadCart()
             assertEquals(CartUiState.Empty, awaitItem())
             cancelAndIgnoreRemainingEvents()
         }
@@ -137,7 +139,8 @@ class CartViewModelTest {
         val viewModel = createViewModel()
 
         viewModel.uiState.test {
-            assertEquals(CartUiState.Loading, awaitItem())
+            assertEquals(CartUiState.Loading, awaitItem()) // initial state
+            viewModel.loadCart()
             val state = awaitItem()
             assertTrue(state is CartUiState.Error)
             assertEquals("Network error", (state as CartUiState.Error).message)
@@ -151,6 +154,7 @@ class CartViewModelTest {
         coEvery { getCartUseCase() } returns Result.failure(RuntimeException())
 
         val viewModel = createViewModel()
+        viewModel.loadCart() // loadCart() runs synchronously (no delay), state = Error
 
         viewModel.uiState.test {
             val state = awaitItem()
@@ -273,13 +277,15 @@ class CartViewModelTest {
     fun _10_ShouldEmitLoadingThenSuccess_WhenLoadCartIsCalledExplicitly() =
         runTest(testDispatcher) {
             val cart = fakeCart(fakeItem(1L, 1))
-            // init uses returns (no delay), explicit reload uses delay(1) to capture Loading.
+            // Initial load uses returns (no delay), so loadCart() completes synchronously.
+            // Explicit reload uses delay(1) to let Turbine observe the Loading state.
             coEvery { getCartUseCase() } returns Result.success(cart)
 
             val viewModel = createViewModel()
+            viewModel.loadCart() // runs synchronously (no delay), state = Success
 
             viewModel.uiState.test {
-                awaitItem() // Success from init
+                awaitItem() // Success from initial loadCart()
 
                 // Reconfigure mock to introduce a delay so Loading is visible on reload.
                 coEvery { getCartUseCase() } coAnswers {

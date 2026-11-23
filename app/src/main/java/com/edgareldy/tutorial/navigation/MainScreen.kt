@@ -33,9 +33,9 @@ import androidx.navigation.navArgument
 import com.edgareldy.tutorial.features.auth.screens.ProfileScreen
 import com.edgareldy.tutorial.features.cart.screens.CartScreen
 import com.edgareldy.tutorial.features.cart.viewmodel.SharedCartViewModel
-import com.edgareldy.tutorial.features.order.screens.CheckoutConfirmationScreen
-import com.edgareldy.tutorial.features.order.screens.OrderDetailScreen
-import com.edgareldy.tutorial.features.order.screens.OrderListScreen
+import com.edgareldy.tutorial.features.orders.screens.CheckoutConfirmationScreen
+import com.edgareldy.tutorial.features.orders.screens.OrderDetailScreen
+import com.edgareldy.tutorial.features.orders.screens.OrderListScreen
 import com.edgareldy.tutorial.features.products.screens.ProductDetailScreen
 import com.edgareldy.tutorial.features.products.screens.ProductListScreen
 

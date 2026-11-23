@@ -104,6 +104,7 @@ class CategoryRepositoryImplTest {
                     success = true,
                     data = PageResponse(content = listOf(dto))
                 )
+            coEvery { categoryDao.deleteAll() } returns Unit
             coEvery { categoryDao.upsertAll(any()) } returns Unit
 
             repository.refreshCategories()

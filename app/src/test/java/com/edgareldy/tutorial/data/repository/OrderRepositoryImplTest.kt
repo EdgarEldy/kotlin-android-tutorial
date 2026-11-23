@@ -121,7 +121,7 @@ class OrderRepositoryImplTest {
     // --- Tests ---
 
     @Test
-    fun `_01_ShouldEmitCachedOrders_WhenDaoHasData`() = runTest(testDispatcher) {
+    fun _01_ShouldEmitCachedOrders_WhenDaoHasData() = runTest(testDispatcher) {
         // Given: DAO has one cached entity, network refresh returns 200
         val fakeEntity = OrderEntity(
             id = 1L,
@@ -155,7 +155,7 @@ class OrderRepositoryImplTest {
     }
 
     @Test
-    fun `_02_ShouldReturnSuccess_WhenCreateOrderResponseIs201`() = runTest(testDispatcher) {
+    fun _02_ShouldReturnSuccess_WhenCreateOrderResponseIs201() = runTest(testDispatcher) {
         // Given: server returns 201 with an order body
         mockWebServer.enqueue(
             MockResponse()
@@ -164,6 +164,7 @@ class OrderRepositoryImplTest {
                 .setBody(orderResponseBody(id = 42L, orderNumber = "ORD-042", status = "CONFIRMED"))
         )
         coEvery { mockOrderDao.upsertAll(any()) } just Runs
+        coEvery { mockOrderDao.deleteItemsByOrderId(any()) } just Runs
         coEvery { mockOrderDao.upsertItems(any()) } just Runs
 
         // When
@@ -177,7 +178,7 @@ class OrderRepositoryImplTest {
     }
 
     @Test
-    fun `_03_ShouldReturnFailure_WhenCreateOrderResponseIs401`() = runTest(testDispatcher) {
+    fun _03_ShouldReturnFailure_WhenCreateOrderResponseIs401() = runTest(testDispatcher) {
         // Given: server returns 401 Unauthorized
         mockWebServer.enqueue(MockResponse().setResponseCode(401))
 
@@ -189,7 +190,7 @@ class OrderRepositoryImplTest {
     }
 
     @Test
-    fun `_04_ShouldReturnFailure_WhenCreateOrderResponseIs500`() = runTest(testDispatcher) {
+    fun _04_ShouldReturnFailure_WhenCreateOrderResponseIs500() = runTest(testDispatcher) {
         // Given: server returns 500 Internal Server Error
         mockWebServer.enqueue(MockResponse().setResponseCode(500))
 
@@ -201,7 +202,7 @@ class OrderRepositoryImplTest {
     }
 
     @Test
-    fun `_05_ShouldVerifyDaoUpsertCalled_WhenCreateOrderSucceeds`() = runTest(testDispatcher) {
+    fun _05_ShouldVerifyDaoUpsertCalled_WhenCreateOrderSucceeds() = runTest(testDispatcher) {
         // Given
         mockWebServer.enqueue(
             MockResponse()
