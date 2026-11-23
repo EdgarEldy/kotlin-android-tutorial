@@ -60,6 +60,11 @@ class ProductListViewModel @Inject constructor(
     val uiState: StateFlow<ProductListUiState> = _uiState.asStateFlow()
 
     private val _selectedCategoryId = MutableStateFlow<Long?>(null)
+    val selectedCategoryId: StateFlow<Long?> = _selectedCategoryId.asStateFlow()
+
+    private val _categories = MutableStateFlow<List<Category>>(emptyList())
+    val categories: StateFlow<List<Category>> = _categories.asStateFlow()
+
     private val _searchQuery = MutableStateFlow("")
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing: StateFlow<Boolean> = _isRefreshing.asStateFlow()
@@ -84,6 +89,7 @@ class ProductListViewModel @Inject constructor(
                     ) { productsResult, categoriesResult ->
                         val products = productsResult.getOrElse { emptyList() }
                         val categories = categoriesResult.getOrElse { emptyList() }
+                        _categories.value = categories
 
                         when {
                             productsResult.isFailure && products.isEmpty() ->
