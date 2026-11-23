@@ -35,6 +35,7 @@ sealed class Screen(val route: String) {
         const val ARG_PRODUCT_ID = "productId"
     }
     object Cart : Screen("cart")
+    object Checkout : Screen("checkout")
     object OrderList : Screen("order_list")
     object OrderDetail : Screen("order_detail/{orderId}") {
         fun createRoute(orderId: Long) = "order_detail/$orderId"
