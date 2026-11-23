@@ -1,0 +1,30 @@
+# Normalize line endings
+* text=auto
+
+# Kotlin - explicit declaration so GitHub Linguist detects the project as Kotlin
+*.kt text eol=lf linguist-language=Kotlin
+*.kts text eol=lf linguist-language=Kotlin
+
+# Android / Gradle
+*.xml text eol=lf
+*.gradle text eol=lf
+*.properties text eol=lf
+*.toml text eol=lf
+*.pro text eol=lf
+
+# Config / docs
+*.json text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.md text eol=lf
+
+# Binary assets - no diffing, no line-ending conversion
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.keystore binary
+*.jks binary
+*.apk binary
+*.aab binary
