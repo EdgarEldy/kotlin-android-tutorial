@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.edgareldy.tutorial.domain.model.Product
+import com.edgareldy.tutorial.domain.usecase.cart.AddCartItemUseCase
 import com.edgareldy.tutorial.domain.usecase.product.GetProductByIdUseCase
 import com.edgareldy.tutorial.navigation.Screen
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -32,6 +33,8 @@ sealed class ProductDetailUiState {
  * ViewModel for the product detail screen.
  * Reads the productId from [SavedStateHandle] so the argument survives
  * process death without additional manual restoration logic.
+ * Also handles the add-to-cart action via [AddCartItemUseCase] and exposes
+ * a one-shot snackbar message for feedback.
  *
  * Created edgar.muhamyangabo on 11/23/26
  * Author: edgar.muhamyangabo
@@ -41,7 +44,8 @@ sealed class ProductDetailUiState {
 @HiltViewModel
 class ProductDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val getProductByIdUseCase: GetProductByIdUseCase
+    private val getProductByIdUseCase: GetProductByIdUseCase,
+    private val addCartItemUseCase: AddCartItemUseCase
 ) : ViewModel() {
 
     private val productId: Long =
@@ -49,6 +53,12 @@ class ProductDetailViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow<ProductDetailUiState>(ProductDetailUiState.Loading)
     val uiState: StateFlow<ProductDetailUiState> = _uiState.asStateFlow()
+
+    private val _snackbarMessage = MutableStateFlow<String?>(null)
+    val snackbarMessage: StateFlow<String?> = _snackbarMessage.asStateFlow()
+
+    private val _addToCartLoading = MutableStateFlow(false)
+    val addToCartLoading: StateFlow<Boolean> = _addToCartLoading.asStateFlow()
 
     init {
         loadProduct()
@@ -68,5 +78,25 @@ class ProductDetailViewModel @Inject constructor(
     fun retry() {
         _uiState.value = ProductDetailUiState.Loading
         loadProduct()
+    }
+
+    fun addToCart(quantity: Int, onSuccess: () -> Unit) {
+        viewModelScope.launch {
+            _addToCartLoading.value = true
+            addCartItemUseCase(productId, quantity).fold(
+                onSuccess = {
+                    _snackbarMessage.value = "Ajoute au panier"
+                    onSuccess()
+                },
+                onFailure = { error ->
+                    _snackbarMessage.value = error.message ?: "Erreur reseau"
+                }
+            )
+            _addToCartLoading.value = false
+        }
+    }
+
+    fun snackbarMessageShown() {
+        _snackbarMessage.value = null
     }
 }
