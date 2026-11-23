@@ -18,6 +18,6 @@ data class PageResponse<T>(
     @SerialName("content") val content: List<T> = emptyList(),
     @SerialName("page") val page: Int = 0,
     @SerialName("size") val size: Int = 0,
-    @SerialName("total_elements") val totalElements: Long = 0L,
-    @SerialName("total_pages") val totalPages: Int = 0
+    @SerialName("totalElements") val totalElements: Long = 0L,
+    @SerialName("totalPages") val totalPages: Int = 0
 )
