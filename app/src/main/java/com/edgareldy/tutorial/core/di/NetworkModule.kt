@@ -7,6 +7,7 @@ import com.edgareldy.tutorial.core.network.TokenAuthenticator
 import com.edgareldy.tutorial.data.remote.api.AuthApiService
 import com.edgareldy.tutorial.data.remote.api.CartApiService
 import com.edgareldy.tutorial.data.remote.api.CategoryApiService
+import com.edgareldy.tutorial.data.remote.api.OrderApiService
 import com.edgareldy.tutorial.data.remote.api.PasswordResetApiService
 import com.edgareldy.tutorial.data.remote.api.ProductApiService
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
@@ -116,4 +117,9 @@ object NetworkModule {
     @Singleton
     fun provideCartApiService(retrofit: Retrofit): CartApiService =
         retrofit.create(CartApiService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideOrderApiService(retrofit: Retrofit): OrderApiService =
+        retrofit.create(OrderApiService::class.java)
 }

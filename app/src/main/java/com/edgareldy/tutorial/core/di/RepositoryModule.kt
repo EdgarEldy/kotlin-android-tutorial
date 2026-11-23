@@ -3,11 +3,13 @@ package com.edgareldy.tutorial.core.di
 import com.edgareldy.tutorial.data.repository.AuthRepositoryImpl
 import com.edgareldy.tutorial.data.repository.CartRepositoryImpl
 import com.edgareldy.tutorial.data.repository.CategoryRepositoryImpl
+import com.edgareldy.tutorial.data.repository.OrderRepositoryImpl
 import com.edgareldy.tutorial.data.repository.PasswordResetRepositoryImpl
 import com.edgareldy.tutorial.data.repository.ProductRepositoryImpl
 import com.edgareldy.tutorial.domain.repository.AuthRepository
 import com.edgareldy.tutorial.domain.repository.CartRepository
 import com.edgareldy.tutorial.domain.repository.CategoryRepository
+import com.edgareldy.tutorial.domain.repository.OrderRepository
 import com.edgareldy.tutorial.domain.repository.PasswordResetRepository
 import com.edgareldy.tutorial.domain.repository.ProductRepository
 import dagger.Binds
@@ -49,4 +51,8 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindCartRepository(impl: CartRepositoryImpl): CartRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindOrderRepository(impl: OrderRepositoryImpl): OrderRepository
 }
