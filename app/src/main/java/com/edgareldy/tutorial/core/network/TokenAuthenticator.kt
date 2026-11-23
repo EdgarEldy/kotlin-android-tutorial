@@ -6,7 +6,6 @@ import com.edgareldy.tutorial.data.remote.dto.ApiResponse
 import com.edgareldy.tutorial.data.remote.dto.AuthResponseDto
 import kotlinx.serialization.json.Json
 import okhttp3.Authenticator
-import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
