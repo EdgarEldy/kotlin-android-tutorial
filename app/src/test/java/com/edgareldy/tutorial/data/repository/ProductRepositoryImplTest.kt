@@ -27,8 +27,8 @@ import org.junit.Test
 /**
  * Unit tests for ProductRepositoryImpl using MockK.
  * Verifies the cache-first strategy: Room emits first, then a background refresh
- * triggers via onStart. The in-memory filter logic (search, price range) and
- * the routing between getProducts() vs getProductsByCategoryId() are also covered.
+ * triggers via onStart. The routing between getProducts() and getProductsByCategoryId()
+ * is also covered. Filtering (search, price range) lives in the use case, not here.
  *
  * Created edgar.muhamyangabo on 11/23/26
  * Author: edgar.muhamyangabo
@@ -142,28 +142,7 @@ class ProductRepositoryImplTest {
         }
 
     @Test
-    fun _04_ShouldFilterByName_WhenSearchQueryIsProvided() = runTest(testDispatcher) {
-        val rows = listOf(
-            fakeProductWithImages(1L, "iPhone 15"),
-            fakeProductWithImages(2L, "MacBook Laptop")
-        )
-        every { productDao.getProducts() } returns flowOf(rows)
-        coEvery { productApiService.getProducts(any(), any(), any(), any(), any(), any()) } returns
-            emptyApiPageResponse()
-        coEvery { productDao.upsertAll(any()) } returns Unit
-
-        val result = repository.getProducts(search = "iphone").first()
-
-        testScope.advanceUntilIdle()
-
-        assertTrue(result.isSuccess)
-        val products = result.getOrNull()!!
-        assertEquals(1, products.size)
-        assertEquals("iPhone 15", products[0].name)
-    }
-
-    @Test
-    fun _05_ShouldCallApiAndUpsertEntities_WhenRefreshProductsIsCalled() =
+    fun _04_ShouldCallApiAndUpsertEntities_WhenRefreshProductsIsCalled() =
         runTest(testDispatcher) {
             val dtos = listOf(fakeProductResponse(1L, "iPhone"))
             coEvery {
@@ -197,7 +176,7 @@ class ProductRepositoryImplTest {
         }
 
     @Test
-    fun _06_ShouldEmitError_WhenProductByIdIsNotFoundInCache() = runTest(testDispatcher) {
+    fun _05_ShouldEmitError_WhenProductByIdIsNotFoundInCache() = runTest(testDispatcher) {
         every { productDao.getProductById(99L) } returns flowOf(null)
         coEvery { productApiService.getProductById(99L) } returns
             ApiResponse(success = false, data = null)
@@ -212,7 +191,7 @@ class ProductRepositoryImplTest {
     }
 
     @Test
-    fun _07_ShouldReturnSuccess_WhenProductByIdIsFoundInCache() = runTest(testDispatcher) {
+    fun _06_ShouldReturnSuccess_WhenProductByIdIsFoundInCache() = runTest(testDispatcher) {
         val row = fakeProductWithImages(42L, "Samsung Galaxy")
         every { productDao.getProductById(42L) } returns flowOf(row)
         coEvery { productApiService.getProductById(42L) } returns
