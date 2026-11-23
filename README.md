@@ -24,7 +24,6 @@ The application covers the full customer journey: account creation, authenticati
 - [feature/product-catalog](#featureproduct-catalog)
 - [feature/shopping-cart](#featureshopping-cart)
 - [feature/orders](#featureorders)
-- [feature/quality](#featurequality)
 - [Implementation status](#implementation-status)
 - [Concepts covered](#concepts-covered)
 
@@ -544,7 +543,6 @@ The table below uses the IntelliJ format; the terminal equivalent is always `./g
 | `feature/product-catalog` | Home screen, category listing, product listing with search and price filtering, product detail with image gallery and add-to-cart, bottom navigation shell (Home, Cart, Orders, Profile). |
 | `feature/shopping-cart` | Cart read and mutations, server-calculated totals, checkout flow, order confirmation, duplicate-submit protection. |
 | `feature/orders` | Order history and order detail. |
-| `feature/quality` | Unit, Flow, repository and Compose UI test suites; consistent loading/empty/error states; accessibility; release signing config and ProGuard rules. |
 
 Commit messages follow [Conventional Commits](https://www.conventionalcommits.org/) with a descriptive body explaining the **why**, not just the what.
 
@@ -762,44 +760,13 @@ Order history and order detail.
 - [x] Data: `OrderRepositoryImpl`
 - [x] `OrderListScreen` + `OrderListViewModel` + `OrderListUiState`
 - [x] `OrderDetailScreen` + `OrderDetailViewModel`
+- [x] `CheckoutConfirmationScreen` + `CheckoutConfirmationViewModel`
 - [x] `OrderStatusBadge` composable: color-coded chip per status
 - [x] Pull-to-refresh on the order list
 - [x] Room entities: `OrderEntity`, `OrderItemEntity`
 - [x] DAOs: `OrderDao` (upsert, query all, query by id)
 - [x] Repository offline strategy: serve cached orders immediately, refresh on pull-to-refresh
-- [ ] Tests: `OrderRepositoryImplTest`, `GetOrdersUseCaseTest`, `OrderListViewModelTest`
-
----
-
-## feature/quality
-
-Cross-cutting quality work: test coverage, consistent UI states, accessibility and release build.
-
-### Tasks
-
-**Tests**
-- [ ] `SignInViewModelTest`: valid login, invalid credentials, network error
-- [ ] `RegisterViewModelTest`: field validation, success, duplicate email error
-- [ ] `ProductListViewModelTest`: loading, paginated content, empty, filter reset
-- [ ] `CartViewModelTest`: add item, update quantity, remove item, checkout success/failure
-- [ ] `OrderListViewModelTest`: loading, paginated content, empty state
-- [ ] API integration tests with `MockWebServer`: serialization, auth headers, paginated responses, 401 refresh flow
-- [ ] Compose UI tests: sign-in form submission, navigation between auth screens, cart badge update
-
-**UI states**
-- [ ] Every screen has a distinct loading, content, empty and error composable
-- [ ] Network errors show a retry action
-- [ ] Expired session triggers navigation to the sign-in screen without a crash
-
-**Accessibility**
-- [ ] All interactive elements have `contentDescription` or `semantics`
-- [ ] Touch targets meet the 48 dp minimum
-- [ ] Color is never the sole indicator of state
-
-**Release build**
-- [ ] Release signing config in `app/build.gradle.kts` (keystore from environment variables)
-- [ ] ProGuard / R8 rules for Retrofit, Hilt, Kotlin Serialization and Coil
-- [ ] `./gradlew assembleRelease` passes without warnings
+- [x] Tests: `OrderRepositoryImplTest`, `GetOrdersUseCaseTest`, `OrderListViewModelTest`
 
 ---
 
@@ -812,8 +779,7 @@ Cross-cutting quality work: test coverage, consistent UI states, accessibility a
 | 2 | `feature/auth` | ✅ Complete |
 | 3 | `feature/product-catalog` | ⚠️ In progress (bottom nav missing) |
 | 4 | `feature/shopping-cart` | ⚠️ In progress (checkout, order confirmation and tests pending) |
-| 5 | `feature/orders` | 🔲 Pending |
-| 6 | `feature/quality` | 🔲 Pending |
+| 5 | `feature/orders` | ✅ Complete |
 
 ### Phase 0 findings
 

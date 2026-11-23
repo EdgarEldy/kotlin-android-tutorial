@@ -1,4 +1,4 @@
-package com.edgareldy.tutorial.features.order.screens
+package com.edgareldy.tutorial.features.orders.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -36,8 +36,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.edgareldy.tutorial.domain.model.Order
 import com.edgareldy.tutorial.domain.model.OrderItem
-import com.edgareldy.tutorial.features.order.viewmodel.OrderDetailUiState
-import com.edgareldy.tutorial.features.order.viewmodel.OrderDetailViewModel
+import com.edgareldy.tutorial.features.orders.viewmodel.OrderDetailUiState
+import com.edgareldy.tutorial.features.orders.viewmodel.OrderDetailViewModel
 
 /**
  * Shows the full detail of a single order: header info, status chip
