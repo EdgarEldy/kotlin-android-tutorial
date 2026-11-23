@@ -24,7 +24,6 @@ The application covers the full customer journey: account creation, authenticati
 - [feature/product-catalog](#featureproduct-catalog)
 - [feature/shopping-cart](#featureshopping-cart)
 - [feature/orders](#featureorders)
-- [feature/quality](#featurequality)
 - [Implementation status](#implementation-status)
 - [Concepts covered](#concepts-covered)
 
@@ -199,14 +198,14 @@ com.edgareldy.tutorial/
 │
 ├── core/
 │   ├── network/             ← OkHttp, Retrofit, auth interceptor, token refresh
-│   ├── security/            ← Android Keystore-backed credential storage
-│   ├── datastore/           ← DataStore preferences (non-sensitive)
-│   └── ui/                  ← Shared composables, Material 3 theme, type scale
+│   ├── storage/             ← Android Keystore-backed credential storage
+│   ├── di/                  ← Hilt modules
+│   └── ui/                  ← Material 3 theme (Color, Type, Theme)
 │
 ├── data/
 │   ├── remote/              ← Generated API client + hand-written adapters
 │   ├── local/               ← Room database, DAOs, local entities
-│   ├── mapper/              ← DTO/entity ↔ domain model mapping
+│   ├── mapper/              ← DTO/entity to domain model mapping
 │   └── repository/          ← Repository implementations (remote + local)
 │
 ├── domain/
@@ -214,18 +213,34 @@ com.edgareldy.tutorial/
 │   ├── repository/          ← Repository interfaces
 │   └── usecase/             ← One class per meaningful operation
 │
-└── feature/
-    ├── auth/                ← Sign in, register, activate, OTP reset
+└── features/
+    ├── auth/
+    │   ├── screens/         ← Composables
+    │   ├── viewmodel/       ← ViewModels + UiState
+    │   └── components/      ← Reusable composables specific to auth
     ├── home/
-    ├── category/
-    ├── product/
+    │   ├── screens/
+    │   ├── viewmodel/
+    │   └── components/
+    ├── products/
+    │   ├── screens/
+    │   ├── viewmodel/
+    │   └── components/
     ├── cart/
-    ├── checkout/
+    │   ├── screens/
+    │   ├── viewmodel/
+    │   └── components/
     ├── order/
+    │   ├── screens/
+    │   ├── viewmodel/
+    │   └── components/
     └── account/
+        ├── screens/
+        ├── viewmodel/
+        └── components/
 ```
 
-Each feature package contains its own `screens/`, `components/`, `viewmodel/` and `model/` sub-packages.
+Each feature package contains its own `screens/`, `viewmodel/`, and `components/` sub-packages.
 
 ---
 
@@ -423,34 +438,90 @@ adb devices
 ### Install the debug APK
 
 ```bash
-./gradlew installDebug
+# Unix / macOS
+./gradlew app:installDebug
+
+# Windows (PowerShell or cmd)
+gradlew app:installDebug
 ```
 
 > Make sure the backend is running and reachable from the device before launching the app. Use `10.0.2.2:8080` for the emulator or the host machine's LAN IP for a physical device.
+
+### ADB — useful commands
+
+```bash
+# List connected devices
+adb devices
+
+# Install the APK manually (alternative to Gradle)
+adb install -r app/build/outputs/apk/debug/app-debug.apk
+
+# Stream all logcat output filtered to the app
+adb logcat --pid=$(adb shell pidof -s com.edgareldy.tutorial)
+
+# Stream logcat filtered by tag
+adb logcat -s TutorialApp
+
+# Clear the logcat buffer
+adb logcat -c
+
+# Save logcat to a file (useful for sharing crash reports)
+adb logcat > logs.txt
+
+# Restart adb server (fixes "device offline" or "unauthorized" errors)
+adb kill-server && adb start-server
+```
 
 ---
 
 ## Build and test
 
-```bash
-# Check the Gradle wrapper version
-./gradlew --version
+Tasks can be run in two ways:
+- **IntelliJ / Android Studio** — open the **Run Anything** dialog (`Ctrl+Alt+R`), type `gradle <task>`
+- **Terminal** — prefix with `./gradlew` on Unix/macOS or `gradlew` on Windows
 
-# Compile the debug APK
-./gradlew assembleDebug
+The table below uses the IntelliJ format; the terminal equivalent is always `./gradlew <task>`.
 
-# Run unit tests (JVM, no device required)
-./gradlew test
+### Build
 
-# Run Android lint
-./gradlew lint
+| Task | Description |
+|---|---|
+| `gradle app:assembleDebug` | Compile the debug APK |
+| `gradle app:assembleRelease` | Compile the release APK (requires signing config) |
+| `gradle app:assembleDebugAndroidTest` | Compile the instrumented test APK |
+| `gradle app:assembleDebugUnitTest` | Compile the debug unit test classes |
+| `gradle app:assemble` | Compile all variants |
+| `gradle app:build` | Compile + run all checks |
+| `gradle app:clean` | Delete build outputs |
 
-# Run instrumented tests (requires a connected device or running emulator)
-./gradlew connectedAndroidTest
+### Install / Uninstall
 
-# Assemble the release APK (requires signing config)
-./gradlew assembleRelease
-```
+| Task | Description |
+|---|---|
+| `gradle app:installDebug` | Compile + install debug APK on connected device |
+| `gradle app:uninstallDebug` | Uninstall the debug variant |
+| `gradle app:uninstallAll` | Uninstall all variants |
+
+### Verification
+
+| Task | Description |
+|---|---|
+| `gradle app:testDebugUnitTest` | JVM unit tests — debug variant (no device required) |
+| `gradle app:testReleaseUnitTest` | JVM unit tests — release variant |
+| `gradle app:connectedDebugAndroidTest` | Instrumented tests — debug variant (device required) |
+| `gradle app:lintDebug` | Lint — debug variant |
+| `gradle app:lintRelease` | Lint — release variant |
+
+### Analysis / Inspection
+
+| Task | Description |
+|---|---|
+| `gradle app:analyzeDebugDependencies` | Analyze debug dependency tree |
+| `gradle app:analyzeReleaseDependencies` | Analyze release dependency tree |
+| `gradle app:analyzeDebugUnitTestDependencies` | Analyze debug unit test dependencies |
+| `gradle app:androidDependencies` | Print Android-specific dependency tree |
+| `gradle app:dependencies` | Print the full dependency tree |
+| `gradle app:tasks` | List all available tasks for `:app` |
 
 ### Build variants
 
@@ -469,10 +540,9 @@ adb devices
 | `develop` | Integration branch for all feature work. |
 | `feature/core-architecture` | Project setup, Gradle Wrapper, Kotlin DSL, version catalog, OpenAPI client generation, Hilt, Retrofit/OkHttp, auth interceptor, secure storage, DataStore, Material 3 theme, Navigation Compose, shared composables. The app must build and show an empty scaffold before this branch closes. |
 | `feature/auth` | Sign in, register, account activation (OTP), session restoration, token refresh, logout, 3-step mobile password reset, account profile display. |
-| `feature/product-catalog` | Home screen, category listing, product listing with search and price filtering, product detail with image gallery and add-to-cart. |
+| `feature/product-catalog` | Home screen, category listing, product listing with search and price filtering, product detail with image gallery and add-to-cart, bottom navigation shell (Home, Cart, Orders, Profile). |
 | `feature/shopping-cart` | Cart read and mutations, server-calculated totals, checkout flow, order confirmation, duplicate-submit protection. |
 | `feature/orders` | Order history and order detail. |
-| `feature/quality` | Unit, Flow, repository and Compose UI test suites; consistent loading/empty/error states; accessibility; release signing config and ProGuard rules. |
 
 Commit messages follow [Conventional Commits](https://www.conventionalcommits.org/) with a descriptive body explaining the **why**, not just the what.
 
@@ -552,29 +622,30 @@ All authentication screens, session management and the mobile OTP password reset
 
 ### Tasks
 
-- [ ] Domain: `User` model
-- [ ] Domain: `AuthRepository` interface (login, register, activate, logout, refresh, me)
-- [ ] Domain: `PasswordResetRepository` interface (requestOtp, verifyOtp, confirmReset)
-- [ ] Domain: `SignInUseCase`, `RegisterUseCase`, `ActivateAccountUseCase`, `LogoutUseCase`
-- [ ] Domain: `RequestPasswordResetOtpUseCase`, `VerifyPasswordResetOtpUseCase`, `ResetPasswordUseCase`
-- [ ] Domain: `GetProfileUseCase`
-- [ ] Data: `AuthRepositoryImpl` using the generated API client
-- [ ] Data: `PasswordResetRepositoryImpl`
-- [ ] Data: `SecureTokenStorage`: read/write/clear `access_token` and `refresh_token`
-- [ ] `SignInScreen` + `SignInViewModel` + `SignInUiState`
-- [ ] `RegisterScreen` + `RegisterViewModel` + `RegisterUiState`
-- [ ] `ActivateAccountScreen` + `ActivateAccountViewModel`
-- [ ] `ForgotPasswordScreen` + `ForgotPasswordViewModel`
-- [ ] `VerifyOtpScreen` + `VerifyOtpViewModel`
-- [ ] `ResetPasswordScreen` + `ResetPasswordViewModel`
-- [ ] `ProfileScreen` + `ProfileViewModel`
-- [ ] Session restoration on app launch: check stored token, navigate to main or auth graph
-- [ ] `TokenAuthenticator` wired to `AuthRepository.refresh()`; prevent retry loops on refresh failure
-- [ ] Clear all credentials on logout
-- [ ] Never log or persist OTP values
-- [ ] Never call web password reset endpoints (`/api/v1/auth/forgot-password`)
-- [ ] Tests: `SignInViewModelTest`, `AuthRepositoryImplTest`, `SignInUseCaseTest`
-- [ ] Tests: `PasswordResetRepositoryImplTest`, `VerifyOtpViewModelTest`
+- [x] Domain: `User` model
+- [x] Domain: `AuthRepository` interface (login, register, activate, logout, refresh, me)
+- [x] Domain: `PasswordResetRepository` interface (requestOtp, verifyOtp, confirmReset)
+- [x] Domain: `SignInUseCase`, `RegisterUseCase`, `ActivateAccountUseCase`, `LogoutUseCase`
+- [x] Domain: `RequestPasswordResetOtpUseCase`, `VerifyPasswordResetOtpUseCase`, `ResetPasswordUseCase`
+- [x] Domain: `GetProfileUseCase`
+- [x] Data: `AuthRepositoryImpl` using the generated API client
+- [x] Data: `PasswordResetRepositoryImpl`
+- [x] Data: `SecureTokenStorage`: read/write/clear `access_token` and `refresh_token`
+- [x] `SignInScreen` + `SignInViewModel` + `SignInUiState`
+- [x] `RegisterScreen` + `RegisterViewModel` + `RegisterUiState`
+- [x] `ActivateAccountScreen` + `ActivateAccountViewModel`
+- [x] `ForgotPasswordScreen` + `ForgotPasswordViewModel`
+- [x] `VerifyOtpScreen` + `VerifyOtpViewModel`
+- [x] `ResetPasswordScreen` + `ResetPasswordViewModel`
+- [x] `ProfileScreen` + `ProfileViewModel`
+- [x] Session restoration on app launch: check stored token, navigate to main or auth graph
+- [x] `TokenAuthenticator` wired to `AuthRepository.refresh()`; prevent retry loops on refresh failure
+- [x] Clear all credentials on logout
+- [x] Never log or persist OTP values
+- [x] Never call web password reset endpoints (`/api/v1/auth/forgot-password`)
+- [x] Tests: `SignInViewModelTest`, `AuthRepositoryImplTest`, `SignInUseCaseTest`
+- [x] Tests: `VerifyOtpViewModelTest` (+ all other ViewModel tests migrated to Turbine)
+- [ ] Tests: `PasswordResetRepositoryImplTest`
 
 ---
 
@@ -602,24 +673,25 @@ Browsing experience: home screen, category navigation, product listing with sear
 
 ### Tasks
 
-- [ ] Domain: `Product`, `Category`, `ProductImage` models
-- [ ] Domain: `ProductRepository` interface, `CategoryRepository` interface
-- [ ] Domain: `GetProductsUseCase` (with filter params), `GetProductByIdUseCase`
-- [ ] Domain: `GetCategoriesUseCase`, `GetCategoryByIdUseCase`
-- [ ] Data: `ProductRepositoryImpl`, `CategoryRepositoryImpl`
-- [ ] Data: mappers from generated DTOs to domain models
+- [x] Domain: `Product`, `Category`, `ProductImage` models
+- [x] Domain: `ProductRepository` interface, `CategoryRepository` interface
+- [x] Domain: `GetProductsUseCase` (with filter params), `GetProductByIdUseCase`
+- [x] Domain: `GetCategoriesUseCase`, `RefreshProductsUseCase`
+- [x] Data: `ProductRepositoryImpl`, `CategoryRepositoryImpl`
+- [x] Data: mappers from generated DTOs to domain models
 - [ ] `HomeScreen` + `HomeViewModel` + `HomeUiState`
 - [ ] `CategoryListScreen` + `CategoryListViewModel`
-- [ ] `ProductListScreen` + `ProductListViewModel` (search query, category filter, price range, pagination state)
-- [ ] `ProductDetailScreen` + `ProductDetailViewModel`
-- [ ] Coil image loading with placeholder and error fallback
-- [ ] Pull-to-refresh on list screens
-- [ ] Empty state when no products match the active filters
-- [ ] Room entities: `ProductEntity`, `CategoryEntity`, `ProductImageEntity`
-- [ ] DAOs: `ProductDao` (upsert, query by id, query with filters), `CategoryDao`
-- [ ] Repository offline strategy: return cached data immediately, then refresh from network in the background; propagate network errors only when cache is empty
-- [ ] Cache invalidation on pull-to-refresh
-- [ ] Tests: `ProductRepositoryImplTest`, `GetProductsUseCaseTest`, `ProductListViewModelTest`
+- [x] `ProductListScreen` + `ProductListViewModel` (search query, category filter, pagination state)
+- [x] `ProductDetailScreen` + `ProductDetailViewModel`
+- [x] Coil image loading with placeholder and error fallback
+- [x] Pull-to-refresh on list screens
+- [x] Empty state when no products match the active filters
+- [x] Room entities: `ProductEntity`, `CategoryEntity`, `ProductImageEntity`
+- [x] DAOs: `ProductDao` (upsert, query by id, query with filters), `CategoryDao`
+- [x] Repository offline strategy: return cached data immediately, then refresh from network in the background; propagate network errors only when cache is empty
+- [x] Cache invalidation on pull-to-refresh
+- [x] Tests: `ProductRepositoryImplTest`, `GetProductsUseCaseTest`, `ProductListViewModelTest`, `ProductDetailViewModelTest`
+- [ ] Bottom navigation shell (Home, Cart, Orders, Profile) wired in the main graph
 
 ---
 
@@ -647,17 +719,17 @@ Cart management and checkout.
 
 ### Tasks
 
-- [ ] Domain: `Cart`, `CartItem` models
-- [ ] Domain: `CartRepository` interface
-- [ ] Domain: `GetCartUseCase`, `AddToCartUseCase`, `UpdateCartItemUseCase`, `RemoveCartItemUseCase`, `ClearCartUseCase`
+- [x] Domain: `Cart`, `CartItem` models
+- [x] Domain: `CartRepository` interface
+- [x] Domain: `GetCartUseCase`, `AddCartItemUseCase`, `UpdateCartItemUseCase`, `RemoveCartItemUseCase`, `ClearCartUseCase`, `GetCartItemCountUseCase`
 - [ ] Domain: `CheckoutUseCase`
-- [ ] Data: `CartRepositoryImpl`
-- [ ] `CartScreen` + `CartViewModel` + `CartUiState`
+- [x] Data: `CartRepositoryImpl`
+- [x] `CartScreen` + `CartViewModel` + `CartUiState`
 - [ ] `OrderConfirmationScreen`
-- [ ] Add-to-cart action wired from `ProductDetailScreen`
-- [ ] Cart item count badge on the navigation bar
-- [ ] Checkout button disabled while a request is in flight (duplicate-submit protection)
-- [ ] Display server-calculated total; never compute totals on the client
+- [x] Add-to-cart action wired from `ProductDetailScreen`
+- [x] Cart item count badge on the navigation bar
+- [x] Checkout button disabled while a request is in flight (duplicate-submit protection)
+- [x] Display server-calculated total; never compute totals on the client
 - [ ] Tests: `CartRepositoryImplTest`, `CheckoutUseCaseTest`, `CartViewModelTest`
 
 ---
@@ -682,50 +754,19 @@ Order history and order detail.
 
 ### Tasks
 
-- [ ] Domain: `Order`, `OrderItem` models, `OrderStatus` enum (`PENDING`, `CONFIRMED`, `CANCELLED`)
-- [ ] Domain: `OrderRepository` interface
-- [ ] Domain: `GetOrdersUseCase`, `GetOrderByIdUseCase`
-- [ ] Data: `OrderRepositoryImpl`
-- [ ] `OrderListScreen` + `OrderListViewModel` + `OrderListUiState`
-- [ ] `OrderDetailScreen` + `OrderDetailViewModel`
-- [ ] `OrderStatusBadge` composable: color-coded chip per status
-- [ ] Pull-to-refresh on the order list
-- [ ] Room entities: `OrderEntity`, `OrderItemEntity`
-- [ ] DAOs: `OrderDao` (upsert, query all, query by id)
-- [ ] Repository offline strategy: serve cached orders immediately, refresh on pull-to-refresh
-- [ ] Tests: `OrderRepositoryImplTest`, `GetOrdersUseCaseTest`, `OrderListViewModelTest`
-
----
-
-## feature/quality
-
-Cross-cutting quality work: test coverage, consistent UI states, accessibility and release build.
-
-### Tasks
-
-**Tests**
-- [ ] `SignInViewModelTest`: valid login, invalid credentials, network error
-- [ ] `RegisterViewModelTest`: field validation, success, duplicate email error
-- [ ] `ProductListViewModelTest`: loading, paginated content, empty, filter reset
-- [ ] `CartViewModelTest`: add item, update quantity, remove item, checkout success/failure
-- [ ] `OrderListViewModelTest`: loading, paginated content, empty state
-- [ ] API integration tests with `MockWebServer`: serialization, auth headers, paginated responses, 401 refresh flow
-- [ ] Compose UI tests: sign-in form submission, navigation between auth screens, cart badge update
-
-**UI states**
-- [ ] Every screen has a distinct loading, content, empty and error composable
-- [ ] Network errors show a retry action
-- [ ] Expired session triggers navigation to the sign-in screen without a crash
-
-**Accessibility**
-- [ ] All interactive elements have `contentDescription` or `semantics`
-- [ ] Touch targets meet the 48 dp minimum
-- [ ] Color is never the sole indicator of state
-
-**Release build**
-- [ ] Release signing config in `app/build.gradle.kts` (keystore from environment variables)
-- [ ] ProGuard / R8 rules for Retrofit, Hilt, Kotlin Serialization and Coil
-- [ ] `./gradlew assembleRelease` passes without warnings
+- [x] Domain: `Order`, `OrderItem` models, `OrderStatus` enum (`PENDING`, `CONFIRMED`, `CANCELLED`)
+- [x] Domain: `OrderRepository` interface
+- [x] Domain: `GetOrdersUseCase`, `GetOrderByIdUseCase`
+- [x] Data: `OrderRepositoryImpl`
+- [x] `OrderListScreen` + `OrderListViewModel` + `OrderListUiState`
+- [x] `OrderDetailScreen` + `OrderDetailViewModel`
+- [x] `CheckoutConfirmationScreen` + `CheckoutConfirmationViewModel`
+- [x] `OrderStatusBadge` composable: color-coded chip per status
+- [x] Pull-to-refresh on the order list
+- [x] Room entities: `OrderEntity`, `OrderItemEntity`
+- [x] DAOs: `OrderDao` (upsert, query all, query by id)
+- [x] Repository offline strategy: serve cached orders immediately, refresh on pull-to-refresh
+- [x] Tests: `OrderRepositoryImplTest`, `GetOrdersUseCaseTest`, `OrderListViewModelTest`
 
 ---
 
@@ -734,12 +775,11 @@ Cross-cutting quality work: test coverage, consistent UI states, accessibility a
 | Phase | Branch | Status |
 |---|---|---|
 | 0 | Backend reconnaissance, OpenAPI spec snapshot | ✅ Complete |
-| 1 | `feature/core-architecture` | 🔲 Next |
-| 2 | `feature/auth` | 🔲 Pending |
-| 3 | `feature/product-catalog` | 🔲 Pending |
-| 4 | `feature/shopping-cart` | 🔲 Pending |
-| 5 | `feature/orders` | 🔲 Pending |
-| 6 | `feature/quality` | 🔲 Pending |
+| 1 | `feature/core-architecture` | ✅ Complete |
+| 2 | `feature/auth` | ✅ Complete |
+| 3 | `feature/product-catalog` | ⚠️ In progress (bottom nav missing) |
+| 4 | `feature/shopping-cart` | ⚠️ In progress (checkout, order confirmation and tests pending) |
+| 5 | `feature/orders` | ✅ Complete |
 
 ### Phase 0 findings
 
