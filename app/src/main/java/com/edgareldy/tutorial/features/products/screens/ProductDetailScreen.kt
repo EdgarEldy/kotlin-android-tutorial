@@ -26,13 +26,17 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -52,7 +56,9 @@ import com.edgareldy.tutorial.features.products.viewmodel.ProductDetailViewModel
 
 /**
  * Product detail screen showing images, description, quantity selector and
- * an Add to Cart placeholder button (enabled in Phase 4).
+ * an Add to Cart button that triggers [ProductDetailViewModel.addToCart].
+ * Accepts an optional [onCartUpdated] callback so the parent (MainScreen)
+ * can refresh the cart badge count after a successful add.
  *
  * Created edgar.muhamyangabo on 11/23/26
  * Author: edgar.muhamyangabo
@@ -63,9 +69,19 @@ import com.edgareldy.tutorial.features.products.viewmodel.ProductDetailViewModel
 @Composable
 fun ProductDetailScreen(
     onNavigateBack: () -> Unit,
+    onCartUpdated: () -> Unit = {},
     viewModel: ProductDetailViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val snackbarMessage by viewModel.snackbarMessage.collectAsStateWithLifecycle()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(snackbarMessage) {
+        snackbarMessage?.let { message ->
+            snackbarHostState.showSnackbar(message)
+            viewModel.snackbarMessageShown()
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -84,6 +100,7 @@ fun ProductDetailScreen(
                 )
             )
         },
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
         Box(
@@ -119,6 +136,10 @@ fun ProductDetailScreen(
                 is ProductDetailUiState.Success -> {
                     ProductDetailContent(
                         product = state.product,
+                        onAddToCart = { quantity ->
+                            viewModel.addToCart(quantity, onSuccess = onCartUpdated)
+                        },
+                        viewModel = viewModel,
                         modifier = Modifier.fillMaxSize()
                     )
                 }
@@ -130,10 +151,13 @@ fun ProductDetailScreen(
 @Composable
 private fun ProductDetailContent(
     product: Product,
+    onAddToCart: (Int) -> Unit,
+    viewModel: ProductDetailViewModel,
     modifier: Modifier = Modifier
 ) {
     var quantity by rememberSaveable { mutableIntStateOf(1) }
     val scrollState = rememberScrollState()
+    val addToCartLoading by viewModel.addToCartLoading.collectAsStateWithLifecycle()
 
     val primaryImage = product.images
         .sortedBy { it.displayOrder }
@@ -199,7 +223,7 @@ private fun ProductDetailContent(
 
             // Price
             Text(
-                text = "€%.2f".format(product.unitPrice),
+                text = "EUR %.2f".format(product.unitPrice),
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.ExtraBold,
                 color = MaterialTheme.colorScheme.primary
@@ -270,21 +294,25 @@ private fun ProductDetailContent(
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Add to Cart button - placeholder, disabled until Phase 4
+            // Add to Cart button
             Button(
-                onClick = {},
-                enabled = false,
+                onClick = { onAddToCart(quantity) },
+                enabled = !addToCartLoading,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(52.dp),
-                shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.buttonColors(
-                    disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                    disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                shape = RoundedCornerShape(12.dp)
             ) {
+                if (addToCartLoading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(20.dp),
+                        strokeWidth = 2.dp,
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                }
                 Text(
-                    text = "Add to Cart",
+                    text = if (addToCartLoading) "Ajout en cours..." else "Add to Cart",
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.SemiBold
                 )
