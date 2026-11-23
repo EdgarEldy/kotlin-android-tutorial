@@ -756,17 +756,17 @@ Order history and order detail.
 
 ### Tasks
 
-- [ ] Domain: `Order`, `OrderItem` models, `OrderStatus` enum (`PENDING`, `CONFIRMED`, `CANCELLED`)
-- [ ] Domain: `OrderRepository` interface
-- [ ] Domain: `GetOrdersUseCase`, `GetOrderByIdUseCase`
-- [ ] Data: `OrderRepositoryImpl`
-- [ ] `OrderListScreen` + `OrderListViewModel` + `OrderListUiState`
-- [ ] `OrderDetailScreen` + `OrderDetailViewModel`
-- [ ] `OrderStatusBadge` composable: color-coded chip per status
-- [ ] Pull-to-refresh on the order list
-- [ ] Room entities: `OrderEntity`, `OrderItemEntity`
-- [ ] DAOs: `OrderDao` (upsert, query all, query by id)
-- [ ] Repository offline strategy: serve cached orders immediately, refresh on pull-to-refresh
+- [x] Domain: `Order`, `OrderItem` models, `OrderStatus` enum (`PENDING`, `CONFIRMED`, `CANCELLED`)
+- [x] Domain: `OrderRepository` interface
+- [x] Domain: `GetOrdersUseCase`, `GetOrderByIdUseCase`
+- [x] Data: `OrderRepositoryImpl`
+- [x] `OrderListScreen` + `OrderListViewModel` + `OrderListUiState`
+- [x] `OrderDetailScreen` + `OrderDetailViewModel`
+- [x] `OrderStatusBadge` composable: color-coded chip per status
+- [x] Pull-to-refresh on the order list
+- [x] Room entities: `OrderEntity`, `OrderItemEntity`
+- [x] DAOs: `OrderDao` (upsert, query all, query by id)
+- [x] Repository offline strategy: serve cached orders immediately, refresh on pull-to-refresh
 - [ ] Tests: `OrderRepositoryImplTest`, `GetOrdersUseCaseTest`, `OrderListViewModelTest`
 
 ---
