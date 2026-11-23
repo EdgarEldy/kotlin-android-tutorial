@@ -692,7 +692,8 @@ Browsing experience: home screen, category navigation, product listing with sear
 - [x] DAOs: `ProductDao` (upsert, query by id, query with filters), `CategoryDao`
 - [x] Repository offline strategy: return cached data immediately, then refresh from network in the background; propagate network errors only when cache is empty
 - [x] Cache invalidation on pull-to-refresh
-- [ ] Tests: `ProductRepositoryImplTest`, `GetProductsUseCaseTest`, `ProductListViewModelTest`
+- [x] Tests: `ProductRepositoryImplTest`, `GetProductsUseCaseTest`, `ProductListViewModelTest`, `ProductDetailViewModelTest`
+- [ ] Bottom navigation shell (Home, Cart, Orders, Profile) wired in the main graph
 
 ---
 
