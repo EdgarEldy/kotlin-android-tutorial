@@ -1,4 +1,4 @@
-package com.edgareldy.tutorial.features.order.viewmodel
+package com.edgareldy.tutorial.features.orders.viewmodel
 
 import app.cash.turbine.test
 import com.edgareldy.tutorial.domain.model.Order
@@ -76,7 +76,7 @@ class OrderListViewModelTest {
     // --- Tests ---
 
     @Test
-    fun `_01_ShouldHaveLoadingAsInitialState_WhenFlowNeverEmits`() = runTest(testDispatcher) {
+    fun _01_ShouldHaveLoadingAsInitialState_WhenFlowNeverEmits() = runTest(testDispatcher) {
         // awaitCancellation suspends forever, so the ViewModel stays at Loading
         every { getOrdersUseCase() } returns flow { kotlinx.coroutines.awaitCancellation() }
 
@@ -89,7 +89,7 @@ class OrderListViewModelTest {
     }
 
     @Test
-    fun `_02_ShouldEmitLoadingThenSuccess_WhenFlowReturnsNonEmptyList`() = runTest(testDispatcher) {
+    fun _02_ShouldEmitLoadingThenSuccess_WhenFlowReturnsNonEmptyList() = runTest(testDispatcher) {
         // delay(1) keeps the state at Loading until Turbine subscribes and observes it
         val orders = listOf(fakeOrder(1L), fakeOrder(2L))
         every { getOrdersUseCase() } returns flow {
@@ -110,7 +110,7 @@ class OrderListViewModelTest {
     }
 
     @Test
-    fun `_03_ShouldEmitLoadingThenEmpty_WhenFlowReturnsEmptyList`() = runTest(testDispatcher) {
+    fun _03_ShouldEmitLoadingThenEmpty_WhenFlowReturnsEmptyList() = runTest(testDispatcher) {
         every { getOrdersUseCase() } returns flow {
             delay(1)
             emit(Result.success(emptyList<Order>()))
@@ -126,7 +126,7 @@ class OrderListViewModelTest {
     }
 
     @Test
-    fun `_04_ShouldEmitLoadingThenError_WhenFlowReturnsFailure`() = runTest(testDispatcher) {
+    fun _04_ShouldEmitLoadingThenError_WhenFlowReturnsFailure() = runTest(testDispatcher) {
         every { getOrdersUseCase() } returns flow {
             delay(1)
             emit(Result.failure<List<Order>>(RuntimeException("Network error")))
@@ -144,7 +144,7 @@ class OrderListViewModelTest {
     }
 
     @Test
-    fun `_05_ShouldUseDefaultErrorMessage_WhenExceptionMessageIsNull`() = runTest(testDispatcher) {
+    fun _05_ShouldUseDefaultErrorMessage_WhenExceptionMessageIsNull() = runTest(testDispatcher) {
         every { getOrdersUseCase() } returns flowOf(Result.failure(RuntimeException()))
 
         val viewModel = createViewModel()
@@ -158,7 +158,7 @@ class OrderListViewModelTest {
     }
 
     @Test
-    fun `_06_ShouldSetIsRefreshingFalse_AfterRefreshCompletes`() = runTest(testDispatcher) {
+    fun _06_ShouldSetIsRefreshingFalse_AfterRefreshCompletes() = runTest(testDispatcher) {
         every { getOrdersUseCase() } returns flowOf(Result.success(emptyList()))
         coEvery { refreshOrdersUseCase() } just Runs
 

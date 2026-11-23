@@ -1,4 +1,4 @@
-package com.edgareldy.tutorial.features.order.viewmodel
+package com.edgareldy.tutorial.features.orders.viewmodel
 
 import app.cash.turbine.test
 import com.edgareldy.tutorial.domain.model.Order
@@ -65,7 +65,7 @@ class CheckoutConfirmationViewModelTest {
     // --- Tests ---
 
     @Test
-    fun `_01_ShouldHaveIdleAsInitialState_WhenViewModelIsCreated`() = runTest(testDispatcher) {
+    fun _01_ShouldHaveIdleAsInitialState_WhenViewModelIsCreated() = runTest(testDispatcher) {
         // No mock needed - confirmOrder is not called
         val viewModel = createViewModel()
 
@@ -76,7 +76,7 @@ class CheckoutConfirmationViewModelTest {
     }
 
     @Test
-    fun `_02_ShouldEmitLoadingThenSuccess_WhenConfirmOrderSucceeds`() = runTest(testDispatcher) {
+    fun _02_ShouldEmitLoadingThenSuccess_WhenConfirmOrderSucceeds() = runTest(testDispatcher) {
         // delay(1) makes confirmOrder suspend at the use-case boundary,
         // leaving the state at Loading so Turbine can observe it.
         val order = fakeOrder(42L)
@@ -100,7 +100,7 @@ class CheckoutConfirmationViewModelTest {
     }
 
     @Test
-    fun `_03_ShouldEmitLoadingThenError_WhenConfirmOrderFails`() = runTest(testDispatcher) {
+    fun _03_ShouldEmitLoadingThenError_WhenConfirmOrderFails() = runTest(testDispatcher) {
         coEvery { createOrderUseCase() } coAnswers {
             delay(1)
             Result.failure(RuntimeException("Checkout failed"))
@@ -122,7 +122,7 @@ class CheckoutConfirmationViewModelTest {
     }
 
     @Test
-    fun `_04_ShouldTransitionBackToIdle_WhenErrorShownIsCalled`() = runTest(testDispatcher) {
+    fun _04_ShouldTransitionBackToIdle_WhenErrorShownIsCalled() = runTest(testDispatcher) {
         // delay(1) ensures Loading is emitted as a distinct value before Error,
         // preventing StateFlow conflation from skipping it.
         coEvery { createOrderUseCase() } coAnswers {
@@ -149,7 +149,7 @@ class CheckoutConfirmationViewModelTest {
     }
 
     @Test
-    fun `_05_ShouldIgnoreSecondConfirmCall_WhenAlreadyLoading`() = runTest(testDispatcher) {
+    fun _05_ShouldIgnoreSecondConfirmCall_WhenAlreadyLoading() = runTest(testDispatcher) {
         // The guard in confirmOrder prevents re-entry when already loading.
         val order = fakeOrder(1L)
         coEvery { createOrderUseCase() } coAnswers {
