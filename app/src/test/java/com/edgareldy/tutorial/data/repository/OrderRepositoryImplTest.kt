@@ -164,6 +164,7 @@ class OrderRepositoryImplTest {
                 .setBody(orderResponseBody(id = 42L, orderNumber = "ORD-042", status = "CONFIRMED"))
         )
         coEvery { mockOrderDao.upsertAll(any()) } just Runs
+        coEvery { mockOrderDao.deleteItemsByOrderId(any()) } just Runs
         coEvery { mockOrderDao.upsertItems(any()) } just Runs
 
         // When
