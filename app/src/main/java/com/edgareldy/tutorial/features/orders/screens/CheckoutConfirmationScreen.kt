@@ -1,4 +1,4 @@
-package com.edgareldy.tutorial.features.order.screens
+package com.edgareldy.tutorial.features.orders.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -36,8 +36,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.edgareldy.tutorial.features.order.viewmodel.CheckoutConfirmationViewModel
-import com.edgareldy.tutorial.features.order.viewmodel.CheckoutUiState
+import com.edgareldy.tutorial.features.orders.viewmodel.CheckoutConfirmationViewModel
+import com.edgareldy.tutorial.features.orders.viewmodel.CheckoutUiState
 
 /**
  * Confirmation screen presented before the user finalises checkout.

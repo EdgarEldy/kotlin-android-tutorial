@@ -1,4 +1,4 @@
-package com.edgareldy.tutorial.features.order.viewmodel
+package com.edgareldy.tutorial.features.orders.viewmodel
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel

@@ -1,4 +1,4 @@
-package com.edgareldy.tutorial.features.order.screens
+package com.edgareldy.tutorial.features.orders.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -38,8 +38,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.edgareldy.tutorial.domain.model.Order
 import com.edgareldy.tutorial.domain.model.OrderStatus
-import com.edgareldy.tutorial.features.order.viewmodel.OrderListUiState
-import com.edgareldy.tutorial.features.order.viewmodel.OrderListViewModel
+import com.edgareldy.tutorial.features.orders.viewmodel.OrderListUiState
+import com.edgareldy.tutorial.features.orders.viewmodel.OrderListViewModel
 
 /**
  * Displays the user's order history as a scrollable list.
