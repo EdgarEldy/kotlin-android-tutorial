@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.edgareldy.tutorial.data.local.TutorialDatabase
 import com.edgareldy.tutorial.data.local.dao.CategoryDao
+import com.edgareldy.tutorial.data.local.dao.OrderDao
 import com.edgareldy.tutorial.data.local.dao.ProductDao
 import dagger.Module
 import dagger.Provides
@@ -44,4 +45,8 @@ object DatabaseModule {
     @Provides
     @Singleton
     fun provideCategoryDao(database: TutorialDatabase): CategoryDao = database.categoryDao()
+
+    @Provides
+    @Singleton
+    fun provideOrderDao(database: TutorialDatabase): OrderDao = database.orderDao()
 }

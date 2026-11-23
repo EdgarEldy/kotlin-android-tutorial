@@ -1,7 +1,5 @@
 package com.edgareldy.tutorial.navigation
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
@@ -35,6 +33,9 @@ import androidx.navigation.navArgument
 import com.edgareldy.tutorial.features.auth.screens.ProfileScreen
 import com.edgareldy.tutorial.features.cart.screens.CartScreen
 import com.edgareldy.tutorial.features.cart.viewmodel.SharedCartViewModel
+import com.edgareldy.tutorial.features.order.screens.CheckoutConfirmationScreen
+import com.edgareldy.tutorial.features.order.screens.OrderDetailScreen
+import com.edgareldy.tutorial.features.order.screens.OrderListScreen
 import com.edgareldy.tutorial.features.products.screens.ProductDetailScreen
 import com.edgareldy.tutorial.features.products.screens.ProductListScreen
 
@@ -187,7 +188,11 @@ fun MainScreen(onLogout: () -> Unit) {
                 )
             }
             composable(Screen.OrderList.route) {
-                Box(Modifier.fillMaxSize()) { Text("Orders - TODO Phase 5") }
+                OrderListScreen(
+                    onOrderClick = { orderId ->
+                        navController.navigate(Screen.OrderDetail.createRoute(orderId))
+                    }
+                )
             }
             composable(
                 route = Screen.OrderDetail.route,
@@ -195,7 +200,19 @@ fun MainScreen(onLogout: () -> Unit) {
                     type = NavType.LongType
                 })
             ) {
-                Box(Modifier.fillMaxSize()) { Text("Order Detail - TODO Phase 5") }
+                OrderDetailScreen(
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            }
+            composable(Screen.Checkout.route) {
+                CheckoutConfirmationScreen(
+                    onNavigateBack = { navController.popBackStack() },
+                    onOrderCreated = { orderId ->
+                        navController.navigate(Screen.OrderDetail.createRoute(orderId)) {
+                            popUpTo(Screen.Cart.route) { inclusive = true }
+                        }
+                    }
+                )
             }
             composable(Screen.Profile.route) {
                 ProfileScreen(onLogout = onLogout)
