@@ -5,6 +5,7 @@ import com.edgareldy.tutorial.core.di.qualifier.AuthOnly
 import com.edgareldy.tutorial.core.network.AuthInterceptor
 import com.edgareldy.tutorial.core.network.TokenAuthenticator
 import com.edgareldy.tutorial.data.remote.api.AuthApiService
+import com.edgareldy.tutorial.data.remote.api.CartApiService
 import com.edgareldy.tutorial.data.remote.api.CategoryApiService
 import com.edgareldy.tutorial.data.remote.api.PasswordResetApiService
 import com.edgareldy.tutorial.data.remote.api.ProductApiService
@@ -110,4 +111,9 @@ object NetworkModule {
     @Singleton
     fun provideCategoryApiService(retrofit: Retrofit): CategoryApiService =
         retrofit.create(CategoryApiService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideCartApiService(retrofit: Retrofit): CartApiService =
+        retrofit.create(CartApiService::class.java)
 }
