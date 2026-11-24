@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 
 /**
  * Generic API envelope returned by every Spring Boot endpoint.
- * Local copy in :features:orders to keep the module self-contained.
+ * Local copy in :feature:orders to keep the module self-contained.
  *
  * Created edgar.muhamyangabo on 11/24/26
  * Author: edgar.muhamyangabo
