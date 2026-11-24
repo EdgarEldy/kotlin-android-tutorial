@@ -4,7 +4,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.ReceiptLong
+import androidx.compose.material.icons.automirrored.filled.ReceiptLong
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
@@ -77,7 +77,7 @@ fun MainScreen(onLogout: () -> Unit) {
     val bottomNavItems = listOf(
         BottomNavItem(Screen.ProductList.route, "Home", Icons.Default.Home),
         BottomNavItem(Screen.Cart.route, "Cart", Icons.Default.ShoppingCart),
-        BottomNavItem(Screen.OrderList.route, "Orders", Icons.Default.ReceiptLong),
+        BottomNavItem(Screen.OrderList.route, "Orders", Icons.AutoMirrored.Filled.ReceiptLong),
         BottomNavItem(Screen.Profile.route, "Profile", Icons.Default.Person)
     )
 
@@ -167,6 +167,16 @@ fun MainScreen(onLogout: () -> Unit) {
             ) {
                 ProductDetailScreen(
                     onNavigateBack = { navController.popBackStack() },
+                    onNavigateToCart = {
+                        sharedCartViewModel.refreshCount()
+                        navController.navigate(Screen.Cart.route) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    },
                     onCartUpdated = { sharedCartViewModel.refreshCount() }
                 )
             }
