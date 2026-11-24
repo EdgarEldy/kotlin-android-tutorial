@@ -1,7 +1,7 @@
-package com.edgareldy.tutorial.domain.repository
+package com.edgareldy.tutorial.auth.domain.repository
 
-import com.edgareldy.tutorial.domain.model.AuthTokens
-import com.edgareldy.tutorial.domain.model.User
+import com.edgareldy.tutorial.auth.domain.model.AuthTokens
+import com.edgareldy.tutorial.auth.domain.model.User
 
 /**
  * Contract for all authentication operations.
