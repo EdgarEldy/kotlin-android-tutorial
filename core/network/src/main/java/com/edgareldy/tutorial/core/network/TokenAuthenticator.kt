@@ -2,8 +2,8 @@ package com.edgareldy.tutorial.core.network
 
 import com.edgareldy.tutorial.core.di.qualifier.AuthOnly
 import com.edgareldy.tutorial.core.storage.SecureTokenStorage
-import com.edgareldy.tutorial.data.remote.dto.ApiResponse
-import com.edgareldy.tutorial.data.remote.dto.AuthResponseDto
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import okhttp3.Authenticator
 import okhttp3.OkHttpClient
@@ -62,7 +62,7 @@ class TokenAuthenticator @Inject constructor(
                 return null
             }
 
-            val apiResponse = json.decodeFromString<ApiResponse<AuthResponseDto>>(body)
+            val apiResponse = json.decodeFromString<RefreshApiResponse>(body)
             val authData = apiResponse.data ?: run {
                 tokenStorage.clearTokens()
                 return null
@@ -84,4 +84,15 @@ class TokenAuthenticator @Inject constructor(
         val url = response.request.url
         return "${url.scheme}://${url.host}:${url.port}/"
     }
+
+    @Serializable
+    private data class RefreshApiResponse(
+        @SerialName("data") val data: RefreshTokenData? = null
+    )
+
+    @Serializable
+    private data class RefreshTokenData(
+        @SerialName("access_token") val accessToken: String,
+        @SerialName("refresh_token") val refreshToken: String
+    )
 }
