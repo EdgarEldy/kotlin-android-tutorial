@@ -13,6 +13,11 @@ val localProps = Properties().apply {
     rootProject.file("local.properties").takeIf { it.exists() }?.inputStream()?.use { load(it) }
 }
 
+val hasSigningConfig = localProps.containsKey("KEYSTORE_FILE") &&
+    localProps.containsKey("KEYSTORE_PASSWORD") &&
+    localProps.containsKey("KEY_ALIAS") &&
+    localProps.containsKey("KEY_PASSWORD")
+
 android {
     namespace = "com.edgareldy.tutorial"
     compileSdk = 36
@@ -50,12 +55,14 @@ android {
         }
     }
 
-    signingConfigs {
-        create("release") {
-            storeFile = rootProject.file(localProps["KEYSTORE_FILE"] as? String ?: "")
-            storePassword = localProps["KEYSTORE_PASSWORD"] as? String
-            keyAlias = localProps["KEY_ALIAS"] as? String
-            keyPassword = localProps["KEY_PASSWORD"] as? String
+    if (hasSigningConfig) {
+        signingConfigs {
+            create("release") {
+                storeFile = rootProject.file(localProps["KEYSTORE_FILE"] as String)
+                storePassword = localProps["KEYSTORE_PASSWORD"] as? String
+                keyAlias = localProps["KEY_ALIAS"] as? String
+                keyPassword = localProps["KEY_PASSWORD"] as? String
+            }
         }
     }
 
@@ -65,7 +72,9 @@ android {
             isDebuggable = true
         }
         release {
-            signingConfig = signingConfigs.getByName("release")
+            if (hasSigningConfig) {
+                signingConfig = signingConfigs.getByName("release")
+            }
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
