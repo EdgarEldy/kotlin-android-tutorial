@@ -1,8 +1,12 @@
 package com.edgareldy.tutorial.auth.presentation.screens
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -21,7 +25,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -92,13 +95,15 @@ fun SignInScreen(
         heroContent = {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.align(Alignment.Center)
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 44.dp)
             ) {
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
-                        .size(64.dp)
-                        .background(Color.White.copy(alpha = 0.2f), RoundedCornerShape(16.dp))
+                        .size(72.dp)
+                        .background(Color.White.copy(alpha = 0.18f), RoundedCornerShape(22.dp))
                 ) {
                     Icon(
                         imageVector = Icons.Outlined.ShoppingBag,
@@ -127,16 +132,11 @@ fun SignInScreen(
 
         Text(
             text = "Sign In",
-            style = MaterialTheme.typography.headlineMedium,
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onSurface
         )
-        Spacer(modifier = Modifier.height(4.dp))
-        Text(
-            text = "Sign in to continue",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-        Spacer(modifier = Modifier.height(28.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
         AuthTextField(
             value = email,
@@ -182,12 +182,16 @@ fun SignInScreen(
             modifier = Modifier.fillMaxWidth()
         )
 
-        TextButton(
-            onClick = onNavigateToForgotPassword,
-            modifier = Modifier.align(Alignment.End)
-        ) {
-            Text("Forgot password?")
-        }
+        Text(
+            text = "Forgot password?",
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier
+                .align(Alignment.End)
+                .clickable { onNavigateToForgotPassword() }
+                .padding(vertical = 8.dp)
+        )
         Spacer(modifier = Modifier.height(8.dp))
 
         Button(
@@ -195,8 +199,8 @@ fun SignInScreen(
             enabled = uiState !is SignInUiState.Loading,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(52.dp),
-            shape = RoundedCornerShape(12.dp)
+                .height(54.dp),
+            shape = RoundedCornerShape(16.dp)
         ) {
             if (uiState is SignInUiState.Loading) {
                 CircularProgressIndicator(
@@ -209,11 +213,23 @@ fun SignInScreen(
         }
         Spacer(modifier = Modifier.height(16.dp))
 
-        TextButton(
-            onClick = onNavigateToRegister,
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.align(Alignment.CenterHorizontally)
         ) {
-            Text("Don't have an account? Create account")
+            Text(
+                text = "Don't have an account? ",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Text(
+                text = "Create account",
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.clickable { onNavigateToRegister() }
+            )
         }
         Spacer(modifier = Modifier.height(24.dp))
     }
