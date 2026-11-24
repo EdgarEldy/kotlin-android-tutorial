@@ -1,4 +1,4 @@
-package com.edgareldy.tutorial.features.auth.components
+package com.edgareldy.tutorial.auth.presentation.components
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
