@@ -1,6 +1,6 @@
-package com.edgareldy.tutorial.domain.usecase.auth
+package com.edgareldy.tutorial.auth.domain.usecase
 
-import com.edgareldy.tutorial.domain.repository.AuthRepository
+import com.edgareldy.tutorial.auth.domain.repository.AuthRepository
 import javax.inject.Inject
 
 /**
