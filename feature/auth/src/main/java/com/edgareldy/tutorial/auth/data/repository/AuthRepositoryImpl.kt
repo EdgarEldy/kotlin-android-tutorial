@@ -1,13 +1,13 @@
-package com.edgareldy.tutorial.data.repository
+package com.edgareldy.tutorial.auth.data.repository
 
+import com.edgareldy.tutorial.auth.data.api.AuthApiService
+import com.edgareldy.tutorial.auth.data.dto.ActivateAccountRequest
+import com.edgareldy.tutorial.auth.data.dto.LoginRequest
+import com.edgareldy.tutorial.auth.data.dto.RegisterRequest
+import com.edgareldy.tutorial.auth.domain.model.AuthTokens
+import com.edgareldy.tutorial.auth.domain.model.User
+import com.edgareldy.tutorial.auth.domain.repository.AuthRepository
 import com.edgareldy.tutorial.core.storage.SecureTokenStorage
-import com.edgareldy.tutorial.data.remote.api.AuthApiService
-import com.edgareldy.tutorial.data.remote.dto.ActivateAccountRequest
-import com.edgareldy.tutorial.data.remote.dto.LoginRequest
-import com.edgareldy.tutorial.data.remote.dto.RegisterRequest
-import com.edgareldy.tutorial.domain.model.AuthTokens
-import com.edgareldy.tutorial.domain.model.User
-import com.edgareldy.tutorial.domain.repository.AuthRepository
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -94,13 +94,13 @@ class AuthRepositoryImpl @Inject constructor(
 
     // --- Mappers (private, stay within this class to avoid a separate mapper file) ---
 
-    private fun com.edgareldy.tutorial.data.remote.dto.AuthResponseDto.toDomain() = AuthTokens(
+    private fun com.edgareldy.tutorial.auth.data.dto.AuthResponseDto.toDomain() = AuthTokens(
         accessToken = accessToken,
         refreshToken = refreshToken,
         expiresIn = expiresIn
     )
 
-    private fun com.edgareldy.tutorial.data.remote.dto.UserResponseDto.toDomain() = User(
+    private fun com.edgareldy.tutorial.auth.data.dto.UserResponseDto.toDomain() = User(
         id = id,
         firstName = firstName.orEmpty(),
         lastName = lastName.orEmpty(),
