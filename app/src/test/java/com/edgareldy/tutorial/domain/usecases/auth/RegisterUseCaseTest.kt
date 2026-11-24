@@ -1,4 +1,4 @@
-package com.edgareldy.tutorial.domain.usecase.auth
+package com.edgareldy.tutorial.domain.usecases.auth
 
 import com.edgareldy.tutorial.domain.model.User
 import com.edgareldy.tutorial.domain.repository.AuthRepository
