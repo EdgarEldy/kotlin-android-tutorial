@@ -167,6 +167,16 @@ fun MainScreen(onLogout: () -> Unit) {
             ) {
                 ProductDetailScreen(
                     onNavigateBack = { navController.popBackStack() },
+                    onNavigateToCart = {
+                        sharedCartViewModel.refreshCount()
+                        navController.navigate(Screen.Cart.route) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    },
                     onCartUpdated = { sharedCartViewModel.refreshCount() }
                 )
             }
