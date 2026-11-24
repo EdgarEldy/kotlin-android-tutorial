@@ -1,6 +1,7 @@
 package com.edgareldy.tutorial.auth.presentation.viewmodel
 
 import app.cash.turbine.test
+import com.edgareldy.tutorial.auth.domain.model.User
 import com.edgareldy.tutorial.auth.domain.usecases.ActivateAccountUseCase
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -60,7 +61,7 @@ class ActivateAccountViewModelTest {
 
         coEvery { useCase(any(), any()) } coAnswers {
             delay(100)
-            Result.success(Unit)
+            Result.success(mockk<User>())
         }
 
         viewModel.uiState.test {
@@ -77,8 +78,7 @@ class ActivateAccountViewModelTest {
         val useCase = mockk<ActivateAccountUseCase>()
         val viewModel = ActivateAccountViewModel(useCase)
 
-        coEvery { useCase(any(), any()) } returns
-            Result.failure(RuntimeException("Activation code expired"))
+        coEvery { useCase(any(), any()) } coAnswers { delay(1); Result.failure(RuntimeException("Activation code expired")) }
 
         viewModel.uiState.test {
             assertEquals(ActivateAccountUiState.Idle, awaitItem())
@@ -96,7 +96,7 @@ class ActivateAccountViewModelTest {
         val useCase = mockk<ActivateAccountUseCase>()
         val viewModel = ActivateAccountViewModel(useCase)
 
-        coEvery { useCase(any(), any()) } returns Result.failure(RuntimeException())
+        coEvery { useCase(any(), any()) } coAnswers { delay(1); Result.failure(RuntimeException()) }
 
         viewModel.uiState.test {
             assertEquals(ActivateAccountUiState.Idle, awaitItem())
@@ -114,8 +114,7 @@ class ActivateAccountViewModelTest {
         val useCase = mockk<ActivateAccountUseCase>()
         val viewModel = ActivateAccountViewModel(useCase)
 
-        coEvery { useCase(any(), any()) } returns
-            Result.failure(RuntimeException("Network error"))
+        coEvery { useCase(any(), any()) } coAnswers { delay(1); Result.failure(RuntimeException("Network error")) }
 
         viewModel.uiState.test {
             assertEquals(ActivateAccountUiState.Idle, awaitItem())

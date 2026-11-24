@@ -1,6 +1,7 @@
 package com.edgareldy.tutorial.auth.presentation.viewmodel
 
 import app.cash.turbine.test
+import com.edgareldy.tutorial.auth.domain.model.User
 import com.edgareldy.tutorial.auth.domain.usecases.RegisterUseCase
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -43,14 +44,15 @@ class RegisterViewModelTest {
         Dispatchers.resetMain()
     }
 
-    private fun registerArgs(
+    private fun doRegister(
+        viewModel: RegisterViewModel,
         firstName: String = "John",
         lastName: String = "Doe",
         username: String = "johndoe",
         email: String = "john@example.com",
         password: String = "password123",
         confirmPassword: String = "password123"
-    ) = arrayOf(firstName, lastName, username, email, password, confirmPassword)
+    ) = viewModel.register(firstName, lastName, username, email, password, confirmPassword)
 
     @Test
     fun _01_ShouldBeIdle_WhenNoRegistrationAttemptHasBeenMade() = runTest(testDispatcher) {
@@ -70,12 +72,12 @@ class RegisterViewModelTest {
 
         coEvery { useCase(any(), any(), any(), any(), any(), any()) } coAnswers {
             delay(100)
-            Result.success(Unit)
+            Result.success(mockk<User>())
         }
 
         viewModel.uiState.test {
             assertEquals(RegisterUiState.Idle, awaitItem())
-            viewModel.register(*registerArgs())
+            doRegister(viewModel)
             assertEquals(RegisterUiState.Loading, awaitItem())
             assertEquals(RegisterUiState.Success("john@example.com"), awaitItem())
             cancelAndIgnoreRemainingEvents()
@@ -87,11 +89,11 @@ class RegisterViewModelTest {
         val useCase = mockk<RegisterUseCase>()
         val viewModel = RegisterViewModel(useCase)
 
-        coEvery { useCase(any(), any(), any(), any(), any(), any()) } returns Result.success(Unit)
+        coEvery { useCase(any(), any(), any(), any(), any(), any()) } coAnswers { delay(1); Result.success(mockk<User>()) }
 
         viewModel.uiState.test {
             assertEquals(RegisterUiState.Idle, awaitItem())
-            viewModel.register(*registerArgs(email = "custom@test.org"))
+            doRegister(viewModel, email = "custom@test.org")
             assertEquals(RegisterUiState.Loading, awaitItem())
             val success = awaitItem()
             assertTrue(success is RegisterUiState.Success)
@@ -105,12 +107,11 @@ class RegisterViewModelTest {
         val useCase = mockk<RegisterUseCase>()
         val viewModel = RegisterViewModel(useCase)
 
-        coEvery { useCase(any(), any(), any(), any(), any(), any()) } returns
-            Result.failure(RuntimeException("Email already in use"))
+        coEvery { useCase(any(), any(), any(), any(), any(), any()) } coAnswers { delay(1); Result.failure(RuntimeException("Email already in use")) }
 
         viewModel.uiState.test {
             assertEquals(RegisterUiState.Idle, awaitItem())
-            viewModel.register(*registerArgs())
+            doRegister(viewModel)
             assertEquals(RegisterUiState.Loading, awaitItem())
             val error = awaitItem()
             assertTrue(error is RegisterUiState.Error)
@@ -124,12 +125,11 @@ class RegisterViewModelTest {
         val useCase = mockk<RegisterUseCase>()
         val viewModel = RegisterViewModel(useCase)
 
-        coEvery { useCase(any(), any(), any(), any(), any(), any()) } returns
-            Result.failure(RuntimeException())
+        coEvery { useCase(any(), any(), any(), any(), any(), any()) } coAnswers { delay(1); Result.failure(RuntimeException()) }
 
         viewModel.uiState.test {
             assertEquals(RegisterUiState.Idle, awaitItem())
-            viewModel.register(*registerArgs())
+            doRegister(viewModel)
             assertEquals(RegisterUiState.Loading, awaitItem())
             val error = awaitItem()
             assertTrue(error is RegisterUiState.Error)
@@ -143,12 +143,11 @@ class RegisterViewModelTest {
         val useCase = mockk<RegisterUseCase>()
         val viewModel = RegisterViewModel(useCase)
 
-        coEvery { useCase(any(), any(), any(), any(), any(), any()) } returns
-            Result.failure(RuntimeException("Network error"))
+        coEvery { useCase(any(), any(), any(), any(), any(), any()) } coAnswers { delay(1); Result.failure(RuntimeException("Network error")) }
 
         viewModel.uiState.test {
             assertEquals(RegisterUiState.Idle, awaitItem())
-            viewModel.register(*registerArgs())
+            doRegister(viewModel)
             assertEquals(RegisterUiState.Loading, awaitItem())
             assertTrue(awaitItem() is RegisterUiState.Error)
             viewModel.resetState()
