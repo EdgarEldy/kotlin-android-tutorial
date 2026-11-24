@@ -46,3 +46,6 @@
 -keep class * extends androidx.room.RoomDatabase
 -keep @androidx.room.Entity class *
 -dontwarn androidx.room.paging.**
+
+# Tink / security-crypto (error-prone annotations not present at runtime)
+-dontwarn com.google.errorprone.annotations.**
