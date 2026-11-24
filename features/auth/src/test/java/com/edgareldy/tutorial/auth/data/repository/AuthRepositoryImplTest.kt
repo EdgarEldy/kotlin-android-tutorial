@@ -1,7 +1,7 @@
-package com.edgareldy.tutorial.data.repository
+package com.edgareldy.tutorial.auth.data.repository
 
 import com.edgareldy.tutorial.core.storage.SecureTokenStorage
-import com.edgareldy.tutorial.data.remote.api.AuthApiService
+import com.edgareldy.tutorial.auth.data.api.AuthApiService
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import io.mockk.every
 import io.mockk.mockk
