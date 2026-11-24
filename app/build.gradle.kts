@@ -73,6 +73,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":feature:auth"))
     implementation(project(":core:network"))
     implementation(project(":core:storage"))
     implementation(project(":core:database"))
