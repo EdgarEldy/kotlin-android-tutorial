@@ -1,4 +1,4 @@
-package com.edgareldy.tutorial.features.auth.screens
+package com.edgareldy.tutorial.auth.presentation.screens
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -35,10 +35,10 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.edgareldy.tutorial.features.auth.components.AuthScaffold
-import com.edgareldy.tutorial.features.auth.components.OtpInputRow
-import com.edgareldy.tutorial.features.auth.viewmodel.ActivateAccountUiState
-import com.edgareldy.tutorial.features.auth.viewmodel.ActivateAccountViewModel
+import com.edgareldy.tutorial.auth.presentation.components.AuthScaffold
+import com.edgareldy.tutorial.auth.presentation.components.OtpInputRow
+import com.edgareldy.tutorial.auth.presentation.viewmodel.ActivateAccountUiState
+import com.edgareldy.tutorial.auth.presentation.viewmodel.ActivateAccountViewModel
 
 /**
  * Account activation screen where the user enters the 6-digit OTP sent by email.
