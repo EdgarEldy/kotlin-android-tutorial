@@ -65,6 +65,7 @@ fun CheckoutConfirmationScreen(
     LaunchedEffect(uiState) {
         if (uiState is CheckoutUiState.Success) {
             onOrderCreated((uiState as CheckoutUiState.Success).orderId)
+            viewModel.successHandled()
         }
         if (uiState is CheckoutUiState.Error) {
             snackbarHostState.showSnackbar((uiState as CheckoutUiState.Error).message)
