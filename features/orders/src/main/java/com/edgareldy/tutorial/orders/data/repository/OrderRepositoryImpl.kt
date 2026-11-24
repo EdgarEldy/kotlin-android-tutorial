@@ -51,7 +51,7 @@ class OrderRepositoryImpl @Inject constructor(
                 networkResult.fold(
                     onSuccess = { orderResponses ->
                         syncToCache(orderResponses)
-                        emit(Result.success(orderResponses.map { it.toDomain() }))
+                        emit(Result.success(orderResponses.map { it.toDomainWithItems() }))
                     },
                     onFailure = { error ->
                         emit(Result.failure(error))
