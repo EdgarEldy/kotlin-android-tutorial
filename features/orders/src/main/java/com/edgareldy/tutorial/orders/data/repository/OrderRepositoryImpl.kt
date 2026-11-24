@@ -1,6 +1,6 @@
 package com.edgareldy.tutorial.orders.data.repository
 
-import com.edgareldy.tutorial.cart.domain.repository.CartRepository
+import com.edgareldy.tutorial.core.di.qualifier.ApplicationScope
 import com.edgareldy.tutorial.data.local.dao.OrderDao
 import com.edgareldy.tutorial.data.local.entity.OrderEntity
 import com.edgareldy.tutorial.data.local.entity.OrderItemEntity
@@ -12,7 +12,6 @@ import com.edgareldy.tutorial.orders.domain.model.OrderItem
 import com.edgareldy.tutorial.orders.domain.model.OrderStatus
 import com.edgareldy.tutorial.orders.domain.repository.OrderRepository
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
@@ -24,7 +23,7 @@ import javax.inject.Inject
  * Cache-first implementation of [OrderRepository].
  * Read operations emit from Room immediately, then refresh from the network
  * in a background coroutine and re-emit. Write operations (createOrder) require
- * the network and clear the cart via CartRepository on success.
+ * the network; cart clearing after checkout is handled by CreateOrderUseCase.
  *
  * Created edgar.muhamyangabo on 11/24/26
  * Author: edgar.muhamyangabo
@@ -34,10 +33,8 @@ import javax.inject.Inject
 class OrderRepositoryImpl @Inject constructor(
     private val orderDao: OrderDao,
     private val apiService: OrderApiService,
-    private val cartRepository: CartRepository
+    @ApplicationScope private val backgroundScope: CoroutineScope
 ) : OrderRepository {
-
-    private val backgroundScope = CoroutineScope(SupervisorJob())
 
     override fun getOrders(): Flow<Result<List<Order>>> = flow {
         // Collect orders and their items together from the cache
@@ -59,11 +56,7 @@ class OrderRepositoryImpl @Inject constructor(
                 )
             } else {
                 // Emit cached data immediately
-                val orders = entities.map { entity ->
-                    val items = orderDao.getOrderItems(entity.id)
-                    entity to items
-                }
-                // For simplicity, emit from cache and refresh network in background
+                // items are not loaded for the list view to avoid N+1 queries; use getOrderById() for full detail
                 val domainOrders = entities.map { entity ->
                     Order(
                         id = entity.id,
@@ -129,8 +122,6 @@ class OrderRepositoryImpl @Inject constructor(
         orderDao.upsertAll(listOf(dto.toEntity()))
         orderDao.deleteItemsByOrderId(dto.id)
         orderDao.upsertItems(dto.items.map { it.toEntity(dto.id) })
-        // Clear the cart after successful checkout
-        cartRepository.clearCart()
         order
     }
 
