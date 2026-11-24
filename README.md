@@ -753,7 +753,7 @@ Order history and order detail.
 | 0 | Backend reconnaissance, OpenAPI spec snapshot | ✅ Complete |
 | 1 | `feature/core-architecture` | ✅ Complete |
 | 2 | `feature/auth` | ✅ Complete |
-| 3 | `feature/product-catalog` | ⚠️ In progress (bottom nav missing) |
+| 3 | `feature/product-catalog` | ✅ Complete |
 | 4 | `feature/shopping-cart` | 🔲 Pending |
 | 5 | `feature/orders` | 🔲 Pending |
 
