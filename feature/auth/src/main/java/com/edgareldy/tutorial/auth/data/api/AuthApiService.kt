@@ -1,11 +1,11 @@
-package com.edgareldy.tutorial.data.remote.api
+package com.edgareldy.tutorial.auth.data.api
 
-import com.edgareldy.tutorial.data.remote.dto.ActivateAccountRequest
-import com.edgareldy.tutorial.data.remote.dto.ApiResponse
-import com.edgareldy.tutorial.data.remote.dto.AuthResponseDto
-import com.edgareldy.tutorial.data.remote.dto.LoginRequest
-import com.edgareldy.tutorial.data.remote.dto.RegisterRequest
-import com.edgareldy.tutorial.data.remote.dto.UserResponseDto
+import com.edgareldy.tutorial.auth.data.dto.ActivateAccountRequest
+import com.edgareldy.tutorial.auth.data.dto.ApiResponse
+import com.edgareldy.tutorial.auth.data.dto.AuthResponseDto
+import com.edgareldy.tutorial.auth.data.dto.LoginRequest
+import com.edgareldy.tutorial.auth.data.dto.RegisterRequest
+import com.edgareldy.tutorial.auth.data.dto.UserResponseDto
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
