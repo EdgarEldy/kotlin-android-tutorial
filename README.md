@@ -140,107 +140,84 @@ The application covers the full customer journey: account creation, authenticati
 
 ## Architecture
 
-The application follows MVVM with pragmatic Clean Architecture. Each layer has a single responsibility; dependencies only point inward.
+The application follows MVVM with pragmatic Clean Architecture inside a multi-module Gradle project. Core infrastructure lives in `:core:*` modules; each feature is a self-contained `:feature:*` module with its own data, domain and presentation layers. Dependencies only point inward.
 
 ```
-┌─────────────────────────────────────────────────┐
-│                  Presentation                    │
-│  Compose screens · ViewModels · UI state         │
-└───────────────────────┬─────────────────────────┘
-                        │ calls
-┌───────────────────────▼─────────────────────────┐
-│                    Domain                        │
-│  Models · Repository interfaces · Use cases      │
-└───────────────────────┬─────────────────────────┘
-                        │ implements
-┌───────────────────────▼─────────────────────────┐
-│                     Data                         │
-│  Repositories · API adapters · Mappers           │
-└──────────────┬────────────────────┬─────────────┘
-               │                    │
-   ┌───────────▼──────┐  ┌──────────▼───────────┐
-   │  Generated API   │  │  Secure storage /     │
-   │  client (Remote) │  │  DataStore (Local)    │
-   └───────────┬──────┘  └───────────────────────┘
-               │
-   ┌───────────▼──────┐
-   │  Spring Boot API │
-   └──────────────────┘
+┌──────────────────────────────────────────────────────┐
+│                  :feature:*                           │
+│  presentation/ (screens, ViewModels, components)      │
+│       calls domain/usecase/                           │
+│  domain/ (models, repository interfaces, use cases)   │
+│       implemented by data/                            │
+│  data/ (DTOs, Retrofit services, repository impls)    │
+└───────────────────────┬──────────────────────────────┘
+                        │ depends on
+┌───────────────────────▼──────────────────────────────┐
+│  :core:network · :core:storage · :core:database       │
+│  :core:ui · :app (NetworkModule, navigation)          │
+└───────────────────────┬──────────────────────────────┘
+                        │
+              ┌─────────▼─────────┐
+              │  Spring Boot API  │
+              └───────────────────┘
 ```
 
 ### Layer responsibilities
 
 | Layer | Contents |
 |---|---|
-| **Presentation** | Compose screens, reusable components, ViewModels, immutable UI state, one-off events (navigation, snackbars) |
-| **Domain** | Application-owned models (not generated DTOs), repository interfaces, use cases with real business meaning |
-| **Data** | Repository implementations, generated API client adapters, DTO-to-domain mappers |
-| **Core** | OkHttp / Retrofit setup, auth interceptor, Keystore-backed secure storage, DataStore, Hilt modules, shared utilities |
+| **presentation/** | Compose screens, reusable composables, ViewModels, immutable `UiState` |
+| **domain/** | Pure models, repository interfaces, use cases (all business logic lives here) |
+| **data/** | Repository implementations, Retrofit DTOs, DTO-to-domain mappers |
+| **:core:network** | OkHttp / Retrofit wiring, `AuthInterceptor`, `TokenAuthenticator` |
+| **:core:storage** | Keystore-backed `SecureTokenStorage`, DataStore |
+| **:core:database** | Shared `TutorialDatabase` (Room) |
+| **:core:ui** | `TutorialTheme`, color tokens, typography |
 
 ### Key rules
 
 - Composables render state and emit events; they never call Retrofit directly.
 - ViewModels expose `StateFlow<UiState>` as the single source of truth for each screen.
-- Generated API types are translated to domain models at the data boundary; they never leak into ViewModels or composables.
+- DTOs never leak out of `data/` — ViewModels and composables only see domain models.
 - Backend business rules (prices, cart totals, order status) are never recalculated on the client.
 
 ---
 
-## Package structure
+## Module structure
+
+The project uses a multi-module Gradle layout. Each feature is a self-contained library module that owns its data, domain and presentation layers.
 
 ```
-com.edgareldy.tutorial/
-│
-├── MainActivity.kt
-├── TutorialApplication.kt
-│
-├── navigation/              ← Route definitions, nav graphs
-│
-├── core/
-│   ├── network/             ← OkHttp, Retrofit, auth interceptor, token refresh
-│   ├── storage/             ← Android Keystore-backed credential storage
-│   ├── di/                  ← Hilt modules
-│   └── ui/                  ← Material 3 theme (Color, Type, Theme)
-│
+:app                      ← entry point, MainActivity, TutorialApplication, navigation, NetworkModule
+:core:network             ← OkHttp, Retrofit wiring, AuthInterceptor, TokenAuthenticator
+:core:storage             ← Keystore-backed SecureTokenStorage, DataStore module
+:core:database            ← shared TutorialDatabase (Room), DatabaseModule
+:core:ui                  ← Material 3 theme: TutorialTheme, Color, Type
+:feature:auth             ← sign-in, register, OTP, password reset, profile
+:feature:product-catalog  ← home, categories, product list, product detail
+:feature:cart             ← cart, checkout, order confirmation
+:feature:orders           ← order history, order detail
+```
+
+### Internal structure of a feature module
+
+Each `:feature:*` module follows the same layout:
+
+```
+feature/<name>/src/main/java/com/edgareldy/tutorial/<name>/
 ├── data/
-│   ├── remote/              ← Generated API client + hand-written adapters
-│   ├── local/               ← Room database, DAOs, local entities
-│   ├── mapper/              ← DTO/entity to domain model mapping
-│   └── repository/          ← Repository implementations (remote + local)
-│
+│   ├── dto/           ← Retrofit DTOs (@Serializable, @SerialName snake_case)
+│   ├── api/           ← Retrofit service interfaces
+│   └── repository/    ← Repository implementations
 ├── domain/
-│   ├── model/               ← Application-owned models
-│   ├── repository/          ← Repository interfaces
-│   └── usecase/             ← One class per meaningful operation
-│
-└── features/
-    ├── auth/
-    │   ├── screens/         ← Composables
-    │   ├── viewmodel/       ← ViewModels + UiState
-    │   └── components/      ← Reusable composables specific to auth
-    ├── home/
-    │   ├── screens/
-    │   ├── viewmodel/
-    │   └── components/
-    ├── products/
-    │   ├── screens/
-    │   ├── viewmodel/
-    │   └── components/
-    ├── cart/
-    │   ├── screens/
-    │   ├── viewmodel/
-    │   └── components/
-    ├── order/
-    │   ├── screens/
-    │   ├── viewmodel/
-    │   └── components/
-    └── account/
-        ├── screens/
-        ├── viewmodel/
-        └── components/
+│   ├── model/         ← Pure domain models (no Retrofit or Room dependency)
+│   ├── repository/    ← Repository interfaces
+│   └── usecase/       ← One file per use case
+└── presentation/
+    ├── screens/       ← Compose screens
+    ├── viewmodel/     ← ViewModels + sealed UiState
+    └── components/    ← Composables reusable within this feature
 ```
-
-Each feature package contains its own `screens/`, `viewmodel/`, and `components/` sub-packages.
 
 ---
 
