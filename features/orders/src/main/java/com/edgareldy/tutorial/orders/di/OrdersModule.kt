@@ -1,7 +1,5 @@
 package com.edgareldy.tutorial.orders.di
 
-import com.edgareldy.tutorial.data.local.TutorialDatabase
-import com.edgareldy.tutorial.data.local.dao.OrderDao
 import com.edgareldy.tutorial.orders.data.api.OrderApiService
 import com.edgareldy.tutorial.orders.data.repository.OrderRepositoryImpl
 import com.edgareldy.tutorial.orders.domain.repository.OrderRepository
@@ -16,8 +14,9 @@ import javax.inject.Singleton
 /**
  * Hilt module that wires order dependencies.
  * OrderApiService is created from the shared authenticated Retrofit instance
- * provided by :core:network. OrderDao is obtained from TutorialDatabase which
- * is provided by :core:database. OrderRepository is bound to its implementation.
+ * provided by :core:network. OrderDao is consumed from :core:database's
+ * DatabaseModule - it must not be re-provided here to avoid duplicate bindings.
+ * OrderRepository is bound to its implementation.
  *
  * Created edgar.muhamyangabo on 11/24/26
  * Author: edgar.muhamyangabo
@@ -38,10 +37,5 @@ abstract class OrdersModule {
         @Singleton
         fun provideOrderApiService(retrofit: Retrofit): OrderApiService =
             retrofit.create(OrderApiService::class.java)
-
-        @Provides
-        @Singleton
-        fun provideOrderDao(database: TutorialDatabase): OrderDao =
-            database.orderDao()
     }
 }
