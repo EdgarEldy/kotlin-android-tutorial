@@ -181,7 +181,7 @@ private fun OrderListItem(
 }
 
 @Composable
-private fun OrderStatusChip(
+internal fun OrderStatusChip(
     status: OrderStatus,
     modifier: Modifier = Modifier
 ) {
