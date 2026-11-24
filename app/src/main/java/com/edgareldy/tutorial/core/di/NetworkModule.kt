@@ -4,8 +4,6 @@ import com.edgareldy.tutorial.BuildConfig
 import com.edgareldy.tutorial.core.di.qualifier.AuthOnly
 import com.edgareldy.tutorial.core.network.AuthInterceptor
 import com.edgareldy.tutorial.core.network.TokenAuthenticator
-import com.edgareldy.tutorial.data.remote.api.AuthApiService
-import com.edgareldy.tutorial.data.remote.api.PasswordResetApiService
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
@@ -89,13 +87,4 @@ object NetworkModule {
         .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
         .build()
 
-    @Provides
-    @Singleton
-    fun provideAuthApiService(retrofit: Retrofit): AuthApiService =
-        retrofit.create(AuthApiService::class.java)
-
-    @Provides
-    @Singleton
-    fun providePasswordResetApiService(retrofit: Retrofit): PasswordResetApiService =
-        retrofit.create(PasswordResetApiService::class.java)
 }
