@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -6,6 +8,15 @@ plugins {
     alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
 }
+
+val localProps = Properties().apply {
+    rootProject.file("local.properties").takeIf { it.exists() }?.inputStream()?.use { load(it) }
+}
+
+val hasSigningConfig = localProps.containsKey("KEYSTORE_FILE") &&
+    localProps.containsKey("KEYSTORE_PASSWORD") &&
+    localProps.containsKey("KEY_ALIAS") &&
+    localProps.containsKey("KEY_PASSWORD")
 
 android {
     namespace = "com.edgareldy.tutorial"
@@ -44,12 +55,26 @@ android {
         }
     }
 
+    if (hasSigningConfig) {
+        signingConfigs {
+            create("release") {
+                storeFile = rootProject.file(localProps["KEYSTORE_FILE"] as String)
+                storePassword = localProps["KEYSTORE_PASSWORD"] as? String
+                keyAlias = localProps["KEY_ALIAS"] as? String
+                keyPassword = localProps["KEY_PASSWORD"] as? String
+            }
+        }
+    }
+
     buildTypes {
         debug {
             isMinifyEnabled = false
             isDebuggable = true
         }
         release {
+            if (hasSigningConfig) {
+                signingConfig = signingConfigs.getByName("release")
+            }
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
