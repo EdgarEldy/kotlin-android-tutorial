@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -138,12 +139,12 @@ private fun ProductDetailContent(
         .sortedBy { it.displayOrder }
         .firstOrNull { it.isPrimary } ?: product.images.firstOrNull()
 
-    Column(modifier = modifier.verticalScroll(scrollState)) {
+    Column(modifier = modifier.verticalScroll(scrollState).navigationBarsPadding()) {
 
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(360.dp)
+                .height(260.dp)
                 .background(MaterialTheme.colorScheme.surfaceVariant)
         ) {
             if (primaryImage != null) {
