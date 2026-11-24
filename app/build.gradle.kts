@@ -73,9 +73,9 @@ android {
 }
 
 dependencies {
-    implementation(project(":features:auth"))
-    implementation(project(":features:product-catalog"))
-    implementation(project(":features:shopping-cart"))
+    implementation(project(":feature:auth"))
+    implementation(project(":feature:product-catalog"))
+    implementation(project(":feature:shopping-cart"))
     implementation(project(":core:network"))
     implementation(project(":core:storage"))
     implementation(project(":core:database"))
