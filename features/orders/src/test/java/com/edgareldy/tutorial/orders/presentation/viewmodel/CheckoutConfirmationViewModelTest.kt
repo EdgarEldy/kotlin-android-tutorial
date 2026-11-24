@@ -4,7 +4,6 @@ import app.cash.turbine.test
 import com.edgareldy.tutorial.orders.domain.model.Order
 import com.edgareldy.tutorial.orders.domain.model.OrderStatus
 import com.edgareldy.tutorial.orders.domain.usecases.CreateOrderUseCase
-import io.mockk.coAnswers
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
