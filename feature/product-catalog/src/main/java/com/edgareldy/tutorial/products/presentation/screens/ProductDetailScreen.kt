@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -20,6 +21,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -69,6 +71,7 @@ import com.edgareldy.tutorial.products.presentation.viewmodel.ProductDetailViewM
 @Composable
 fun ProductDetailScreen(
     onNavigateBack: () -> Unit,
+    onNavigateToCart: () -> Unit = {},
     onCartUpdated: () -> Unit = {},
     viewModel: ProductDetailViewModel = hiltViewModel()
 ) {
@@ -140,6 +143,7 @@ fun ProductDetailScreen(
                         onAddToCart = { quantity ->
                             viewModel.addToCart(quantity, onSuccess = onCartUpdated)
                         },
+                        onNavigateToCart = onNavigateToCart,
                         isAddingToCart = addToCartLoading,
                         modifier = Modifier.fillMaxSize()
                     )
@@ -153,6 +157,7 @@ fun ProductDetailScreen(
 private fun ProductDetailContent(
     product: Product,
     onAddToCart: (Int) -> Unit,
+    onNavigateToCart: () -> Unit,
     isAddingToCart: Boolean,
     modifier: Modifier = Modifier
 ) {
@@ -164,12 +169,12 @@ private fun ProductDetailContent(
         .sortedBy { it.displayOrder }
         .firstOrNull { it.isPrimary } ?: product.images.firstOrNull()
 
-    Column(modifier = modifier.verticalScroll(scrollState)) {
+    Column(modifier = modifier.verticalScroll(scrollState).navigationBarsPadding()) {
 
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(360.dp)
+                .height(260.dp)
                 .background(MaterialTheme.colorScheme.surfaceVariant)
         ) {
             if (primaryImage != null) {
@@ -304,7 +309,23 @@ private fun ProductDetailContent(
                     Spacer(modifier = Modifier.width(8.dp))
                 }
                 Text(
-                    text = if (addToCartLoading) "Ajout en cours..." else "Add to Cart",
+                    text = if (addToCartLoading) "Adding..." else "Add to Cart",
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            OutlinedButton(
+                onClick = onNavigateToCart,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(52.dp),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Text(
+                    text = "View Cart",
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.SemiBold
                 )

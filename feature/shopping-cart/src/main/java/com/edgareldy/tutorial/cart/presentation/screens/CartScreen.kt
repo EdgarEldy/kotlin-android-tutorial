@@ -91,7 +91,7 @@ fun CartScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = "Mon panier",
+                        text = "My Cart",
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold
                     )
@@ -136,7 +136,7 @@ fun CartScreen(
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         Button(onClick = { viewModel.loadCart() }) {
-                            Text("Reessayer")
+                            Text("Retry")
                         }
                     }
                 }
@@ -230,7 +230,7 @@ private fun CartContent(
                     )
                     Spacer(modifier = Modifier.size(8.dp))
                     Text(
-                        text = "Commander",
+                        text = "Place Order",
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.SemiBold
                     )
@@ -272,7 +272,7 @@ private fun CartItemCard(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Delete,
-                        contentDescription = "Supprimer",
+                        contentDescription = "Remove",
                         tint = MaterialTheme.colorScheme.error,
                         modifier = Modifier.size(20.dp)
                     )
@@ -281,7 +281,7 @@ private fun CartItemCard(
 
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "EUR %.2f / unite".format(item.unitPrice),
+                text = "EUR %.2f / unit".format(item.unitPrice),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -302,7 +302,7 @@ private fun CartItemCard(
                     ) {
                         Icon(
                             imageVector = Icons.Default.Remove,
-                            contentDescription = "Diminuer",
+                            contentDescription = "Decrease",
                             modifier = Modifier.size(20.dp)
                         )
                     }
@@ -317,7 +317,7 @@ private fun CartItemCard(
                     ) {
                         Icon(
                             imageVector = Icons.Default.Add,
-                            contentDescription = "Augmenter",
+                            contentDescription = "Increase",
                             modifier = Modifier.size(20.dp)
                         )
                     }
@@ -351,19 +351,19 @@ private fun CartEmptyContent(
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = "Votre panier est vide",
+            text = "Your cart is empty",
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.SemiBold
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = "Ajoutez des produits pour commencer vos achats.",
+            text = "Add products to start shopping.",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         Spacer(modifier = Modifier.height(24.dp))
         OutlinedButton(onClick = onBrowseProducts) {
-            Text("Voir les produits")
+            Text("Browse Products")
         }
     }
 }
