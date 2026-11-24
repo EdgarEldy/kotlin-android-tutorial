@@ -30,14 +30,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.edgareldy.tutorial.features.auth.screens.ProfileScreen
-import com.edgareldy.tutorial.features.cart.screens.CartScreen
-import com.edgareldy.tutorial.features.cart.viewmodel.SharedCartViewModel
-import com.edgareldy.tutorial.features.orders.screens.CheckoutConfirmationScreen
-import com.edgareldy.tutorial.features.orders.screens.OrderDetailScreen
-import com.edgareldy.tutorial.features.orders.screens.OrderListScreen
-import com.edgareldy.tutorial.features.products.screens.ProductDetailScreen
-import com.edgareldy.tutorial.features.products.screens.ProductListScreen
+import com.edgareldy.tutorial.auth.presentation.screens.ProfileScreen
+import com.edgareldy.tutorial.cart.presentation.screens.CartScreen
+import com.edgareldy.tutorial.cart.presentation.viewmodel.SharedCartViewModel
+import com.edgareldy.tutorial.orders.presentation.screens.CheckoutConfirmationScreen
+import com.edgareldy.tutorial.orders.presentation.screens.OrderDetailScreen
+import com.edgareldy.tutorial.orders.presentation.screens.OrderListScreen
+import com.edgareldy.tutorial.products.presentation.screens.ProductDetailScreen
+import com.edgareldy.tutorial.products.presentation.screens.ProductListScreen
 
 /**
  * Describes a single bottom navigation tab: its route, label and icon.

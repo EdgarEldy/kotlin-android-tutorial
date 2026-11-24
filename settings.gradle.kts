@@ -14,3 +14,11 @@ dependencyResolutionManagement {
 }
 rootProject.name = "kotlin-android-tutorial"
 include(":app")
+include(":core:network")
+include(":core:storage")
+include(":core:database")
+include(":core:ui")
+include(":feature:auth")
+include(":feature:product-catalog")
+include(":feature:shopping-cart")
+include(":feature:orders")
