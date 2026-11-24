@@ -1,4 +1,4 @@
-package com.edgareldy.tutorial.data.remote.dto
+package com.edgareldy.tutorial.auth.data.dto
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
