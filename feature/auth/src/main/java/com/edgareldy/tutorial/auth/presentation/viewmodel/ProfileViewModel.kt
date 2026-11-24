@@ -1,10 +1,10 @@
-package com.edgareldy.tutorial.features.auth.viewmodel
+package com.edgareldy.tutorial.auth.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.edgareldy.tutorial.domain.model.User
-import com.edgareldy.tutorial.domain.usecase.auth.GetCurrentUserUseCase
-import com.edgareldy.tutorial.domain.usecase.auth.LogoutUseCase
+import com.edgareldy.tutorial.auth.domain.model.User
+import com.edgareldy.tutorial.auth.domain.usecase.GetCurrentUserUseCase
+import com.edgareldy.tutorial.auth.domain.usecase.LogoutUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
