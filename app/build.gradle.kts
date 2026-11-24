@@ -72,11 +72,14 @@ android {
     }
 }
 
-ksp {
-    arg("room.schemaLocation", "$projectDir/schemas")
-}
-
 dependencies {
+    implementation(project(":features:auth"))
+    implementation(project(":features:product-catalog"))
+    implementation(project(":core:network"))
+    implementation(project(":core:storage"))
+    implementation(project(":core:database"))
+    implementation(project(":core:ui"))
+
     implementation(platform(libs.compose.bom))
     implementation(libs.bundles.compose)
     implementation(libs.navigation.compose)
@@ -84,13 +87,9 @@ dependencies {
     ksp(libs.hilt.compiler)
     implementation(libs.hilt.navigation.compose)
     implementation(libs.bundles.retrofit)
-    implementation(libs.bundles.room)
-    ksp(libs.room.compiler)
-    implementation(libs.datastore.preferences)
     implementation(libs.coroutines.android)
     implementation(libs.bundles.lifecycle)
     implementation(libs.coil.compose)
-    implementation(libs.security.crypto)
     implementation(libs.splashscreen)
     debugImplementation(libs.compose.ui.tooling)
 
