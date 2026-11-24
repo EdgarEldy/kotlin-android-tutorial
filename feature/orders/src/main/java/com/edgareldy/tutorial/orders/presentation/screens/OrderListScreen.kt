@@ -63,7 +63,7 @@ fun OrderListScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = "Mes commandes",
+                        text = "My Orders",
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold
                     )
@@ -92,7 +92,7 @@ fun OrderListScreen(
                 is OrderListUiState.Empty -> {
                     Box(modifier = Modifier.fillMaxSize()) {
                         Text(
-                            text = "Aucune commande",
+                            text = "No orders",
                             style = MaterialTheme.typography.bodyLarge,
                             modifier = Modifier.align(Alignment.Center)
                         )
@@ -114,7 +114,7 @@ fun OrderListScreen(
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         Button(onClick = { viewModel.refresh() }) {
-                            Text("Reessayer")
+                            Text("Retry")
                         }
                     }
                 }
