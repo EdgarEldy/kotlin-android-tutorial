@@ -1,9 +1,9 @@
-package com.edgareldy.tutorial.core.di
+package com.edgareldy.tutorial.auth.di
 
-import com.edgareldy.tutorial.data.repository.AuthRepositoryImpl
-import com.edgareldy.tutorial.data.repository.PasswordResetRepositoryImpl
-import com.edgareldy.tutorial.domain.repository.AuthRepository
-import com.edgareldy.tutorial.domain.repository.PasswordResetRepository
+import com.edgareldy.tutorial.auth.data.repository.AuthRepositoryImpl
+import com.edgareldy.tutorial.auth.data.repository.PasswordResetRepositoryImpl
+import com.edgareldy.tutorial.auth.domain.repository.AuthRepository
+import com.edgareldy.tutorial.auth.domain.repository.PasswordResetRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -11,7 +11,7 @@ import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 /**
- * Hilt module that binds repository interfaces to their implementations.
+ * Hilt module that binds repository interfaces to their implementations for the auth feature.
  * Using @Binds instead of @Provides avoids generating an unnecessary wrapper class
  * and signals clearly that this is a pure interface-to-implementation mapping.
  *
@@ -22,7 +22,7 @@ import javax.inject.Singleton
  */
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class RepositoryModule {
+abstract class AuthModule {
 
     @Binds
     @Singleton
