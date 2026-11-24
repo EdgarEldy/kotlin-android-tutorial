@@ -1,4 +1,4 @@
-package com.edgareldy.tutorial.domain.usecases.auth
+package com.edgareldy.tutorial.auth.domain.usecases
 
 import com.edgareldy.tutorial.domain.repository.AuthRepository
 import io.mockk.coEvery

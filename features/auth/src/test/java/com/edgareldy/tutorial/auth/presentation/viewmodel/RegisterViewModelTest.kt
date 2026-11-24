@@ -1,7 +1,7 @@
-package com.edgareldy.tutorial.features.auth.viewmodel
+package com.edgareldy.tutorial.auth.presentation.viewmodel
 
 import app.cash.turbine.test
-import com.edgareldy.tutorial.domain.usecases.auth.RegisterUseCase
+import com.edgareldy.tutorial.auth.domain.usecases.RegisterUseCase
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers

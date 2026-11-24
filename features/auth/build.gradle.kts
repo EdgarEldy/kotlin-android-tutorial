@@ -36,4 +36,6 @@ dependencies {
     implementation(libs.bundles.retrofit)
     implementation(libs.coroutines.android)
     implementation(libs.bundles.lifecycle)
+
+    testImplementation(libs.bundles.testing.unit)
 }
