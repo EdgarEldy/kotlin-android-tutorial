@@ -1,13 +1,17 @@
 package com.edgareldy.tutorial.auth.di
 
+import com.edgareldy.tutorial.auth.data.api.AuthApiService
+import com.edgareldy.tutorial.auth.data.api.PasswordResetApiService
 import com.edgareldy.tutorial.auth.data.repository.AuthRepositoryImpl
 import com.edgareldy.tutorial.auth.data.repository.PasswordResetRepositoryImpl
 import com.edgareldy.tutorial.auth.domain.repository.AuthRepository
 import com.edgareldy.tutorial.auth.domain.repository.PasswordResetRepository
 import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import retrofit2.Retrofit
 import javax.inject.Singleton
 
 /**
@@ -31,4 +35,16 @@ abstract class AuthModule {
     @Binds
     @Singleton
     abstract fun bindPasswordResetRepository(impl: PasswordResetRepositoryImpl): PasswordResetRepository
+
+    companion object {
+        @Provides
+        @Singleton
+        fun provideAuthApiService(retrofit: Retrofit): AuthApiService =
+            retrofit.create(AuthApiService::class.java)
+
+        @Provides
+        @Singleton
+        fun providePasswordResetApiService(retrofit: Retrofit): PasswordResetApiService =
+            retrofit.create(PasswordResetApiService::class.java)
+    }
 }
