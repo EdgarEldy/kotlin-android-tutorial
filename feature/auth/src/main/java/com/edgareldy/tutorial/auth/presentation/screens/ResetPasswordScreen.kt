@@ -1,4 +1,4 @@
-package com.edgareldy.tutorial.features.auth.screens
+package com.edgareldy.tutorial.auth.presentation.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -40,11 +40,11 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.edgareldy.tutorial.features.auth.components.AuthScaffold
-import com.edgareldy.tutorial.features.auth.components.AuthTextField
-import com.edgareldy.tutorial.features.auth.components.PasswordResetStepper
-import com.edgareldy.tutorial.features.auth.viewmodel.ResetPasswordUiState
-import com.edgareldy.tutorial.features.auth.viewmodel.ResetPasswordViewModel
+import com.edgareldy.tutorial.auth.presentation.components.AuthScaffold
+import com.edgareldy.tutorial.auth.presentation.components.AuthTextField
+import com.edgareldy.tutorial.auth.presentation.components.PasswordResetStepper
+import com.edgareldy.tutorial.auth.presentation.viewmodel.ResetPasswordUiState
+import com.edgareldy.tutorial.auth.presentation.viewmodel.ResetPasswordViewModel
 
 /**
  * Reset-password screen (step 3 of the password reset flow).
