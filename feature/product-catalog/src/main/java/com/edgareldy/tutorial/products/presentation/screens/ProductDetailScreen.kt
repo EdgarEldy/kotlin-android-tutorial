@@ -304,7 +304,7 @@ private fun ProductDetailContent(
                     Spacer(modifier = Modifier.width(8.dp))
                 }
                 Text(
-                    text = if (addToCartLoading) "Ajout en cours..." else "Add to Cart",
+                    text = if (addToCartLoading) "Adding..." else "Add to Cart",
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.SemiBold
                 )
