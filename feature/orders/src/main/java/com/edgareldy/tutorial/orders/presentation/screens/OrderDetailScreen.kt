@@ -147,7 +147,7 @@ private fun OrderDetailContent(
                 ) {
                     Column {
                         Text(
-                            text = "Statut",
+                            text = "Status",
                             style = MaterialTheme.typography.labelMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -175,7 +175,7 @@ private fun OrderDetailContent(
         // Articles section header
         item {
             Text(
-                text = "Articles commandes",
+                text = "Order Items",
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.SemiBold,
                 modifier = Modifier.padding(top = 4.dp)
@@ -215,12 +215,12 @@ private fun OrderItemRow(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = "Qte: ${item.quantity}",
+                    text = "Qty: ${item.quantity}",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Text(
-                    text = "EUR %.2f / u.".format(item.unitPrice),
+                    text = "EUR %.2f / unit".format(item.unitPrice),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
