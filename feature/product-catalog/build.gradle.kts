@@ -26,7 +26,7 @@ dependencies {
     implementation(project(":core:network"))
     implementation(project(":core:database"))
     implementation(project(":core:ui"))
-    implementation(project(":features:shopping-cart"))
+    implementation(project(":feature:shopping-cart"))
 
     implementation(platform(libs.compose.bom))
     implementation(libs.bundles.compose)
