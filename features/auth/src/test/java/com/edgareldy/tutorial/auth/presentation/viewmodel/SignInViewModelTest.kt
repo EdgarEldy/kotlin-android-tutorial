@@ -1,7 +1,7 @@
 package com.edgareldy.tutorial.auth.presentation.viewmodel
 
 import app.cash.turbine.test
-import com.edgareldy.tutorial.domain.model.AuthTokens
+import com.edgareldy.tutorial.auth.domain.model.AuthTokens
 import com.edgareldy.tutorial.auth.domain.usecases.LoginUseCase
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -80,7 +80,7 @@ class SignInViewModelTest {
         val loginUseCase = mockk<LoginUseCase>()
         val viewModel = SignInViewModel(loginUseCase)
 
-        coEvery { loginUseCase(any(), any()) } returns Result.success(fakeTokens)
+        coEvery { loginUseCase(any(), any()) } coAnswers { delay(1); Result.success(fakeTokens) }
 
         viewModel.uiState.test {
             assertEquals(SignInUiState.Idle, awaitItem())
@@ -96,8 +96,7 @@ class SignInViewModelTest {
         val loginUseCase = mockk<LoginUseCase>()
         val viewModel = SignInViewModel(loginUseCase)
 
-        coEvery { loginUseCase(any(), any()) } returns
-            Result.failure(RuntimeException("Invalid credentials"))
+        coEvery { loginUseCase(any(), any()) } coAnswers { delay(1); Result.failure(RuntimeException("Invalid credentials")) }
 
         viewModel.uiState.test {
             assertEquals(SignInUiState.Idle, awaitItem())
@@ -115,8 +114,7 @@ class SignInViewModelTest {
         val loginUseCase = mockk<LoginUseCase>()
         val viewModel = SignInViewModel(loginUseCase)
 
-        coEvery { loginUseCase("", any()) } returns
-            Result.failure(IllegalArgumentException("Email must not be blank"))
+        coEvery { loginUseCase("", any()) } coAnswers { delay(1); Result.failure(IllegalArgumentException("Email must not be blank")) }
 
         viewModel.uiState.test {
             assertEquals(SignInUiState.Idle, awaitItem())
@@ -134,8 +132,7 @@ class SignInViewModelTest {
         val loginUseCase = mockk<LoginUseCase>()
         val viewModel = SignInViewModel(loginUseCase)
 
-        coEvery { loginUseCase(any(), any()) } returns
-            Result.failure(RuntimeException("Network error"))
+        coEvery { loginUseCase(any(), any()) } coAnswers { delay(1); Result.failure(RuntimeException("Network error")) }
 
         viewModel.uiState.test {
             assertEquals(SignInUiState.Idle, awaitItem())

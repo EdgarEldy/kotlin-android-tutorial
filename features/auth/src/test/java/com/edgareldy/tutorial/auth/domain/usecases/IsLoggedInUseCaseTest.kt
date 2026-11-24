@@ -1,6 +1,6 @@
 package com.edgareldy.tutorial.auth.domain.usecases
 
-import com.edgareldy.tutorial.domain.repository.AuthRepository
+import com.edgareldy.tutorial.auth.domain.repository.AuthRepository
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify

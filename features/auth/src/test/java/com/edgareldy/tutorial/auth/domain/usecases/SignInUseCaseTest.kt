@@ -1,7 +1,7 @@
 package com.edgareldy.tutorial.auth.domain.usecases
 
-import com.edgareldy.tutorial.domain.model.AuthTokens
-import com.edgareldy.tutorial.domain.repository.AuthRepository
+import com.edgareldy.tutorial.auth.domain.model.AuthTokens
+import com.edgareldy.tutorial.auth.domain.repository.AuthRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk

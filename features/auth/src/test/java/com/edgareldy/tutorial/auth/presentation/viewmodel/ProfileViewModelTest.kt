@@ -1,7 +1,7 @@
 package com.edgareldy.tutorial.auth.presentation.viewmodel
 
 import app.cash.turbine.test
-import com.edgareldy.tutorial.domain.model.User
+import com.edgareldy.tutorial.auth.domain.model.User
 import com.edgareldy.tutorial.auth.domain.usecases.GetCurrentUserUseCase
 import com.edgareldy.tutorial.auth.domain.usecases.LogoutUseCase
 import io.mockk.coEvery
@@ -82,11 +82,12 @@ class ProfileViewModelTest {
 
     @Test
     fun _02_ShouldEmitSuccess_WhenUserIsRetrieved() = runTest(testDispatcher) {
-        coEvery { getCurrentUserUseCase() } returns Result.success(fakeUser)
+        coEvery { getCurrentUserUseCase() } coAnswers { delay(1); Result.success(fakeUser) }
 
         val viewModel = ProfileViewModel(getCurrentUserUseCase, logoutUseCase)
 
         viewModel.uiState.test {
+            skipItems(1) // consume Loading from init
             assertEquals(ProfileUiState.Success(fakeUser), awaitItem())
             cancelAndIgnoreRemainingEvents()
         }
@@ -94,12 +95,12 @@ class ProfileViewModelTest {
 
     @Test
     fun _03_ShouldEmitError_WhenNetworkRequestFails() = runTest(testDispatcher) {
-        coEvery { getCurrentUserUseCase() } returns
-            Result.failure(RuntimeException("Failed to load profile"))
+        coEvery { getCurrentUserUseCase() } coAnswers { delay(1); Result.failure(RuntimeException("Failed to load profile")) }
 
         val viewModel = ProfileViewModel(getCurrentUserUseCase, logoutUseCase)
 
         viewModel.uiState.test {
+            skipItems(1) // consume Loading from init
             val error = awaitItem()
             assertTrue(error is ProfileUiState.Error)
             assertEquals("Failed to load profile", (error as ProfileUiState.Error).message)
@@ -109,11 +110,12 @@ class ProfileViewModelTest {
 
     @Test
     fun _04_ShouldUseFallbackMessage_WhenExceptionHasNoMessage() = runTest(testDispatcher) {
-        coEvery { getCurrentUserUseCase() } returns Result.failure(RuntimeException())
+        coEvery { getCurrentUserUseCase() } coAnswers { delay(1); Result.failure(RuntimeException()) }
 
         val viewModel = ProfileViewModel(getCurrentUserUseCase, logoutUseCase)
 
         viewModel.uiState.test {
+            skipItems(1) // consume Loading from init
             val error = awaitItem()
             assertTrue(error is ProfileUiState.Error)
             assertEquals("Failed to load profile", (error as ProfileUiState.Error).message)
@@ -123,12 +125,13 @@ class ProfileViewModelTest {
 
     @Test
     fun _05_ShouldEmitLoggedOut_WhenLogoutIsCalled() = runTest(testDispatcher) {
-        coEvery { getCurrentUserUseCase() } returns Result.success(fakeUser)
-        coEvery { logoutUseCase() } returns Result.success(Unit)
+        coEvery { getCurrentUserUseCase() } coAnswers { delay(1); Result.success(fakeUser) }
+        coEvery { logoutUseCase() } coAnswers { delay(1); Result.success(Unit) }
 
         val viewModel = ProfileViewModel(getCurrentUserUseCase, logoutUseCase)
 
         viewModel.uiState.test {
+            skipItems(1) // consume Loading from init
             assertEquals(ProfileUiState.Success(fakeUser), awaitItem())
             viewModel.logout()
             assertEquals(ProfileUiState.LoggedOut, awaitItem())
@@ -138,12 +141,13 @@ class ProfileViewModelTest {
 
     @Test
     fun _06_ShouldEmitLoggedOut_EvenWhenServerSideLogoutFails() = runTest(testDispatcher) {
-        coEvery { getCurrentUserUseCase() } returns Result.success(fakeUser)
-        coEvery { logoutUseCase() } returns Result.failure(RuntimeException("Server error"))
+        coEvery { getCurrentUserUseCase() } coAnswers { delay(1); Result.success(fakeUser) }
+        coEvery { logoutUseCase() } coAnswers { delay(1); Result.failure(RuntimeException("Server error")) }
 
         val viewModel = ProfileViewModel(getCurrentUserUseCase, logoutUseCase)
 
         viewModel.uiState.test {
+            skipItems(1) // consume Loading from init
             assertEquals(ProfileUiState.Success(fakeUser), awaitItem())
             viewModel.logout()
             // The ViewModel always sets LoggedOut after calling logoutUseCase,
@@ -155,11 +159,12 @@ class ProfileViewModelTest {
 
     @Test
     fun _07_ShouldEmitLoadingThenSuccess_WhenProfileIsReloaded() = runTest(testDispatcher) {
-        coEvery { getCurrentUserUseCase() } returns Result.success(fakeUser)
+        coEvery { getCurrentUserUseCase() } coAnswers { delay(1); Result.success(fakeUser) }
 
         val viewModel = ProfileViewModel(getCurrentUserUseCase, logoutUseCase)
 
         viewModel.uiState.test {
+            skipItems(1) // consume Loading from init
             assertEquals(ProfileUiState.Success(fakeUser), awaitItem()) // initial load
             coEvery { getCurrentUserUseCase() } coAnswers {
                 delay(100)

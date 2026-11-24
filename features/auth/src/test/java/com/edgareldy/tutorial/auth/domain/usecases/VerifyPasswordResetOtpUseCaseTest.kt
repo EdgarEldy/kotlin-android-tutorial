@@ -1,6 +1,6 @@
 package com.edgareldy.tutorial.auth.domain.usecases
 
-import com.edgareldy.tutorial.domain.repository.PasswordResetRepository
+import com.edgareldy.tutorial.auth.domain.repository.PasswordResetRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
