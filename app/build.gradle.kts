@@ -74,6 +74,7 @@ android {
 
 dependencies {
     implementation(project(":features:auth"))
+    implementation(project(":features:product-catalog"))
     implementation(project(":core:network"))
     implementation(project(":core:storage"))
     implementation(project(":core:database"))
