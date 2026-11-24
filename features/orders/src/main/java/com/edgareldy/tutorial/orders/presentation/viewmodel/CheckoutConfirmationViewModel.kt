@@ -62,6 +62,12 @@ class CheckoutConfirmationViewModel @Inject constructor(
         }
     }
 
+    fun successHandled() {
+        if (_uiState.value is CheckoutUiState.Success) {
+            _uiState.value = CheckoutUiState.Idle
+        }
+    }
+
     fun errorShown() {
         if (_uiState.value is CheckoutUiState.Error) {
             _uiState.value = CheckoutUiState.Idle
