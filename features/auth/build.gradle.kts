@@ -38,4 +38,5 @@ dependencies {
     implementation(libs.bundles.lifecycle)
 
     testImplementation(libs.bundles.testing.unit)
+    testImplementation(libs.mockwebserver)
 }
