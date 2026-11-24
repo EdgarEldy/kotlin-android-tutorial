@@ -1,10 +1,10 @@
-package com.edgareldy.tutorial.data.repository
+package com.edgareldy.tutorial.auth.data.repository
 
-import com.edgareldy.tutorial.data.remote.api.PasswordResetApiService
-import com.edgareldy.tutorial.data.remote.dto.ConfirmResetRequest
-import com.edgareldy.tutorial.data.remote.dto.SendOtpRequest
-import com.edgareldy.tutorial.data.remote.dto.VerifyOtpRequest
-import com.edgareldy.tutorial.domain.repository.PasswordResetRepository
+import com.edgareldy.tutorial.auth.data.api.PasswordResetApiService
+import com.edgareldy.tutorial.auth.data.dto.ConfirmResetRequest
+import com.edgareldy.tutorial.auth.data.dto.SendOtpRequest
+import com.edgareldy.tutorial.auth.data.dto.VerifyOtpRequest
+import com.edgareldy.tutorial.auth.domain.repository.PasswordResetRepository
 import javax.inject.Inject
 import javax.inject.Singleton
 
