@@ -8,12 +8,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
-import com.edgareldy.tutorial.features.auth.screens.ActivateAccountScreen
-import com.edgareldy.tutorial.features.auth.screens.ForgotPasswordScreen
-import com.edgareldy.tutorial.features.auth.screens.RegisterScreen
-import com.edgareldy.tutorial.features.auth.screens.ResetPasswordScreen
-import com.edgareldy.tutorial.features.auth.screens.SignInScreen
-import com.edgareldy.tutorial.features.auth.screens.VerifyOtpScreen
+import com.edgareldy.tutorial.auth.presentation.screens.ActivateAccountScreen
+import com.edgareldy.tutorial.auth.presentation.screens.ForgotPasswordScreen
+import com.edgareldy.tutorial.auth.presentation.screens.ProfileScreen
+import com.edgareldy.tutorial.auth.presentation.screens.RegisterScreen
+import com.edgareldy.tutorial.auth.presentation.screens.ResetPasswordScreen
+import com.edgareldy.tutorial.auth.presentation.screens.SignInScreen
+import com.edgareldy.tutorial.auth.presentation.screens.VerifyOtpScreen
 
 /**
  * Root navigation host wiring every screen to its route.
