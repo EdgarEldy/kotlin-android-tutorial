@@ -699,15 +699,15 @@ Cart management and checkout.
 - [x] Domain: `Cart`, `CartItem` models
 - [x] Domain: `CartRepository` interface
 - [x] Domain: `GetCartUseCase`, `AddCartItemUseCase`, `UpdateCartItemUseCase`, `RemoveCartItemUseCase`, `ClearCartUseCase`, `GetCartItemCountUseCase`
-- [ ] Domain: `CheckoutUseCase`
+- [x] Domain: `CreateOrderUseCase` (checkout from cart, then clears cart via `ClearCartUseCase`)
 - [x] Data: `CartRepositoryImpl`
 - [x] `CartScreen` + `CartViewModel` + `CartUiState`
-- [ ] `OrderConfirmationScreen`
+- [x] `CheckoutConfirmationScreen` + `CheckoutConfirmationViewModel` (order summary, confirm button, duplicate-submit protection)
 - [x] Add-to-cart action wired from `ProductDetailScreen`
 - [x] Cart item count badge on the navigation bar
 - [x] Checkout button disabled while a request is in flight (duplicate-submit protection)
 - [x] Display server-calculated total; never compute totals on the client
-- [ ] Tests: `CartRepositoryImplTest`, `CheckoutUseCaseTest`, `CartViewModelTest`
+- [x] Tests: `CartViewModelTest`, `SharedCartViewModelTest`, `CreateOrderUseCaseTest`
 
 ---
 
@@ -754,7 +754,7 @@ Order history and order detail.
 | 1 | `feature/core-architecture` | ✅ Complete |
 | 2 | `feature/auth` | ✅ Complete |
 | 3 | `feature/product-catalog` | ⚠️ In progress (bottom nav missing) |
-| 4 | `feature/shopping-cart` | ⚠️ In progress (checkout, order confirmation and tests pending) |
+| 4 | `feature/shopping-cart` | ✅ Complete |
 | 5 | `feature/orders` | 🔲 Pending |
 
 ### Phase 0 findings
