@@ -1,4 +1,4 @@
-package com.edgareldy.tutorial.features.auth.screens
+package com.edgareldy.tutorial.auth.presentation.screens
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -37,10 +37,10 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.edgareldy.tutorial.features.auth.components.AuthScaffold
-import com.edgareldy.tutorial.features.auth.components.AuthTextField
-import com.edgareldy.tutorial.features.auth.viewmodel.RegisterUiState
-import com.edgareldy.tutorial.features.auth.viewmodel.RegisterViewModel
+import com.edgareldy.tutorial.auth.presentation.components.AuthScaffold
+import com.edgareldy.tutorial.auth.presentation.components.AuthTextField
+import com.edgareldy.tutorial.auth.presentation.viewmodel.RegisterUiState
+import com.edgareldy.tutorial.auth.presentation.viewmodel.RegisterViewModel
 
 /**
  * Registration screen with fields for all required user information.
