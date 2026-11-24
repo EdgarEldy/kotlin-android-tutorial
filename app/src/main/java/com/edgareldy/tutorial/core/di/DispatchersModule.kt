@@ -1,5 +1,6 @@
 package com.edgareldy.tutorial.core.di
 
+import com.edgareldy.tutorial.core.di.qualifier.ApplicationScope
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -40,18 +41,6 @@ import javax.inject.Singleton
  * Project: kotlin-android-tutorial
  */
 @Qualifier @Retention(AnnotationRetention.BINARY) annotation class DefaultDispatcher
-
-/**
- * Qualifier to inject an application-level CoroutineScope tied to the process lifetime.
- * Used by repositories that need to launch background refresh jobs that survive
- * individual ViewModel cancellations.
- *
- * Created edgar.muhamyangabo on 11/23/26
- * Author: edgar.muhamyangabo
- * Date: 11/23/26
- * Project: kotlin-android-tutorial
- */
-@Qualifier @Retention(AnnotationRetention.BINARY) annotation class ApplicationScope
 
 /**
  * Hilt module that provides named CoroutineDispatchers and an application-level scope
