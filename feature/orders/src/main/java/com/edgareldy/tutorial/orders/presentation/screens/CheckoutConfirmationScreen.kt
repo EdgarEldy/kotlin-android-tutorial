@@ -130,13 +130,13 @@ fun CheckoutConfirmationScreen(
                     .padding(24.dp)
             ) {
                 Text(
-                    text = "Confirmer votre commande",
+                    text = "Order Confirmation",
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "Votre panier sera converti en commande. Cette action est irreversible.",
+                    text = "Your cart will be converted into an order. This action is irreversible.",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -160,7 +160,7 @@ fun CheckoutConfirmationScreen(
                         )
                     } else {
                         Text(
-                            text = "Confirmer la commande",
+                            text = "Place Order",
                             style = MaterialTheme.typography.titleSmall,
                             fontWeight = FontWeight.SemiBold
                         )
