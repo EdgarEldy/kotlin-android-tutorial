@@ -1,4 +1,4 @@
-package com.edgareldy.tutorial.domain.repository
+package com.edgareldy.tutorial.auth.domain.repository
 
 /**
  * Contract for the 3-step mobile password reset flow.
