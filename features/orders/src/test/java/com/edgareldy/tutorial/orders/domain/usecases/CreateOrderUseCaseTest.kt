@@ -1,9 +1,11 @@
 package com.edgareldy.tutorial.orders.domain.usecases
 
+import com.edgareldy.tutorial.cart.domain.usecases.ClearCartUseCase
 import com.edgareldy.tutorial.orders.domain.model.Order
 import com.edgareldy.tutorial.orders.domain.model.OrderStatus
 import com.edgareldy.tutorial.orders.domain.repository.OrderRepository
 import io.mockk.coEvery
+import io.mockk.coJustRun
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
@@ -25,12 +27,15 @@ import org.junit.Test
 class CreateOrderUseCaseTest {
 
     private lateinit var repository: OrderRepository
+    private lateinit var clearCartUseCase: ClearCartUseCase
     private lateinit var useCase: CreateOrderUseCase
 
     @Before
     fun setUp() {
         repository = mockk()
-        useCase = CreateOrderUseCase(repository)
+        clearCartUseCase = mockk()
+        coJustRun { clearCartUseCase() }
+        useCase = CreateOrderUseCase(repository, clearCartUseCase)
     }
 
     private fun fakeOrder(id: Long) = Order(
