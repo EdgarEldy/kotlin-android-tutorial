@@ -1,4 +1,4 @@
-package com.edgareldy.tutorial.features.auth.screens
+package com.edgareldy.tutorial.auth.presentation.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,8 +25,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.edgareldy.tutorial.features.auth.viewmodel.ProfileUiState
-import com.edgareldy.tutorial.features.auth.viewmodel.ProfileViewModel
+import com.edgareldy.tutorial.auth.presentation.viewmodel.ProfileUiState
+import com.edgareldy.tutorial.auth.presentation.viewmodel.ProfileViewModel
 
 /**
  * Profile screen showing the authenticated user's information and a sign-out button.
