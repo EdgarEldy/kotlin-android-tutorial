@@ -14,8 +14,8 @@ import com.edgareldy.tutorial.orders.domain.repository.OrderRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -36,54 +36,29 @@ class OrderRepositoryImpl @Inject constructor(
     @ApplicationScope private val backgroundScope: CoroutineScope
 ) : OrderRepository {
 
-    override fun getOrders(): Flow<Result<List<Order>>> = flow {
-        // Collect orders and their items together from the cache
-        orderDao.getOrders().collect { entities ->
-            if (entities.isEmpty()) {
-                // Try network immediately when cache is empty
-                val networkResult = runCatching {
-                    val response = apiService.getOrders()
-                    response.data?.content ?: emptyList()
-                }
-                networkResult.fold(
-                    onSuccess = { orderResponses ->
-                        syncToCache(orderResponses)
-                        emit(Result.success(orderResponses.map { it.toDomainWithItems() }))
-                    },
-                    onFailure = { error ->
-                        emit(Result.failure(error))
-                    }
-                )
-            } else {
-                // Emit cached data immediately
-                // items are not loaded for the list view to avoid N+1 queries; use getOrderById() for full detail
-                val domainOrders = entities.map { entity ->
+    override fun getOrders(): Flow<Result<List<Order>>> =
+        // items are not loaded for the list view to avoid N+1 queries; use getOrderById() for detail
+        orderDao.getOrders()
+            .map { entities ->
+                Result.success(entities.map { entity ->
                     Order(
                         id = entity.id,
                         orderNumber = entity.orderNumber,
-                        status = OrderStatus.valueOf(
-                            runCatching { entity.status.uppercase() }
-                                .getOrElse { "UNKNOWN" }
-                                .let { if (OrderStatus.entries.any { s -> s.name == it }) it else "UNKNOWN" }
-                        ),
+                        status = entity.status.toOrderStatus(),
                         totalAmount = entity.totalAmount,
                         items = emptyList()
                     )
-                }
-                emit(Result.success(domainOrders))
-
-                // Background refresh
+                })
+            }
+            .onStart {
                 backgroundScope.launch {
                     runCatching {
                         val response = apiService.getOrders()
-                        response.data?.content ?: emptyList()
-                    }.onSuccess { orderResponses ->
+                        val orderResponses = response.data?.content ?: emptyList()
                         syncToCache(orderResponses)
                     }
                 }
             }
-        }
-    }
 
     override fun getOrderById(id: Long): Flow<Result<Order>> =
         combine(
