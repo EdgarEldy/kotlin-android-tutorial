@@ -5,7 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.edgareldy.tutorial.core.ui.TutorialTheme
-import com.edgareldy.tutorial.domain.usecase.auth.IsLoggedInUseCase
+import com.edgareldy.tutorial.domain.usecases.auth.IsLoggedInUseCase
 import com.edgareldy.tutorial.navigation.TutorialNavHost
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject

@@ -1,4 +1,4 @@
-package com.edgareldy.tutorial.auth.domain.usecase
+package com.edgareldy.tutorial.auth.domain.usecases
 
 import com.edgareldy.tutorial.auth.domain.repository.PasswordResetRepository
 import javax.inject.Inject
