@@ -10,7 +10,8 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -26,6 +27,8 @@ import org.junit.Test
  * Verifies the UiState transitions when fetching a single order by id,
  * covering the success path and the not-found error path.
  * SavedStateHandle is instantiated directly with the orderId key.
+ * flow { delay(1); emit(...) } is used so that Loading is observable
+ * before the state transitions, since there is no debounce in the ViewModel.
  *
  * Created edgar.muhamyangabo on 11/24/26
  * Author: edgar.muhamyangabo
@@ -75,7 +78,7 @@ class OrderDetailViewModelTest {
     @Test
     fun _01_ShouldEmitLoadingThenSuccess_WhenUseCaseEmitsOrder() = runTest(testDispatcher) {
         val order = fakeOrder(42L)
-        every { getOrderByIdUseCase(42L) } returns flowOf(Result.success(order))
+        every { getOrderByIdUseCase(42L) } returns flow { delay(1); emit(Result.success(order)) }
 
         val viewModel = createViewModel(42L)
 
@@ -89,7 +92,7 @@ class OrderDetailViewModelTest {
     @Test
     fun _02_ShouldEmitError_WhenOrderIsNotFound() = runTest(testDispatcher) {
         every { getOrderByIdUseCase(99L) } returns
-            flowOf(Result.failure(RuntimeException("Order not found")))
+            flow { delay(1); emit(Result.failure<Order>(RuntimeException("Order not found"))) }
 
         val viewModel = createViewModel(99L)
 
