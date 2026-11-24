@@ -1,4 +1,4 @@
-package com.edgareldy.tutorial.domain.model
+package com.edgareldy.tutorial.auth.domain.model
 
 /**
  * Domain model representing an authenticated user.
