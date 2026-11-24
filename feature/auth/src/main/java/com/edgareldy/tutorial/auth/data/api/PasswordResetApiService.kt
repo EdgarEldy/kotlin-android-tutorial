@@ -1,9 +1,9 @@
-package com.edgareldy.tutorial.data.remote.api
+package com.edgareldy.tutorial.auth.data.api
 
-import com.edgareldy.tutorial.data.remote.dto.ApiResponse
-import com.edgareldy.tutorial.data.remote.dto.ConfirmResetRequest
-import com.edgareldy.tutorial.data.remote.dto.SendOtpRequest
-import com.edgareldy.tutorial.data.remote.dto.VerifyOtpRequest
+import com.edgareldy.tutorial.auth.data.dto.ApiResponse
+import com.edgareldy.tutorial.auth.data.dto.ConfirmResetRequest
+import com.edgareldy.tutorial.auth.data.dto.SendOtpRequest
+import com.edgareldy.tutorial.auth.data.dto.VerifyOtpRequest
 import retrofit2.http.Body
 import retrofit2.http.POST
 import retrofit2.http.Query
